@@ -1,0 +1,105 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+public class Account
+{
+    [Key]
+    public int AccountID { get; set; }
+    public string? UserName { get; set; }
+    public string? PasswordHash { get; set; }
+}
+
+public class HubEmployee
+{
+    [Key]
+    public int EmployeeID { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Initials { get; set; }
+    public string? Role { get; set; }
+
+    [ForeignKey("Account")]
+    public int AccountID { get; set; }
+    public Account? Account { get; set; }
+}
+
+public class Manager
+{
+    [Key]
+    public int ManagerID { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+
+    [ForeignKey("Account")]
+    public int AccountID { get; set; }
+    public Account? Account { get; set; }
+}
+
+public class SecurityAnswers
+{
+    [Key]
+    public int AnswerID { get; set; }
+
+    [ForeignKey("Account")]
+    public int AccountID { get; set; }
+    public Account? Account { get; set; }
+
+    public int QuestionID { get; set; }
+    public string? AnswerHash { get; set; }
+}
+
+public class Course
+{
+    [Key]
+    public int CourseID { get; set; }
+    public string? CourseName { get; set; }
+}
+
+public class Instructor
+{
+    [Key]
+    public int InstructorID { get; set; }
+    public string? LastName { get; set; }
+    public string? FirstName { get; set; }
+}
+
+public class Student
+{
+    [Key]
+    public int StudentID { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+
+    [ForeignKey("Course")]
+    public int CourseID { get; set; }
+    public Course? Course { get; set; }
+
+    [ForeignKey("Instructor")]
+    public int InstructorID { get; set; }
+    public Instructor? Instructor { get; set; }
+}
+
+public class HubSession
+{
+    [Key]
+    public int SessionID { get; set; }
+    public DateTime TimeIn { get; set; }
+    public DateTime TimeOut { get; set; }
+
+    [ForeignKey("Student")]
+    public int StudentID { get; set; }
+    public Student? Student { get; set; }
+
+    [ForeignKey("HubEmployee")]
+    public int EmployeeID { get; set; }
+    public HubEmployee? HubEmployee { get; set; }
+}
+
+public class SecurityQuestion
+{
+    [Key]
+    public int QuestionID { get; set; }
+    public string? Question { get; set; }
+}
+

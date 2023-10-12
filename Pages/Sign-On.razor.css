@@ -1,0 +1,27 @@
+
+.input-group, .form-control{
+    height: 3.3125rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+
+.input-group{
+    border-radius: 4px;
+}
+
+.input-group-btn{
+    display: flex;
+    justify-content: center
+}
+
+.search-icon{
+    display: flex;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+}
+.container{
+    width: 44rem;
+}

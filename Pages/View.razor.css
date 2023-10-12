@@ -1,0 +1,10 @@
+.btn.inactive {
+    background-color: white;
+    color: #0078C9;
+    border-color: #0078C9;
+    border-width: 2px;
+}
+.table-header{
+    background-color: #0078C9;
+    color: white;
+}
