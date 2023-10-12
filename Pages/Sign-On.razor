@@ -59,14 +59,14 @@
 
 @code {
     private string searchTerm = "";
-    private Student foundStudent;
+    private Student? foundStudent;
 
     [Inject]
-    private Context DbContext { get; set; }
+    private Context? DbContext { get; set; }
 
     private void HandleSearch()
     {
-        foundStudent = DbContext.Students
+        foundStudent = DbContext?.Students
             .Include(s => s.Course)
             .Include(s => s.Instructor)
             .FirstOrDefault(s => s.FirstName == searchTerm || s.LastName == searchTerm);
