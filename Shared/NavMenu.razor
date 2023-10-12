@@ -1,36 +1,37 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<nav class="navbar navbar-expand-md navbar-light bg-white mt-1" style="margin-right: 15px;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Sign-Me-In</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+        <a class="navbar-brand" href="Sign-Me-In">
+        <NavLink class="navbar-brand" href="HomePage">
+            <img src="FDTC-LOGO2.png" alt="" height="40" width="auto">
+        </NavLink>
+</a>
+
+            
+        <button class="navbar-toggler @NavButtonCssClass" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="collapse navbar-collapse @NavBarCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <NavLink class="nav-link" style="margin-right: 15px;" href="Sign-On">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Sign-On
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="View">
+                        <span class="oi oi-list" aria-hidden="true"></span> View
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
+</nav>
 
 @code {
     private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string? NavBarCssClass => collapseNavMenu ? null : "show";
+    private string? NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
 
     private void ToggleNavMenu()
     {
