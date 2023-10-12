@@ -1,12 +1,12 @@
 
-CREATE TABLE [Account] (
+CREATE TABLE [Accounts] (
   [AccountID] INT,
   [Username] NVARCHAR(255),
   [PasswordHash] NVARCHAR(255),
   PRIMARY KEY ([AccountID])
 );
 
-CREATE TABLE [HubEmployee] (
+CREATE TABLE [HubEmployees] (
   [EmployeeID] INT,
   [FirstName] NVARCHAR(255),
   [LastName] NVARCHAR(255),
@@ -19,7 +19,7 @@ CREATE TABLE [HubEmployee] (
       REFERENCES [Account]([AccountID])
 );
 
-CREATE TABLE [Manager] (
+CREATE TABLE [Managers] (
   [ManagerID] INT,
   [FirstName] NVARCHAR(255),
   [LastName] NVARCHAR(255),
@@ -38,20 +38,20 @@ CREATE TABLE [SecurityAnswers] (
       REFERENCES [Account]([AccountID])
 );
 
-CREATE TABLE [Course] (
+CREATE TABLE [Courses] (
   [CourseID] INT,
   [CourseName] NVARCHAR(20),
   PRIMARY KEY ([CourseID])
 );
 
-CREATE TABLE [Instructor] (
+CREATE TABLE [Instructors] (
   [InstructorID] INT,
   [LastName] NVARCHAR(255),
   [FirstName] NVARCHAR(255),
   PRIMARY KEY ([InstructorID])
 );
 
-CREATE TABLE [Student] (
+CREATE TABLE [Students] (
   [StudentID] INT,
   [FirstName] NVARCHAR(255),
   [LastName] NVARCHAR(255),
@@ -66,7 +66,7 @@ CREATE TABLE [Student] (
       REFERENCES [Course]([CourseID])
 );
 
-CREATE TABLE [HubSession] (
+CREATE TABLE [HubSessions] (
   [SessionID] INT,
   [TimeIn] DATETIME,
   [TimeOut] DATETIME,
@@ -81,24 +81,30 @@ CREATE TABLE [HubSession] (
       REFERENCES [HubEmployee]([EmployeeID])
 );
 
-CREATE TABLE [SecurityQuestion] (
+CREATE TABLE [SecurityQuestions] (
   [QuestionID] INT,
   [Question] NVARCHAR(255),
   PRIMARY KEY ([QuestionID])
 );
 
 -- Insert sample data into Course, Instructor, and Student tables
-INSERT INTO [Course] ([CourseID], [CourseName])
+SET IDENTITY_INSERT [dbo].[Courses] ON
+INSERT INTO [Courses] ([CourseID], [CourseName])
 VALUES
     (1, '101'),
     (2, '102');
+SET IDENTITY_INSERT [dbo].[Courses] OFF
 
-INSERT INTO [Instructor] ([InstructorID], [LastName], [FirstName])
+SET IDENTITY_INSERT [dbo].[Instructors] ON
+INSERT INTO [Instructors] ([InstructorID], [LastName], [FirstName])
 VALUES
     (1, 'Rubin', 'Dr'),
     (2, 'Araujo', 'Ken');
+SET IDENTITY_INSERT [dbo].[Instructors] OFF
 
-INSERT INTO [Student] ([StudentID], [FirstName], [LastName], [CourseID], [InstructorID])
+SET IDENTITY_INSERT [dbo].[Students] ON
+INSERT INTO [Students] ([StudentID], [FirstName], [LastName], [CourseID], [InstructorID])
 VALUES
     (1, 'John', 'Student', 1, 1),
     (2, 'Emily', 'Pizza', 2, 2);
+SET IDENTITY_INSERT [dbo].[Students] OFF
