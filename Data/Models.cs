@@ -24,17 +24,6 @@ public class HubEmployee
     public Account? Account { get; set; }
 }
 
-public class Manager
-{
-    [Key]
-    public int ManagerID { get; set; }
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-
-    [ForeignKey("Account")]
-    public int AccountID { get; set; }
-    public Account? Account { get; set; }
-}
 
 public class SecurityAnswers
 {
