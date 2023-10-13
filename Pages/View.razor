@@ -1,17 +1,32 @@
 ﻿@page "/View"
 
 @inject Context dbContext
+@using Microsoft.EntityFrameworkCore;
 
 
-@functions {
-    int activeButtonIndex = 0; // Initialize the active button index
-    
+@code {
+    int activeButtonIndex = 0;
+    List<Student> studentsWithRelatedData;
+
+    private void LoadStudentsWithRelatedData()
+    {
+        studentsWithRelatedData = dbContext.Students
+            .Include(s => s.Course)
+            .Include(s => s.Instructor)
+            .ToList();
+    }
+
+    protected override void OnInitialized()
+    {
+        LoadStudentsWithRelatedData();
+    }
     void SetActiveButton(int index)
     {
         activeButtonIndex = index;
     }
-
 }
+
+
 
 <PageTitle>View 😀</PageTitle>
 
@@ -25,21 +40,23 @@
     </div>
 </div>
 
-
-
 <table class="table">
     <thead>
         <tr class="table-header">
             <th>ID</th>
             <th>Name</th>
+            <th>Course</th>
+            <th>Instructor</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var student in dbContext.Students)
+        @foreach (var student in studentsWithRelatedData)
         {
             <tr>
                 <td>@student.StudentID</td>
                 <td>@student.FirstName @student.LastName</td>
+                <td>@student.Course?.CourseName</td>
+                <td>@student.Instructor?.FirstName @student.Instructor?.LastName</td>
             </tr>
         }
     </tbody>
