@@ -5,8 +5,7 @@
 
 
 @code {
-    int activeButtonIndex = 0;
-    List<Student> studentsWithRelatedData;
+    List<Student>? studentsWithRelatedData;
 
     private void LoadStudentsWithRelatedData()
     {
@@ -20,6 +19,9 @@
     {
         LoadStudentsWithRelatedData();
     }
+
+    int activeButtonIndex = 0;
+    
     void SetActiveButton(int index)
     {
         activeButtonIndex = index;
