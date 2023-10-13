@@ -4,8 +4,16 @@
     border-color: #0078C9;
     border-width: 2px;
 }
+.btn-active{
+    border: none;
+}
 .table-header{
     background-color: #0078C9;
     color: white;
+    font-weight: bolder;
+    outline: white 2px;
+}
+
+th{
     font-weight: bolder;
 }

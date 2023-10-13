@@ -1,5 +1,24 @@
 ﻿@page "/Sign-On"
 @using Microsoft.EntityFrameworkCore;
+@inject Context dbContext
+
+@code {
+    private string searchTerm = "";
+    private Student? foundStudent;
+    private bool isLoading = false;
+    private bool searchPerformed = false;
+
+    private async Task HandleSearch()
+    {
+        isLoading = true;
+        foundStudent = await dbContext.Students
+            .Include(s => s.Course)
+            .Include(s => s.Instructor)
+            .FirstOrDefaultAsync(s => s.FirstName == searchTerm || s.LastName == searchTerm);
+        isLoading = false;
+        searchPerformed = true;
+    }
+}
 
 
 <PageTitle>Search bar😀</PageTitle>
@@ -65,25 +84,3 @@
     }
 </div>
 
-@code {
-    private string searchTerm = "";
-    private Student? foundStudent;
-    private bool isLoading = false;
-    private bool searchPerformed = false;
-
-    [Inject]
-    private Context? DbContext { get; set; }
-
-    private async Task HandleSearch()
-    {
-        isLoading = true;
-
-        foundStudent = DbContext?.Students
-        .Include(s => s.Course)
-        .Include(s => s.Instructor)
-        .FirstOrDefault(s => s.FirstName == searchTerm || s.LastName == searchTerm);
-
-        isLoading = false;
-        searchPerformed = true;
-    }
-}
