@@ -5,6 +5,8 @@
 @code {
     List<Student>? studentsWithRelatedData;
     int activeButtonIndex = 0;
+    bool isEditing = false;
+    HashSet<int> studentsBeingEdited = new HashSet<int>();
 
     private void LoadStudentsWithRelatedData()
     {
@@ -23,10 +25,21 @@
     void SetActiveButton(int index)
     {
         activeButtonIndex = index;
+
+        if(index == 2){
+            isEditing = true;
+        }
     }
+
+     void SaveStudent(Student student)
+    {
+        dbContext.Update(student);
+        dbContext.SaveChanges();
+    }
+
 }
 
-<PageTitle>View 😀</PageTitle>
+<PageTitle>View Students</PageTitle>
 
 <div class="d-flex justify-content-between pb-4">
     <div class="button-container">
@@ -52,9 +65,40 @@
         {
             <tr>
                 <td>@student.StudentID</td>
-                <td>@student.FirstName @student.LastName</td>
-                <td>@student.Course?.CourseName</td>
-                <td>@student.Instructor?.FirstName @student.Instructor?.LastName</td>
+                <td>@if(isEditing)
+                    {
+                        <input type="text" bind="@student.FirstName" />
+                        <input type="text" bind="@student.LastName" />
+                    }
+                    else
+                    {
+                        @student.FirstName @student.LastName
+                    }</td>
+                <td>@if(isEditing && student.Course != null)
+                    {
+                        <input type="text" bind="@student.Course.CourseName" />
+                    }
+                    else
+                    {
+                        @student.Course?.CourseName
+                    }</td>
+                <td>@if(isEditing && student.Instructor != null)
+                    {
+                        <input type="text" bind="@student.Instructor.FirstName" />
+                        <input type="text" bind="@student.Instructor.LastName" />
+                    }
+                    else
+                    {
+                        @student.Instructor?.FirstName @student.Instructor?.LastName
+                    }
+                </td>
+                @if(isEditing)
+                {
+                    <td>
+                        <button @onclick="() => SaveStudent(student)">Save</button>
+                    </td>
+                }
+
             </tr>
         }
     </tbody>
