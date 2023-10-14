@@ -4,6 +4,7 @@
 
 @code {
     List<Student>? studentsWithRelatedData;
+    int activeButtonIndex = 0;
 
     private void LoadStudentsWithRelatedData()
     {
@@ -18,7 +19,6 @@
         LoadStudentsWithRelatedData();
     }
 
-    int activeButtonIndex = 0;
     
     void SetActiveButton(int index)
     {
@@ -26,17 +26,15 @@
     }
 }
 
-
-
 <PageTitle>View 😀</PageTitle>
 
 <div class="d-flex justify-content-between pb-4">
     <div class="button-container">
-        <button class=" btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")" @onclick="() => SetActiveButton(0)">View all</button>
-        <button class=" btn btn-primary @(activeButtonIndex == 1 ? "active" : "inactive")" @onclick="() => SetActiveButton(1)">Signed-In</button>
+        <button class="btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")" @onclick="() => SetActiveButton(0)">View all</button>
+        <button class="btn btn-primary @(activeButtonIndex == 1 ? "active" : "inactive")" @onclick="() => SetActiveButton(1)">Signed-In</button>
     </div>
     <div>
-        <button class=" btn btn-primary @(activeButtonIndex == 2 ? "active" : "inactive")" @onclick="() => SetActiveButton(2)">Edit</button>
+        <button class="btn btn-primary @(activeButtonIndex == 2 ? "active" : "inactive")" @onclick="() => SetActiveButton(2)">Edit</button>
     </div>
 </div>
 
