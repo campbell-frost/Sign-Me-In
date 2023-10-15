@@ -20,7 +20,6 @@
     {
         LoadStudentsWithRelatedData();
     }
-
     
     void SetActiveButton(int index)
     {
@@ -31,15 +30,16 @@
         }
     }
 
-     void SaveStudent(Student student)
+    void SaveStudent(Student student)
     {
+        student.FirstName += " ";
         dbContext.Update(student);
         dbContext.SaveChanges();
     }
 
 }
 
-<PageTitle>View Students</PageTitle>
+<PageTitle>View Students 😀</PageTitle>
 
 <div class="d-flex justify-content-between pb-4">
     <div class="button-container">
@@ -58,49 +58,62 @@
             <th>Name</th>
             <th>Course</th>
             <th>Instructor</th>
+            @if (isEditing){
+                <th>Edit</th>
+            }
         </tr>
     </thead>
     <tbody>
-        @foreach (var student in studentsWithRelatedData)
+    @foreach (var student in studentsWithRelatedData)
+{
+    <tr>
+        <td>@student.StudentID</td>
+        <td>
+            @if (isEditing)
+            {
+                <div>
+                    <input type="text" @bind="student.FirstName" />
+                    <input type="text" @bind="student.LastName" />
+                </div>
+            }
+            else
+            {
+                @student.FirstName @student.LastName
+            }
+        </td>
+        <td>
+            @if (isEditing && student.Course != null)
+            {
+                <input type="text" @bind="student.Course.CourseName" />
+            }
+            else
+            {
+                @student.Course?.CourseName
+            }
+        </td>
+        <td>
+        @if (isEditing && student.Instructor != null)
         {
-            <tr>
-                <td>@student.StudentID</td>
-                <td>@if(isEditing)
-                    {
-                        <input type="text" bind="@student.FirstName" />
-                        <input type="text" bind="@student.LastName" />
-                    }
-                    else
-                    {
-                        @student.FirstName @student.LastName
-                    }</td>
-                <td>@if(isEditing && student.Course != null)
-                    {
-                        <input type="text" bind="@student.Course.CourseName" />
-                    }
-                    else
-                    {
-                        @student.Course?.CourseName
-                    }</td>
-                <td>@if(isEditing && student.Instructor != null)
-                    {
-                        <input type="text" bind="@student.Instructor.FirstName" />
-                        <input type="text" bind="@student.Instructor.LastName" />
-                    }
-                    else
-                    {
-                        @student.Instructor?.FirstName @student.Instructor?.LastName
-                    }
-                </td>
-                @if(isEditing)
-                {
-                    <td>
-                        <button @onclick="() => SaveStudent(student)">Save</button>
-                    </td>
-                }
-
-            </tr>
+            <div>
+                <input type="text" @bind="student.Instructor.FirstName" />
+                <input type="text" @bind="student.Instructor.LastName" />
+            </div>
         }
+        else if (student.Instructor != null)
+        {
+            @student.Instructor.FirstName @(" " + student.Instructor.LastName)
+        }
+    </td>
+
+        @if (isEditing)
+        {
+            <td>
+                <button class="btn btn-primary" @onclick="() => SaveStudent(student)">Save</button>
+            </td>
+        }
+    </tr>
+    }
+
     </tbody>
 </table>
 
