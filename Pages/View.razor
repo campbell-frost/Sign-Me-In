@@ -29,7 +29,7 @@
         }
         else
         {
-            isEditing = false; // Set isEditing to false when any button other than Edit is clicked
+            isEditing = false;
         }
 
         activeButtonIndex = index;
@@ -42,6 +42,7 @@
         student.FirstName += " ";
         dbContext.Update(student);
         dbContext.SaveChanges();
+        isEditing = false;
     }
 
 }
