@@ -23,9 +23,18 @@
     
     void SetActiveButton(int index)
     {
+        if (index == 2)
+        {
+            isEditing = true;
+        }
+        else
+        {
+            isEditing = false; // Set isEditing to false when any button other than Edit is clicked
+        }
+
         activeButtonIndex = index;
-        isEditing = index == 2; // Set isEditing to true when Edit button is clicked, otherwise false
     }
+
 
 
     void SaveStudent(Student student)
