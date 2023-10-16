@@ -25,17 +25,17 @@ public class HubEmployee
 }
 
 
-public class SecurityAnswers
+public class SecurityQuestion
 {
     [Key]
-    public int AnswerID { get; set; }
+    public int QuestionID { get; set; }
+    public string? Question { get; set; }
 
     [ForeignKey("Account")]
     public int AccountID { get; set; }
     public Account? Account { get; set; }
 
-    public int QuestionID { get; set; }
-    public string? AnswerHash { get; set; }
+    public string? AnswerHash { get; set; } // Include this property for storing answers
 }
 
 public class Course
@@ -83,12 +83,5 @@ public class HubSession
     [ForeignKey("HubEmployee")]
     public int EmployeeID { get; set; }
     public HubEmployee? HubEmployee { get; set; }
-}
-
-public class SecurityQuestion
-{
-    [Key]
-    public int QuestionID { get; set; }
-    public string? Question { get; set; }
 }
 
