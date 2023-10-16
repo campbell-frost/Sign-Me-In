@@ -35,6 +35,29 @@
         searchPerformed = true;
 
     }
+
+    private async Task HandleSignIn()
+    {
+        // Create a new HubSession record
+        var newSession = new HubSession
+        {
+            TimeIn = DateTime.Now, // Set the current time as TimeIn
+            StudentID = foundStudent.StudentID, // Set StudentID based on the found student
+            EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Set EmployeeID based on the selected initials
+        };
+
+        // Add the new session to the database
+        dbContext.HubSessions.Add(newSession);
+        await dbContext.SaveChangesAsync();
+
+        // Clears the selected values and search term
+        selectedInitials = "";
+        selectedSessionType = "";
+        searchTerm = "";
+
+    }
+
+
 }
 
 
@@ -119,7 +142,7 @@
         </div>
      <div class="row pt-5">
         <div class="col-md-12 mx-auto text-center"> 
-            <button class="btn btn-primary btn-block w-100 btn-sign-on">Sign-In</button>
+            <button class="btn btn-primary btn-block w-100 btn-sign-on" @onclick="HandleSignIn">Sign-In</button>
         </div>
     </div>
     }
