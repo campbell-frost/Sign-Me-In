@@ -19,23 +19,24 @@ CREATE TABLE [HubEmployees] (
       REFERENCES [Account]([AccountID])
 );
 
+CREATE TABLE [SecurityQuestion] (
+  [QuestionID] INT,
+  [Question] NVARCHAR(255),
+  [AnswerHash] NVARCHAR(255),
+  [AccountID] INT,
+  PRIMARY KEY ([QuestionID]),
+  CONSTRAINT [FK_SecurityQuestion.AccountID]
+    FOREIGN KEY ([AccountID])
+      REFERENCES [Account]([AccountID])
+);
+
+
 CREATE TABLE [Managers] (
   [ManagerID] INT,
   [FirstName] NVARCHAR(255),
   [LastName] NVARCHAR(255),
   [AccountID] INT,
   PRIMARY KEY ([ManagerID])
-);
-
-CREATE TABLE [SecurityAnswers] (
-  [AnswerID] INT,
-  [AccountID] INT,
-  [QuestionID] INT,
-  [AnswerHash] NVARCHAR(255),
-  PRIMARY KEY ([AnswerID]),
-  CONSTRAINT [FK_SecurityAnswers.AccountID]
-    FOREIGN KEY ([AccountID])
-      REFERENCES [Account]([AccountID])
 );
 
 CREATE TABLE [Courses] (
