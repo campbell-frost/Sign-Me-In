@@ -3,20 +3,37 @@
 @inject Context dbContext
 
 @code {
-    private string searchTerm = "";
-    private Student? foundStudent;
-    private bool isLoading = false;
-    private bool searchPerformed = false;
+    // Variables for search
+    private string searchTerm = ""; // The search term that is queried
+    private Student? foundStudent; // Student object
+    private bool isLoading = false; // Checks if the content is loading
+    private bool searchPerformed = false; // Checks if the search has been started
+
+    // Variables for initial drop down
+    private string selectedInitials;
+    private string selectedSessionType;
+    private List<string> initials;
+
 
     private async Task HandleSearch()
     {
         isLoading = true;
+        
+        // Gets student, course and instructor
         foundStudent = await dbContext.Students
             .Include(s => s.Course)
             .Include(s => s.Instructor)
             .FirstOrDefaultAsync(s => s.FirstName == searchTerm || s.LastName == searchTerm);
+        
+        //Gets employee initials
+        initials = await dbContext.HubEmployees
+            .Select(e => e.Initials)
+            .Distinct()
+            .ToListAsync();
+
         isLoading = false;
         searchPerformed = true;
+
     }
 }
 
@@ -60,7 +77,7 @@
                 </div>
             </div>
         </div>
-        <div class="row pt-3">
+        <div class="row py-3">
             <div class="col-md-6 mx-auto">
                 <div class="form-group">
                     <label>Course:</label>
@@ -75,6 +92,36 @@
                 </div>
             </div>
         </div>
+        <hr />
+        <div class="row pt-3">
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label>Initials:</label>
+                    <select class="form-control" @bind="selectedInitials">
+                        <option value="">Select Initials</option>
+                        @foreach (var initial in initials)
+                        {
+                            <option value="@initial">@initial</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label>Session Type:</label>
+                    <select class="form-control" @bind="selectedSessionType">
+                        <option value="">Select Session Type</option>
+                        <option value="Tutor">Tutor</option>
+                        <option value="Tester">Tester</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+     <div class="row pt-5">
+        <div class="col-md-12 mx-auto text-center"> 
+            <button class="btn btn-primary btn-block w-100">Sign-In</button>
+        </div>
+    </div>
     }
     else if (searchPerformed && foundStudent == null)
     {
