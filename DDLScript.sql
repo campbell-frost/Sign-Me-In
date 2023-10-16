@@ -108,3 +108,20 @@ VALUES
     (1, 'John', 'Student', 1, 1),
     (2, 'Emily', 'Pizza', 2, 2);
 SET IDENTITY_INSERT [dbo].[Students] OFF
+
+SET IDENTITY_INSERT [dbo].[Accounts] ON
+
+INSERT INTO [dbo].[Accounts] ([AccountID], [UserName], [PasswordHash])
+VALUES
+	(1, 'Manager', 'admin'),
+	(2, 'Staff', 'fdtcstaff')
+SET IDENTITY_INSERT [dbo].[Accounts] OFF
+
+SET IDENTITY_INSERT [dbo].[HubEmployees] ON
+
+INSERT INTO [dbo].[HubEmployees] ([EmployeeID], [FirstName], [LastName], [Initials], [Role], [AccountID])
+VALUES
+  (1, 'Megan', 'Webster', 'MW', 'Tutor', 2),
+	(2, 'Charles', 'Canfield', 'CC', 'Tester', 2)
+
+SET IDENTITY_INSERT [dbo].[HubEmployees] OFF
