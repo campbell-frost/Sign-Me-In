@@ -81,6 +81,7 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
         dbContext.Update(hubSession);
         dbContext.SaveChanges();
         isEditing = false;
+        LoadAllRequiredData();
     }
 }
 
