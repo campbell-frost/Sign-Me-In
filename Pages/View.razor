@@ -3,9 +3,9 @@
 @inject Context dbContext
 
 @code {
-List<HubSession> hubSessionsWithRelatedData;
-List<String> employeeInitials;
-List<String> sessionTypes;
+List<HubSession>? hubSessionsWithRelatedData;
+List<String?>? employeeInitials;
+List<String?>? sessionTypes;
 Dictionary<int, string> editInitials = new Dictionary<int, string>();
 Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
 
@@ -27,10 +27,13 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
     }
      private void InitializeEditingDictionaries()
     {
-        foreach (var session in hubSessionsWithRelatedData)
-        {
-            editInitials[session.SessionID] = session.HubEmployee?.Initials;
-            editSessionTypes[session.SessionID] = session.SessionType;
+        if(hubSessionsWithRelatedData is not null){
+
+            foreach (var session in hubSessionsWithRelatedData)
+            {
+                editInitials[session.SessionID] = session.HubEmployee.Initials;
+                editSessionTypes[session.SessionID] = session.SessionType;
+            }
         }
     }
     private void LoadHubSessionsWithRelatedData()
@@ -151,43 +154,43 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
                 }
             </td>
             <td>
-               @if (isEditing)
-    {
-        <select @bind="editInitials[hubSession.SessionID]">
-            @foreach(var initial in employeeInitials)
-            {
-                <option value="@initial">@initial</option>
-            }
-        </select>
-    } 
-    else 
-    {
-        @hubSession.HubEmployee.Initials
-    }
-            </td>
-            <td>
-                @if(isEditing)
-    {
-        <select @bind="editSessionTypes[hubSession.SessionID]">
-            @foreach(var sType in sessionTypes)
-            {
-                <option value="@sType">@sType</option>
-            }
-        </select>
-    } 
-    else 
-    {
-        @hubSession.SessionType
-    }
-            </td>
-            <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
                 @if (isEditing)
                 {
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
-                    </td>
+                <select @bind="editInitials[hubSession.SessionID]">
+                @foreach(var initial in employeeInitials)
+                {
+                    <option value="@initial">@initial</option>
                 }
-    </tr>
+                </select>
+                } 
+                else 
+                {
+                    @hubSession.HubEmployee.Initials
+                }
+            </td>
+            <td>
+            @if(isEditing)
+            {
+                <select @bind="editSessionTypes[hubSession.SessionID]">
+                @foreach(var sType in sessionTypes)
+                {
+                    <option value="@sType">@sType</option>
+                }
+                </select>
+            } 
+            else 
+            {
+                @hubSession.SessionType
+            }
+            </td>
+            <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
+            @if (isEditing)
+            {
+                <td>
+                    <button class="btn btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
+                </td>
+            }
+        </tr>
     }
 
     </tbody>
