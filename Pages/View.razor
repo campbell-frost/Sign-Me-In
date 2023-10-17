@@ -4,10 +4,35 @@
 
 @code {
 List<HubSession> hubSessionsWithRelatedData;
+List<String> employeeInitials;
+List<String> sessionTypes;
+Dictionary<int, string> editInitials = new Dictionary<int, string>();
+Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
+
     int activeButtonIndex = 0;
     bool isEditing = false;
     HashSet<int> hubSessionsBeingEdited = new HashSet<int>();
 
+    protected override void OnInitialized()
+    {
+        LoadAllRequiredData();
+    }
+    private void LoadAllRequiredData()
+    {
+        LoadHubSessionsWithRelatedData();
+        LoadEmployeeInitials();
+        LoadSessionType();
+        InitializeEditingDictionaries();
+        
+    }
+     private void InitializeEditingDictionaries()
+    {
+        foreach (var session in hubSessionsWithRelatedData)
+        {
+            editInitials[session.SessionID] = session.HubEmployee?.Initials;
+            editSessionTypes[session.SessionID] = session.SessionType;
+        }
+    }
     private void LoadHubSessionsWithRelatedData()
     {
         hubSessionsWithRelatedData = dbContext.HubSessions
@@ -19,10 +44,21 @@ List<HubSession> hubSessionsWithRelatedData;
             .ToList();
     }
 
-    protected override void OnInitialized()
+    private void LoadEmployeeInitials()
     {
-        LoadHubSessionsWithRelatedData();
+       employeeInitials = dbContext.HubEmployees
+        .Select(e => e.Initials)
+        .Distinct()
+        .ToList();
     }
+    private void LoadSessionType()
+    {
+        sessionTypes = dbContext.HubSessions
+            .Select(h => h.SessionType)
+            .Distinct()
+            .ToList();
+    }
+
 
     void SetActiveButton(int index)
     {
@@ -40,6 +76,8 @@ List<HubSession> hubSessionsWithRelatedData;
 
     void SaveHubSession(HubSession hubSession)
     {
+        hubSession.HubEmployee.Initials = editInitials[hubSession.SessionID];
+        hubSession.SessionType = editSessionTypes[hubSession.SessionID];
         dbContext.Update(hubSession);
         dbContext.SaveChanges();
         isEditing = false;
@@ -112,24 +150,34 @@ List<HubSession> hubSessionsWithRelatedData;
                 }
             </td>
             <td>
-                
-                @if(isEditing)
-                {
-                    <input type="text" @bind="hubSession.HubEmployee.Initials" />
-                } else 
-                {
-                    @hubSession.HubEmployee.Initials
-                }
+               @if (isEditing)
+    {
+        <select @bind="editInitials[hubSession.SessionID]">
+            @foreach(var initial in employeeInitials)
+            {
+                <option value="@initial">@initial</option>
+            }
+        </select>
+    } 
+    else 
+    {
+        @hubSession.HubEmployee.Initials
+    }
             </td>
             <td>
-
                 @if(isEditing)
-                {
-                    <input type="text" @bind="hubSession.SessionType" />
-                } else
-                {
-                    @hubSession.SessionType
-                }
+    {
+        <select @bind="editSessionTypes[hubSession.SessionID]">
+            @foreach(var sType in sessionTypes)
+            {
+                <option value="@sType">@sType</option>
+            }
+        </select>
+    } 
+    else 
+    {
+        @hubSession.SessionType
+    }
             </td>
             <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
                 @if (isEditing)
