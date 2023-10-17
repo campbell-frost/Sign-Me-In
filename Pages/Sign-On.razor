@@ -14,7 +14,6 @@
     private string selectedSessionType;
     private List<string> initials;
 
-
     private async Task HandleSearch()
     {
         isLoading = true;
@@ -41,7 +40,7 @@
         // Create a new HubSession record
         var newSession = new HubSession
         {
-            TimeIn = DateTime.Now.TimeOfDay, // Set the current time as TimeIn
+            TimeIn = DateTime.Now.TimeOfDay, // Set TimeIn as current time
             SessionType = selectedSessionType,  // Sets SessionType
             StudentID = foundStudent.StudentID, // Set StudentID based on the found student
             EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Set EmployeeID based on the selected initials
@@ -58,9 +57,7 @@
 
     }
 
-
 }
-
 
 <PageTitle>Sign-On 😀</PageTitle>
 
