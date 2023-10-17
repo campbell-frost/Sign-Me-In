@@ -3,24 +3,27 @@
 @inject Context dbContext
 
 @code {
-    List<Student>? studentsWithRelatedData;
+List<HubSession> hubSessionsWithRelatedData;
     int activeButtonIndex = 0;
     bool isEditing = false;
-    HashSet<int> studentsBeingEdited = new HashSet<int>();
+    HashSet<int> hubSessionsBeingEdited = new HashSet<int>();
 
-    private void LoadStudentsWithRelatedData()
+    private void LoadHubSessionsWithRelatedData()
     {
-        studentsWithRelatedData = dbContext.Students
-            .Include(s => s.Course)
-            .Include(s => s.Instructor)
+        hubSessionsWithRelatedData = dbContext.HubSessions
+            .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+            .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+            .Include(h => h.HubEmployee)
             .ToList();
     }
 
     protected override void OnInitialized()
     {
-        LoadStudentsWithRelatedData();
+        LoadHubSessionsWithRelatedData();
     }
-    
+
     void SetActiveButton(int index)
     {
         if (index == 2)
@@ -35,17 +38,14 @@
         activeButtonIndex = index;
     }
 
-
-
-    void SaveStudent(Student student)
+    void SaveHubSession(HubSession hubSession)
     {
-        student.FirstName += " ";
-        dbContext.Update(student);
+        dbContext.Update(hubSession);
         dbContext.SaveChanges();
         isEditing = false;
     }
-
 }
+
 
 <PageTitle>View Students 😀</PageTitle>
 
@@ -61,64 +61,45 @@
 
 <table class="table">
     <thead>
-        <tr class="table-header">
-            <th>ID</th>
+       <tr class="table-header">
+            <th>Date</th>
+            <th>Count</th>
             <th>Name</th>
+            <th>ID</th>
             <th>Course</th>
             <th>Instructor</th>
-            @if (isEditing){
+            <th>Time In</th>
+            <th>Time Out</th>
+            <th>Initial</th>
+            <th>Total Time</th>
+            @if (isEditing)
+            {
                 <th>Edit</th>
             }
         </tr>
     </thead>
     <tbody>
-    @foreach (var student in studentsWithRelatedData)
-{
-    <tr>
-        <td>@student.StudentID</td>
-        <td>
+    @foreach (var hubSession in hubSessionsWithRelatedData)
+    {
+        <tr>
+            <td>@DateTime.Now.ToString("MM/dd/yyyy")</td>
+            <td>@hubSession.SessionID</td>
+            <td>
+                @hubSession.Student.FirstName @hubSession.Student.LastName
+            </td>
+            <td>@hubSession.Student.StudentID</td>
+            <td>@hubSession.Student.Course.CourseName</td>
+            <td>@hubSession.Student.Instructor.FirstName @hubSession.Student.Instructor.LastName</td>
+            <td>@hubSession.TimeIn</td>
+            <td>@hubSession.TimeOut</td>
+            <td>@hubSession.HubEmployee.Initials</td>
+            <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
             @if (isEditing)
             {
-                <div>
-                    <input type="text" @bind="student.FirstName" />
-                    <input type="text" @bind="student.LastName" />
-                </div>
+                <td>
+                    <button class="btn btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
+                </td>
             }
-            else
-            {
-                @student.FirstName @student.LastName
-            }
-        </td>
-        <td>
-            @if (isEditing && student.Course != null)
-            {
-                <input type="text" @bind="student.Course.CourseName" />
-            }
-            else
-            {
-                @student.Course?.CourseName
-            }
-        </td>
-        <td>
-        @if (isEditing && student.Instructor != null)
-        {
-            <div>
-                <input type="text" @bind="student.Instructor.FirstName" />
-                <input type="text" @bind="student.Instructor.LastName" />
-            </div>
-        }
-        else if (student.Instructor != null)
-        {
-            @student.Instructor.FirstName @(" " + student.Instructor.LastName)
-        }
-    </td>
-
-        @if (isEditing)
-        {
-            <td>
-                <button class="btn btn-primary" @onclick="() => SaveStudent(student)">Save</button>
-            </td>
-        }
     </tr>
     }
 
