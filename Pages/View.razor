@@ -91,10 +91,46 @@ List<HubSession> hubSessionsWithRelatedData;
             <td>@hubSession.Student.StudentID</td>
             <td>@hubSession.Student.Course.CourseName</td>
             <td>@hubSession.Student.Instructor.FirstName @hubSession.Student.Instructor.LastName</td>
-            <td>@hubSession.TimeIn</td>
-            <td>@hubSession.TimeOut</td>
-            <td>@hubSession.HubEmployee.Initials</td>
-            <td>@hubSession.SessionType</td>
+            <td>
+            @if (isEditing)
+            {
+                <input type="text" @bind="hubSession.TimeIn" />
+            }
+            else
+            {
+                @hubSession.TimeIn
+            }
+            </td>
+            <td>
+            @if (isEditing)
+            {
+                <input type="text" @bind="hubSession.TimeOut" />
+            }
+            else
+            {
+                @hubSession.TimeOut
+            }
+            </td>
+            <td>
+                
+            @if(isEditing)
+            {
+                <input type="text" @bind="hubSession.HubEmployee.Initials" />
+            } else 
+            {
+                @hubSession.HubEmployee.Initials
+            }
+            </td>
+            <td>
+
+            @if(isEditing)
+            {
+                <input type="text" @bind="hubSession.SessionType" />
+            } else
+            {
+                @hubSession.SessionType
+            }
+            </td>
             <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
             @if (isEditing)
             {
