@@ -92,52 +92,52 @@ List<HubSession> hubSessionsWithRelatedData;
             <td>@hubSession.Student.Course.CourseName</td>
             <td>@hubSession.Student.Instructor.FirstName @hubSession.Student.Instructor.LastName</td>
             <td>
-            @if (isEditing)
-            {
-                <input type="text" @bind="hubSession.TimeIn" />
-            }
-            else
-            {
-                @hubSession.TimeIn
-            }
+                @if (isEditing)
+                {
+                    <input type="text" @bind="hubSession.TimeIn" />
+                }
+                else
+                {
+                    @hubSession.TimeIn
+                }
             </td>
             <td>
-            @if (isEditing)
-            {
-                <input type="text" @bind="hubSession.TimeOut" />
-            }
-            else
-            {
-                @hubSession.TimeOut
-            }
+                @if (isEditing)
+                {
+                    <input type="text" @bind="hubSession.TimeOut" />
+                }
+                else
+                {
+                    @hubSession.TimeOut
+                }
             </td>
             <td>
                 
-            @if(isEditing)
-            {
-                <input type="text" @bind="hubSession.HubEmployee.Initials" />
-            } else 
-            {
-                @hubSession.HubEmployee.Initials
-            }
+                @if(isEditing)
+                {
+                    <input type="text" @bind="hubSession.HubEmployee.Initials" />
+                } else 
+                {
+                    @hubSession.HubEmployee.Initials
+                }
             </td>
             <td>
 
-            @if(isEditing)
-            {
-                <input type="text" @bind="hubSession.SessionType" />
-            } else
-            {
-                @hubSession.SessionType
-            }
+                @if(isEditing)
+                {
+                    <input type="text" @bind="hubSession.SessionType" />
+                } else
+                {
+                    @hubSession.SessionType
+                }
             </td>
             <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
-            @if (isEditing)
-            {
-                <td>
-                    <button class="btn btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
-                </td>
-            }
+                @if (isEditing)
+                {
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
+                    </td>
+                }
     </tr>
     }
 
