@@ -42,6 +42,7 @@
         var newSession = new HubSession
         {
             TimeIn = DateTime.Now.TimeOfDay, // Set the current time as TimeIn
+            SessionType = selectedSessionType,  // Sets SessionType
             StudentID = foundStudent.StudentID, // Set StudentID based on the found student
             EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Set EmployeeID based on the selected initials
         };
@@ -134,7 +135,7 @@
                     <label>Session Type:</label>
                     <select class="form-control" @bind="selectedSessionType">
                         <option value="">Select Session Type</option>
-                        <option value="Tutor">Tutor</option>
+                        <option value="Tutor">Tutoring</option>
                         <option value="Tester">Testing</option>
                     </select>
                 </div>
