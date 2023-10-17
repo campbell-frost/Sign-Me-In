@@ -71,6 +71,7 @@ List<HubSession> hubSessionsWithRelatedData;
             <th>Time In</th>
             <th>Time Out</th>
             <th>Initial</th>
+            <th>Session</th>
             <th>Total Time</th>
             @if (isEditing)
             {
@@ -93,6 +94,7 @@ List<HubSession> hubSessionsWithRelatedData;
             <td>@hubSession.TimeIn</td>
             <td>@hubSession.TimeOut</td>
             <td>@hubSession.HubEmployee.Initials</td>
+            <td>@hubSession.SessionType</td>
             <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
             @if (isEditing)
             {
