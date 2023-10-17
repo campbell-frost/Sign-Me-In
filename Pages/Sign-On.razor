@@ -41,7 +41,7 @@
         // Create a new HubSession record
         var newSession = new HubSession
         {
-            TimeIn = DateTime.Now, // Set the current time as TimeIn
+            TimeIn = DateTime.Now.TimeOfDay, // Set the current time as TimeIn
             StudentID = foundStudent.StudentID, // Set StudentID based on the found student
             EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Set EmployeeID based on the selected initials
         };
