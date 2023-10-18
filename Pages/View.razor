@@ -3,11 +3,7 @@
 @inject Context dbContext
 
 @code {
-List<HubSession>? hubSessionsWithRelatedData;
-List<String?>? employeeInitials;
-List<String?>? sessionTypes;
-Dictionary<int, string> editInitials = new Dictionary<int, string>();
-Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
+    List<HubSession>? hubSessionsWithRelatedData;
 
     int activeButtonIndex = 0;
     bool isEditing = false;
@@ -18,48 +14,18 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
     private void LoadAllRequiredData()
     {
         LoadHubSessionsWithRelatedData();
-        LoadEmployeeInitials();
-        LoadSessionType();
-        InitializeEditingDictionaries();
-        
-    }
-     private void InitializeEditingDictionaries()
-    {
-        if(hubSessionsWithRelatedData is not null){
 
-            foreach (var session in hubSessionsWithRelatedData)
-            {
-                editInitials[session.SessionID] = session.HubEmployee.Initials;
-                editSessionTypes[session.SessionID] = session.SessionType;
-            }
-        }
     }
     private void LoadHubSessionsWithRelatedData()
     {
         hubSessionsWithRelatedData = dbContext.HubSessions
-            .Include(h => h.Student)
-                .ThenInclude(s => s.Course)
-            .Include(h => h.Student)
-                .ThenInclude(s => s.Instructor)
-            .Include(h => h.HubEmployee)
-            .ToList();
-    }
-
-    private void LoadEmployeeInitials()
-    {
-       employeeInitials = dbContext.HubEmployees
-        .Select(e => e.Initials)
-        .Distinct()
+        .Include(h => h.Student)
+        .ThenInclude(s => s.Course)
+        .Include(h => h.Student)
+        .ThenInclude(s => s.Instructor)
+        .Include(h => h.HubEmployee)
         .ToList();
     }
-    private void LoadSessionType()
-    {
-        sessionTypes = dbContext.HubSessions
-            .Select(h => h.SessionType)
-            .Distinct()
-            .ToList();
-    }
-
 
     void SetActiveButton(int index)
     {
@@ -77,10 +43,15 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
 
     void SaveHubSession(HubSession hubSession)
     {
-        hubSession.HubEmployee.Initials = editInitials[hubSession.SessionID];
-        hubSession.SessionType = editSessionTypes[hubSession.SessionID];
-        dbContext.Update(hubSession);
-        dbContext.SaveChanges();
+        var sessionToUpdate = dbContext.HubSessions.FirstOrDefault(s => s.SessionID == hubSession.SessionID);
+        if (sessionToUpdate != null)
+        {
+            sessionToUpdate.TimeIn = hubSession.TimeIn;
+            sessionToUpdate.TimeOut = hubSession.TimeOut;
+            sessionToUpdate.EmployeeID = hubSession.EmployeeID;
+            sessionToUpdate.SessionType = hubSession.SessionType;
+            dbContext.SaveChanges();
+        }
         isEditing = false;
         LoadAllRequiredData();
     }
@@ -91,17 +62,20 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
 
 <div class="d-flex justify-content-between pb-4">
     <div class="button-container">
-        <button class="btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")" @onclick="() => SetActiveButton(0)">View all</button>
-        <button class="btn btn-primary @(activeButtonIndex == 1 ? "active" : "inactive")" @onclick="() => SetActiveButton(1)">Signed-In</button>
+        <button class="btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")"
+            @onclick="() => SetActiveButton(0)">View all</button>
+        <button class="btn btn-primary @(activeButtonIndex == 1 ? "active" : "inactive")"
+            @onclick="() => SetActiveButton(1)">Signed-In</button>
     </div>
     <div>
-        <button class="btn btn-primary @(activeButtonIndex == 2 ? "active" : "inactive")" @onclick="() => SetActiveButton(2)">Edit</button>
+        <button class="btn btn-primary @(activeButtonIndex == 2 ? "active" : "inactive")"
+            @onclick="() => SetActiveButton(2)">Edit</button>
     </div>
 </div>
 
 <table class="table">
     <thead>
-       <tr class="table-header">
+        <tr class="table-header">
             <th>Date</th>
             <th>Count</th>
             <th>Name</th>
@@ -120,78 +94,76 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
         </tr>
     </thead>
     <tbody>
-    @foreach (var hubSession in hubSessionsWithRelatedData)
-    {
-        <tr>
-            <td>@DateTime.Now.ToString("MM/dd/yyyy")</td>
-            <td>@hubSession.SessionID</td>
-            <td>
-                @hubSession.Student.FirstName @hubSession.Student.LastName
-            </td>
-            <td>@hubSession.Student.StudentID</td>
-            <td>@hubSession.Student.Course.CourseName</td>
-            <td>@hubSession.Student.Instructor.FirstName @hubSession.Student.Instructor.LastName</td>
-            <td>
-                @if (isEditing)
-                {
-                    <input type="text" @bind="hubSession.TimeIn" />
-                }
-                else
-                {
-                    @hubSession.TimeIn
-                }
-            </td>
-            <td>
-                @if (isEditing)
-                {
-                    <input type="text" @bind="hubSession.TimeOut" />
-                }
-                else
-                {
-                    @hubSession.TimeOut
-                }
-            </td>
-            <td>
-                @if (isEditing)
-                {
-                <select @bind="editInitials[hubSession.SessionID]">
-                @foreach(var initial in employeeInitials)
-                {
-                    <option value="@initial">@initial</option>
-                }
-                </select>
-                } 
-                else 
-                {
-                    @hubSession.HubEmployee.Initials
-                }
-            </td>
-            <td>
-                @if(isEditing)
-                {
-                    <select @bind="editSessionTypes[hubSession.SessionID]">
-                    @foreach(var sType in sessionTypes)
+        @foreach (var hubSession in hubSessionsWithRelatedData)
+        {
+            <tr>
+                <td>@DateTime.Now.ToString("MM/dd/yyyy")</td>
+                <td>@hubSession.SessionID</td>
+                <td>
+                    @hubSession.Student.FirstName @hubSession.Student.LastName
+                </td>
+                <td>@hubSession.Student.StudentID</td>
+                <td>@hubSession.Student.Course.CourseName</td>
+                <td>@hubSession.Student.Instructor.FirstName @hubSession.Student.Instructor.LastName</td>
+                <td>
+                    @if (isEditing)
                     {
-                        <option value="@sType">@sType</option>
+                        <input type="text" @bind="hubSession.TimeIn" />
                     }
-                    </select>
-                } 
-                else 
-                {
-                    @hubSession.SessionType
-                }
-            </td>
-            <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
+                    else
+                    {
+                        @hubSession.TimeIn
+                    }
+                </td>
+                <td>
+                    @if (isEditing)
+                    {
+                        <input type="text" @bind="hubSession.TimeOut" />
+                    }
+                    else
+                    {
+                        @hubSession.TimeOut
+                    }
+                </td>
+                <td>
+                    @if (isEditing)
+                    {
+                        <select @bind="hubSession.EmployeeID">
+                            @foreach (var employee in dbContext.HubEmployees)
+                            {
+                                <option value="@employee.EmployeeID">@employee.Initials</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        @hubSession.HubEmployee.Initials
+                    }
+                </td>
+                <td>
+                    @if (isEditing)
+                    {
+                        <select @bind="hubSession.SessionType">
+                            @foreach (var sType in dbContext.HubSessions.Select(h => h.SessionType).Distinct())
+                            {
+                                <option value="@sType">@sType</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        @hubSession.SessionType
+                    }
+                </td>
+                <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
                 @if (isEditing)
                 {
                     <td>
                         <button class="btn btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
                     </td>
                 }
-        </tr>
-    }
+            </tr>
+        }
 
     </tbody>
 </table>
-
-
