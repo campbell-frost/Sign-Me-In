@@ -123,6 +123,7 @@
                     else
                     {
                         @hubSession.TimeOut
+
                     }
                 </td>
                 <td>
@@ -144,7 +145,7 @@
                     @if (isEditing)
                     {
                         <select @bind="hubSession.SessionType">
-                            @foreach (var sType in dbContext.HubSessions.Select(h => h.SessionType).Distinct())
+                            @foreach (var sType in dbContext.HubSessions.Select(h => h.SessionType))
                             {
                                 <option value="@sType">@sType</option>
                             }
