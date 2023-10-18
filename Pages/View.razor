@@ -11,8 +11,6 @@ Dictionary<int, string> editSessionTypes = new Dictionary<int, string>();
 
     int activeButtonIndex = 0;
     bool isEditing = false;
-    HashSet<int> hubSessionsBeingEdited = new HashSet<int>();
-
     protected override void OnInitialized()
     {
         LoadAllRequiredData();
