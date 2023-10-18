@@ -7,6 +7,8 @@
 
     int activeButtonIndex = 0;
     bool isEditing = false;
+    private bool showOnlySignedIn = false;
+
     protected override void OnInitialized()
     {
         LoadAllRequiredData();
@@ -18,17 +20,40 @@
     }
     private void LoadHubSessionsWithRelatedData()
     {
-        hubSessionsWithRelatedData = dbContext.HubSessions
-        .Include(h => h.Student)
-        .ThenInclude(s => s.Course)
-        .Include(h => h.Student)
-        .ThenInclude(s => s.Instructor)
-        .Include(h => h.HubEmployee)
-        .ToList();
+        if (showOnlySignedIn)
+        {
+            hubSessionsWithRelatedData = dbContext.HubSessions
+            .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+            .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+            .Include(h => h.HubEmployee)
+            .Where(h => !h.TimeOut.HasValue) // This checks if TimeOut is null
+            .ToList();
+        }
+        else
+        {
+            hubSessionsWithRelatedData = dbContext.HubSessions
+            .Include(h => h.Student)
+            .ThenInclude(s => s.Course)
+            .Include(h => h.Student)
+            .ThenInclude(s => s.Instructor)
+            .Include(h => h.HubEmployee)
+            .ToList();
+        }
     }
 
     void SetActiveButton(int index)
     {
+        if (index == 1)
+        {
+            showOnlySignedIn = true;
+        }
+        else
+        {
+            showOnlySignedIn = false;
+        }
+
         if (index == 2)
         {
             isEditing = true;
@@ -39,6 +64,8 @@
         }
 
         activeButtonIndex = index;
+        LoadHubSessionsWithRelatedData();
+
     }
 
     void SaveHubSession(HubSession hubSession)
