@@ -43,6 +43,7 @@
             TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")), // Set TimeIn as current time
             SessionType = selectedSessionType,  // Sets SessionType
             StudentID = foundStudent.StudentID, // Set StudentID based on the found student
+            Date = DateTime.Now, // Sets the current date
             EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Set EmployeeID based on the selected initials
         };
 
