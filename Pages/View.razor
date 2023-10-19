@@ -120,7 +120,10 @@
             <th>Course</th>
             <th>Instructor</th>
             <th>Time In</th>
-            <th>Time Out</th>
+            @if (!showOnlySignedIn)
+            {
+                <th>Time Out</th>
+            }
             <th>Initial</th>
             <th>Session</th>
             <th>Total Time</th>
@@ -157,9 +160,10 @@
                     {
                         <input type="text" @bind="hubSession.TimeOut" />
                     }
-                    else if(!hubSession.TimeOut.HasValue){
+                    else if (!hubSession.TimeOut.HasValue)
+                    {
                         <button class="btn btn-sm btn-primary" @onclick="() => SignOutStudent(hubSession)">Sign Out</button>
-                    }   
+                    }
                     else
                     {
                         @hubSession.TimeOut
