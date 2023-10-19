@@ -24,9 +24,9 @@
         {
             hubSessionsWithRelatedData = dbContext.HubSessions
             .Include(h => h.Student)
-                .ThenInclude(s => s.Course)
+            .ThenInclude(s => s.Course)
             .Include(h => h.Student)
-                .ThenInclude(s => s.Instructor)
+            .ThenInclude(s => s.Instructor)
             .Include(h => h.HubEmployee)
             .Where(h => !h.TimeOut.HasValue) // This checks if TimeOut is null
             .ToList();
@@ -82,8 +82,22 @@
         isEditing = false;
         LoadAllRequiredData();
     }
-}
 
+    void SignOutStudent(HubSession hubSession)
+    {
+        var sessionToUpdate = dbContext.HubSessions.FirstOrDefault(s => s.SessionID == hubSession.SessionID);
+        if (sessionToUpdate != null && !sessionToUpdate.TimeOut.HasValue)
+        {
+            var currentTime = DateTime.Now.TimeOfDay;
+            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+            sessionToUpdate.TimeOut = truncatedTime;
+
+            sessionToUpdate.TimeOut = truncatedTime;
+            dbContext.SaveChanges();
+            LoadHubSessionsWithRelatedData();
+        }
+    }
+}
 
 <PageTitle>View Students 😀</PageTitle>
 
@@ -147,6 +161,9 @@
                     {
                         <input type="text" @bind="hubSession.TimeOut" />
                     }
+                    else if(!hubSession.TimeOut.HasValue){
+                        <button class="btn btn-sm btn-primary" @onclick="() => SignOutStudent(hubSession)">Sign Out</button>
+                    }   
                     else
                     {
                         @hubSession.TimeOut
