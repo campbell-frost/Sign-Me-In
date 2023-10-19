@@ -11,13 +11,9 @@
 
     protected override void OnInitialized()
     {
-        LoadAllRequiredData();
-    }
-    private void LoadAllRequiredData()
-    {
         LoadHubSessionsWithRelatedData();
-
     }
+
     private void LoadHubSessionsWithRelatedData()
     {
         if (showOnlySignedIn)
@@ -80,7 +76,7 @@
             dbContext.SaveChanges();
         }
         isEditing = false;
-        LoadAllRequiredData();
+        LoadHubSessionsWithRelatedData();
     }
 
     void SignOutStudent(HubSession hubSession)
@@ -138,7 +134,7 @@
         @foreach (var hubSession in hubSessionsWithRelatedData)
         {
             <tr>
-                <td>@DateTime.Now.ToString("MM/dd/yyyy")</td>
+                <td>@hubSession.Date.ToString("MM/dd/yyyy")</td>
                 <td>@hubSession.SessionID</td>
                 <td>
                     @hubSession.Student.FirstName @hubSession.Student.LastName
