@@ -133,7 +133,11 @@
                 }
                 <th>Initial</th>
                 <th>Session</th>
-                <th>Total Time</th>
+                @if (!showOnlySignedIn)
+                {
+                    <th>Total Time</th>
+
+                }
                 @if (isEditing)
                 {
                     <th>Edit</th>
