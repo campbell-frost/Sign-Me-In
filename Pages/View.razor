@@ -126,8 +126,8 @@
                 @if (!showOnlySignedIn)
                 {
                     <th>Time Out</th>
-                } 
-                else 
+                }
+                else
                 {
                     <th>Sign Out</th>
                 }
@@ -136,7 +136,6 @@
                 @if (!showOnlySignedIn)
                 {
                     <th>Total Time</th>
-
                 }
                 @if (isEditing)
                 {
@@ -166,7 +165,7 @@
                             @hubSession.TimeIn
                         }
                     </td>
-                    
+
                     <td>
                         @if (isEditing)
                         {
@@ -212,7 +211,10 @@
                             @hubSession.SessionType
                         }
                     </td>
-                    <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
+                    @if (!showOnlySignedIn)
+                    {
+                        <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
+                    }
                     @if (isEditing)
                     {
                         <td>

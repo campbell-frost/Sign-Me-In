@@ -6,10 +6,13 @@
     background-color: #e3e3e3;
     
 }
+.container-md{
+    max-width: 43rem;
+
+}
 
 .input-group{
     border-radius: 4px;
-    max-width: 43rem;
 }
 
 .input-group-btn{
