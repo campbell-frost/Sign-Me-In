@@ -39,7 +39,7 @@
 }
 
 .content-move-up {
-    transform: translateY(-100px);
+    transform: translateY(-150px);
 }
 
 .logo-container {
@@ -47,5 +47,5 @@
 }
 
 .logo-move-up {
-    transform: translateY(-1000px);
+    transform: translateY(-300px);
 }
