@@ -32,3 +32,20 @@
 .btn-sign-on{
     height: 3.3125rem;
 }
+
+
+.content-container {
+    transition: transform 0.5s;
+}
+
+.content-move-up {
+    transform: translateY(-100px);
+}
+
+.logo-container {
+    transition: transform 0.5s;
+}
+
+.logo-move-up {
+    transform: translateY(-1000px);
+}
