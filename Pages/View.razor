@@ -3,7 +3,7 @@
 @inject Context dbContext
 
 @code {
-    List<HubSession>? hubSessionsWithRelatedData;
+    List<HubSession>? hubSessions;
 
     int activeButtonIndex = 0;
     bool isEditing = false;
@@ -11,26 +11,25 @@
 
     protected override void OnInitialized()
     {
-        LoadHubSessionsWithRelatedData();
+        LoadHubSessions();
     }
 
-    private void LoadHubSessionsWithRelatedData()
+    private void LoadHubSessions()
     {
         if (showOnlySignedIn)
         {
-            hubSessionsWithRelatedData = dbContext.HubSessions
+            hubSessions = dbContext.HubSessions
             .Include(h => h.Student)
             .ThenInclude(s => s.Course)
             .Include(h => h.Student)
             .ThenInclude(s => s.Instructor)
             .Include(h => h.HubEmployee)
             .Where(h => !h.TimeOut.HasValue) // This checks if TimeOut is null
-            
             .ToList();
         }
         else
         {
-            hubSessionsWithRelatedData = dbContext.HubSessions
+            hubSessions = dbContext.HubSessions
             .Include(h => h.Student)
             .ThenInclude(s => s.Course)
             .Include(h => h.Student)
@@ -38,6 +37,7 @@
             .Include(h => h.HubEmployee)
             .OrderBy(h => h.SessionID)
             .ToList();
+            hubSessions.Reverse();
         }
     }
 
@@ -62,7 +62,7 @@
         }
 
         activeButtonIndex = index;
-        LoadHubSessionsWithRelatedData();
+        LoadHubSessions();
 
     }
 
@@ -78,7 +78,7 @@
             dbContext.SaveChanges();
         }
         isEditing = false;
-        LoadHubSessionsWithRelatedData();
+        LoadHubSessions();
     }
 
     void SignOutStudent(HubSession hubSession)
@@ -92,7 +92,7 @@
 
             sessionToUpdate.TimeOut = truncatedTime;
             dbContext.SaveChanges();
-            LoadHubSessionsWithRelatedData();
+            LoadHubSessions();
         }
     }
 }
@@ -136,7 +136,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var hubSession in hubSessionsWithRelatedData)
+        @foreach (var hubSession in hubSessions)
         {
             <tr>
                 <td>@hubSession.Date.ToString("MM/dd/yyyy")</td>
