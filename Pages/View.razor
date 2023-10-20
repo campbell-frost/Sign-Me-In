@@ -7,7 +7,7 @@
 
     int activeButtonIndex = 0;
     bool isEditing = false;
-    private bool showOnlySignedIn = false;
+    private bool showOnlySignedIn = true;
 
     protected override void OnInitialized()
     {
@@ -43,7 +43,7 @@
 
     void SetActiveButton(int index)
     {
-        if (index == 1)
+        if (index == 0)
         {
             showOnlySignedIn = true;
         }
@@ -102,9 +102,9 @@
 <div class="d-flex justify-content-between pb-4">
     <div class="button-container">
         <button class="btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")"
-            @onclick="() => SetActiveButton(0)">View all</button>
+            @onclick="() => SetActiveButton(0)">Signed-In</button>
         <button class="btn btn-primary @(activeButtonIndex == 1 ? "active" : "inactive")"
-            @onclick="() => SetActiveButton(1)">Signed-In</button>
+            @onclick="() => SetActiveButton(1)">View All</button>
     </div>
     <div>
         <button class="btn btn-primary @(activeButtonIndex == 2 ? "active" : "inactive")"
