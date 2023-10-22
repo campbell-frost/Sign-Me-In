@@ -3,21 +3,26 @@
 @inject Context dbContext
 
 @code {
+    // A list to store the sessions retrieved from the database
     List<HubSession>? hubSessions;
 
+    // Variables to keep track of which button is active, editing mode, and display mode (all vs only signed-in)
     int activeButtonIndex = 0;
     bool isEditing = false;
     private bool showOnlySignedIn = true;
 
+    // Method called upon initialization
     protected override void OnInitialized()
     {
-        LoadHubSessions();
+        LoadHubSessions(); // Load sessions when page initializes
     }
 
+    // Loads the hub sessions based on the 'showOnlySignedIn' condition
     private void LoadHubSessions()
     {
         if (showOnlySignedIn)
         {
+             // Fetch sessions where TimeOut is null (indicating currently signed-in)
             hubSessions = dbContext.HubSessions
             .Include(h => h.Student)
             .ThenInclude(s => s.Course)
@@ -26,11 +31,13 @@
             .Include(h => h.HubEmployee)
             .Where(h => !h.TimeOut.HasValue) // This checks if TimeOut is null
             .ToList();
-            hubSessions.Reverse();
+
+            hubSessions.Reverse(); // Reverse the order for display
 
         }
         else
         {
+            // Fetch all sessions and order by SessionID
             hubSessions = dbContext.HubSessions
             .Include(h => h.Student)
             .ThenInclude(s => s.Course)
@@ -39,12 +46,15 @@
             .Include(h => h.HubEmployee)
             .OrderBy(h => h.SessionID)
             .ToList();
-            hubSessions.Reverse();
+
+            hubSessions.Reverse(); // Reverse the order for display
         }
     }
 
+    // Sets which button is active and updates the display mode accordingly
     void SetActiveButton(int index)
     {
+        // Update the condition for displaying sessions (either all or only signed-in)
         if (index == 0)
         {
             showOnlySignedIn = true;
@@ -54,6 +64,7 @@
             showOnlySignedIn = false;
         }
 
+        // Update the editing mode based on button index
         if (index == 2)
         {
             isEditing = true;
@@ -63,11 +74,11 @@
             isEditing = false;
         }
 
-        activeButtonIndex = index;
-        LoadHubSessions();
-
+        activeButtonIndex = index; // Set the active button index
+        LoadHubSessions(); // Refresh the sessions
     }
 
+    // Save the edited hub session back to the database
     void SaveHubSession(HubSession hubSession)
     {
         var sessionToUpdate = dbContext.HubSessions.FirstOrDefault(s => s.SessionID == hubSession.SessionID);
@@ -79,25 +90,26 @@
             sessionToUpdate.SessionType = hubSession.SessionType;
             dbContext.SaveChanges();
         }
-        isEditing = false;
-        LoadHubSessions();
+        isEditing = false;// Exit editing mode
+        LoadHubSessions(); // Refresh the sessions
     }
 
+    // Handle the action of signing out a student
     void SignOutStudent(HubSession hubSession)
     {
         var sessionToUpdate = dbContext.HubSessions.FirstOrDefault(s => s.SessionID == hubSession.SessionID);
         if (sessionToUpdate != null && !sessionToUpdate.TimeOut.HasValue)
         {
-            var currentTime = DateTime.Now.TimeOfDay;
-            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
-            sessionToUpdate.TimeOut = truncatedTime;
-
-            sessionToUpdate.TimeOut = truncatedTime;
-            dbContext.SaveChanges();
-            LoadHubSessions();
+            var currentTime = DateTime.Now.TimeOfDay; // Fetch the current time
+            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds); // Truncate to remove milliseconds
+            sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
+            dbContext.SaveChanges(); // Persist the changes
+            LoadHubSessions(); // Refresh the sessions
         }
     }
 }
+
+<!-- HTML code for rendering the view -->
 
 <PageTitle>View Students 😀</PageTitle>
 
