@@ -3,53 +3,55 @@
 @inject Context dbContext
 
 @code {
-    // Variables for search
-    private string searchTerm = ""; // The search term that is queried
-    private Student? foundStudent; // Student object
-    private bool isLoading = false; // Checks if the content is loading
-    private bool searchPerformed = false; // Checks if the search has been started
-    private bool isLogoVisible = true; // variable to track logo visibility
-    private bool isSignedIn = false; // variable to hide all the fields after the student is signed in
+    // --- SEARCH FUNCTIONALITY VARIABLES ---
+    private string searchTerm = ""; // The term used to search for students
+    private Student? foundStudent; // The student that matches the search term
+    private bool isLoading = false; // Indicates if the search is currently running
+    private bool searchPerformed = false; // Indicates if a search has been made
+    private bool isLogoVisible = true; // Determines the visibility of the logo on the UI
+    private bool isSignedIn = false; // Indicates if a student has successfully signed in
 
-    // Variables for initial drop down
-    private string? selectedInitials;
-    private string? selectedSessionType;
-    private List<string?>? initials;
+    // --- DROPDOWN MENU VARIABLES ---
+    private string? selectedInitials; // The initials selected from the dropdown
+    private string? selectedSessionType; // The session type selected from the dropdown
+    private List<string?>? initials; // List of available initials for dropdown
 
+    // Handles the search function
     private async Task HandleSearch()
     {
-        isLoading = true;
+        isLoading = true; // Set loading to true while searching
 
-        // Gets student, course and instructor
+         // Query the database to find student by first or last name
         foundStudent = await dbContext.Students
         .Include(s => s.Course)
         .Include(s => s.Instructor)
         .FirstOrDefaultAsync(s => s.FirstName == searchTerm || s.LastName == searchTerm);
 
-        //Gets employee initials
+        // Query the database to retrieve distinct employee initials
         initials = await dbContext.HubEmployees
         .Select(e => e.Initials)
         .Distinct()
         .ToListAsync();
 
+        // Reset states after query
         isLoading = false;
         searchPerformed = true;
         isLogoVisible = false;
 
     }
-
+    // Handles the sign-in function
     private async Task HandleSignIn()
     {
-        // Create a new HubSession record
+        // Create new session entry
         var newSession = new HubSession
             {
                 TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")), // Set TimeIn as current time
                 SessionType = selectedSessionType, // Sets SessionType
                 StudentID = foundStudent.StudentID, // Set StudentID based on the found student
                 Date = DateTime.Now, // Sets the current date
-                EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Set employeeID based on the selected initials
+                EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Retrieve employee ID based on selected initials, default to 0 if not found
             };
-                isSignedIn = true;
+                isSignedIn = true; // Mark the student as signed in
 
         // Add the new session to the database
         dbContext.HubSessions.Add(newSession);
@@ -61,6 +63,7 @@
         searchTerm = "";
 
     }
+    // Reset state to allow a new sign-in
     private void ResetSignIn()
 {
     isSignedIn = false;
@@ -71,9 +74,9 @@
 
 }
 
+<!-- HTML code for rendering the sign-on -->
+
 <PageTitle>Sign-On 😀</PageTitle>
-
-
 
 <div class="logo-container @(searchPerformed && !isLogoVisible ? "logo-move-up" : "")">
     <Logo />
