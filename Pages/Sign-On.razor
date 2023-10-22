@@ -15,6 +15,7 @@
     private string? selectedInitials; // The initials selected from the dropdown
     private string? selectedSessionType; // The session type selected from the dropdown
     private List<string?>? initials; // List of available initials for dropdown
+    private bool showSelectionError;
 
     // Handles the search function
     private async Task HandleSearch()
@@ -42,33 +43,46 @@
     // Handles the sign-in function
     private async Task HandleSignIn()
     {
-        // Create new session entry
-        var newSession = new HubSession
-            {
-                TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")), // Set TimeIn as current time
-                SessionType = selectedSessionType, // Sets SessionType
-                StudentID = foundStudent.StudentID, // Set StudentID based on the found student
-                Date = DateTime.Now, // Sets the current date
-                EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Retrieve employee ID based on selected initials, default to 0 if not found
-            };
-        isSignedIn = true; // Mark the student as signed in
+        if (string.IsNullOrWhiteSpace(selectedInitials) || string.IsNullOrWhiteSpace(selectedSessionType))
+        {
+            // Display a message to the user that they need to select initials and session type.
+            // You can use a component-level variable to show the message.
+            // For example, add a bool variable like showSelectionError and set it to true.
+            // Then you can use this variable in your Razor component to control the error message's visibility.
+            showSelectionError = true;
+        }
+        else
+        {
 
-        // Add the new session to the database
-        dbContext.HubSessions.Add(newSession);
-        await dbContext.SaveChangesAsync();
+            // Create new session entry
+            var newSession = new HubSession
+                {
+                    TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")), // Set TimeIn as current time
+                    SessionType = selectedSessionType, // Sets SessionType
+                    StudentID = foundStudent.StudentID, // Set StudentID based on the found student
+                    Date = DateTime.Now, // Sets the current date
+                    EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Retrieve
 
-        // Clears the selected values and search term
-         selectedInitials = "";
-        selectedSessionType = "";
-        searchTerm = "";
+                };
+            isSignedIn = true; // Mark the student as signed in
+
+            // Add the new session to the database
+            dbContext.HubSessions.Add(newSession);
+            await dbContext.SaveChangesAsync();
+
+            // Clears the selected values and search term
+            selectedInitials = "";
+            selectedSessionType = "";
+            searchTerm = "";
+        }
     }
     // Reset state to allow a new sign-in
     private void ResetSignIn()
     {
-    isSignedIn = false;
-    searchPerformed = false;
-    foundStudent = null;
-    searchTerm = "";
+        isSignedIn = false;
+        searchPerformed = false;
+        foundStudent = null;
+        searchTerm = "";
     }
 }
 
@@ -146,12 +160,12 @@
             </div>
             <hr />
             <div class="row pt-3">
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label>Initials:</label>
-                    <select class="form-control" @bind="selectedInitials">
-                        <option value="">Select Initials</option>
-                        @foreach (var initial in initials)
+                <div class="col-md-6 mx-auto">
+                    <div class="form-group">
+                        <label>Initials:</label>
+                        <select class="form-control" @bind="selectedInitials">
+                            <option value="">Select Initials</option>
+                            @foreach (var initial in initials)
                             {
                                 <option value="@initial">@initial</option>
                             }
@@ -173,6 +187,14 @@
                 <div class="col-md-12 mx-auto text-center">
                     <button class="btn btn-primary btn-block w-100 btn-sign-on" @onclick="HandleSignIn">Sign-In</button>
                 </div>
+                @if (showSelectionError)
+                {
+                    <div class="col-md-12 mx-auto text-center pt-4">
+                        <label>Please select initials and session type before signing in.</label>
+                    </div>
+                }
+
+
             </div>
         }
         else if (searchPerformed && foundStudent == null)
