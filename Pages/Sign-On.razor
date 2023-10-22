@@ -9,6 +9,7 @@
     private bool isLoading = false; // Checks if the content is loading
     private bool searchPerformed = false; // Checks if the search has been started
     private bool isLogoVisible = true; // variable to track logo visibility
+    private bool isSignedIn = false; // variable to hide all the fields after the student is signed in
 
     // Variables for initial drop down
     private string? selectedInitials;
@@ -48,6 +49,7 @@
                 Date = DateTime.Now, // Sets the current date
                 EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Set employeeID based on the selected initials
             };
+                isSignedIn = true;
 
         // Add the new session to the database
         dbContext.HubSessions.Add(newSession);
@@ -59,6 +61,13 @@
         searchTerm = "";
 
     }
+    private void ResetSignIn()
+{
+    isSignedIn = false;
+    searchPerformed = false;
+    foundStudent = null;
+    searchTerm = "";
+}
 
 }
 
@@ -85,6 +94,16 @@
             </div>
         </form>
 
+        @if (isSignedIn)
+    {
+    // You can display a confirmation message if you like
+    <div class="form-group text-center pt-5">
+        <label>Student signed in successfully!</label>
+        <br />
+        <br />
+        <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
+    </div>
+    }
 
         @if (isLoading)
         {
@@ -92,7 +111,7 @@
                 <img src="loading.gif">
             </div>
         }
-        else if (searchPerformed && foundStudent != null)
+        else if (searchPerformed && foundStudent != null && !isSignedIn)
         {
             <hr />
             <div class="row pt-3">
