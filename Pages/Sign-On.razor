@@ -21,7 +21,7 @@
     {
         isLoading = true; // Set loading to true while searching
 
-         // Query the database to find student by first or last name
+        // Query the database to find student by first or last name
         foundStudent = await dbContext.Students
         .Include(s => s.Course)
         .Include(s => s.Instructor)
@@ -51,27 +51,25 @@
                 Date = DateTime.Now, // Sets the current date
                 EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Retrieve employee ID based on selected initials, default to 0 if not found
             };
-                isSignedIn = true; // Mark the student as signed in
+        isSignedIn = true; // Mark the student as signed in
 
         // Add the new session to the database
         dbContext.HubSessions.Add(newSession);
         await dbContext.SaveChangesAsync();
 
         // Clears the selected values and search term
-        selectedInitials = "";
+         selectedInitials = "";
         selectedSessionType = "";
         searchTerm = "";
-
     }
     // Reset state to allow a new sign-in
     private void ResetSignIn()
-{
+    {
     isSignedIn = false;
     searchPerformed = false;
     foundStudent = null;
     searchTerm = "";
-}
-
+    }
 }
 
 <!-- HTML code for rendering the sign-on -->
@@ -98,15 +96,15 @@
         </form>
 
         @if (isSignedIn)
-    {
-    // You can display a confirmation message if you like
-    <div class="form-group text-center pt-5">
-        <label>Student signed in successfully!</label>
-        <br />
-        <br />
-        <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
-    </div>
-    }
+        {
+            // You can display a confirmation message if you like
+            <div class="form-group text-center pt-5">
+                <label>Student signed in successfully!</label>
+                <br />
+                <br />
+                <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
+            </div>
+        }
 
         @if (isLoading)
         {
@@ -148,12 +146,12 @@
             </div>
             <hr />
             <div class="row pt-3">
-                <div class="col-md-6 mx-auto">
-                    <div class="form-group">
-                        <label>Initials:</label>
-                        <select class="form-control" @bind="selectedInitials">
-                            <option value="">Select Initials</option>
-                            @foreach (var initial in initials)
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label>Initials:</label>
+                    <select class="form-control" @bind="selectedInitials">
+                        <option value="">Select Initials</option>
+                        @foreach (var initial in initials)
                             {
                                 <option value="@initial">@initial</option>
                             }
