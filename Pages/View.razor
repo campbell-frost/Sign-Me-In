@@ -205,7 +205,7 @@
                             @if (isEditing)
                             {
                                 <select @bind="hubSession.SessionType">
-                                    @foreach (var sType in dbContext.HubSessions.Select(h => h.SessionType))
+                                    @foreach (var sType in dbContext.HubSessions.Select(h => h.SessionType).Distinct())
                                     {
                                         <option value="@sType">@sType</option>
                                     }
