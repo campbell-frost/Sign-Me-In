@@ -26,6 +26,8 @@
             .Include(h => h.HubEmployee)
             .Where(h => !h.TimeOut.HasValue) // This checks if TimeOut is null
             .ToList();
+            hubSessions.Reverse();
+
         }
         else
         {
