@@ -1,14 +1,6 @@
 @layout LoginLayout
 @page "/Login"
 
-@code{
-    private string username;
-    private string password;
-    private async Task Login()
-    {
-
-    }
-}
 
 <PageTitle>Login</PageTitle>
 <div class="background">
@@ -19,14 +11,14 @@
             </div>
             <div class="d-flex flex-column align-items-center">
                 <div class="form-group w-100">
-                    <input type="text" class="form-control shadow-none" placeholder="Username" @bind="username" />
+                    <input type="text" class="form-control shadow-none" placeholder="Username"  />
                 </div>
                 <div class="form-group w-100 pb-3">
-                    <input type="password" class="form-control shadow-none" placeholder="Password" @bind="password" />
+                    <input type="password" class="form-control shadow-none" placeholder="Password" />
                 </div>
             </div>
             <div class="d-flex justify-content-end">
-                <button class="btn btn-primary" @bind="Login">Sign In</button>
+                <button class="btn btn-primary">Sign In</button>
             </div>
         </div>
     </div>
