@@ -5,7 +5,8 @@
 @code {
     // --- SEARCH FUNCTIONALITY VARIABLES ---
     private string searchTerm = ""; // The term used to search for students
-    private Student? foundStudent; // The student that matches the search term
+    private List<Student> foundStudents; // List of students that match the search term
+    private Student foundStudent; // The selected student
     private bool isLoading = false; // Indicates if the search is currently running
     private bool searchPerformed = false; // Indicates if a search has been made
     private bool isLogoVisible = true; // Determines the visibility of the logo on the UI
@@ -19,87 +20,94 @@
 
     // Handles the search function
     private async Task HandleSearch()
-    {
-        isLoading = true; // Set loading to true while searching
+{
+    isLoading = true;
 
-        // Query the database to find student by first or last name
-        foundStudent = await dbContext.Students
+    // Query the database to find students by first or last name
+    foundStudents = await dbContext.Students
         .Include(s => s.Course)
         .Include(s => s.Instructor)
-        .FirstOrDefaultAsync(s => s.FirstName == searchTerm || s.LastName == searchTerm);
+        .Where(s => s.FirstName == searchTerm || s.LastName == searchTerm)
+        .ToListAsync();
 
-        // Query the database to retrieve distinct employee initials
-        initials = await dbContext.HubEmployees
+    // Query the database to retrieve distinct employee initials
+    initials = await dbContext.HubEmployees
         .Select(e => e.Initials)
         .Distinct()
         .ToListAsync();
 
-        // Reset states after query
-        isLoading = false;
-        searchPerformed = true;
-        isLogoVisible = false;
+    isLoading = false;
+    searchPerformed = true;
+    isLogoVisible = false;
 
+    if (foundStudents.Count == 1)
+    {
+        // If only one student is found, assign it to foundStudent
+        foundStudent = foundStudents.First();
     }
+}
+
+    // Add a method to select a student from the list
+    private void SelectStudent(Student student)
+    {
+        foundStudent = student;
+    }
+
     // Handles the sign-in function
     private async Task HandleSignIn()
     {
         if (string.IsNullOrWhiteSpace(selectedInitials) || string.IsNullOrWhiteSpace(selectedSessionType))
         {
-            // Display a message to the user that they need to select initials and session type.
-            // You can use a component-level variable to show the message.
-            // For example, add a bool variable like showSelectionError and set it to true.
-            // Then you can use this variable in your Razor component to control the error message's visibility.
             showSelectionError = true;
         }
         else
         {
-
-            // Create new session entry
+            // Create a new session entry
             var newSession = new HubSession
-                {
-                    TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")), // Set TimeIn as current time
-                    SessionType = selectedSessionType, // Sets SessionType
-                    StudentID = foundStudent.StudentID, // Set StudentID based on the found student
-                    Date = DateTime.Now, // Sets the current date
-                    EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0 // Retrieve
-
-                };
-            isSignedIn = true; // Mark the student as signed in
+            {
+                TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")),
+                SessionType = selectedSessionType,
+                StudentID = foundStudent.StudentID, // Use foundStudent here
+                Date = DateTime.Now,
+                EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0
+            };
+            isSignedIn = true;
 
             // Add the new session to the database
             dbContext.HubSessions.Add(newSession);
             await dbContext.SaveChangesAsync();
 
-            // Clears the selected values and search term
+            // Clear the selected values and search term
             selectedInitials = "";
             selectedSessionType = "";
             searchTerm = "";
         }
     }
+
     // Reset state to allow a new sign-in
     private void ResetSignIn()
     {
         isSignedIn = false;
         searchPerformed = false;
-        foundStudent = null;
+        foundStudents = null;
         searchTerm = "";
     }
 }
 
 <!-- HTML code for rendering the sign-on -->
-
 <PageTitle>Sign-On 😀</PageTitle>
 
 <div class="logo-container pt-4 @(searchPerformed && !isLogoVisible ? "logo-move-up" : "")">
     <Logo />
 </div>
+
 <div class="container-md">
     <div class="content-container @(searchPerformed && !isLogoVisible ? "content-move-up" : "")">
         <form @onsubmit="HandleSearch">
             <div class="form-group py-4">
                 <div class="input-group mx-auto">
                     <input type="search" class="form-control shadow-none" placeholder="Search for Student"
-                        @bind="searchTerm" autofocus />
+                           @bind="searchTerm" autofocus />
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-default shadow-none my-auto">
                             <img src="search-icon.png" class="search-icon">
@@ -111,7 +119,6 @@
 
         @if (isSignedIn)
         {
-            // You can display a confirmation message if you like
             <div class="form-group text-center pt-5">
                 <label>Student signed in successfully!</label>
                 <br />
@@ -126,82 +133,94 @@
                 <img src="loading.gif">
             </div>
         }
-        else if (searchPerformed && foundStudent != null && !isSignedIn)
+        else if (searchPerformed)
         {
-            <hr />
-            <div class="row pt-3">
-                <div class="col-md-6 mx-auto">
-                    <div class="form-group">
-                        <label>First Name:</label>
-                        <input type="text" class="form-control" readonly value="@foundStudent.FirstName" />
-                    </div>
-                </div>
-                <div class="col-md-6 mx-auto">
-                    <div class "form-group">
-                        <label>Last Name:</label>
-                        <input type="text" class="form-control" readonly value="@foundStudent.LastName" />
-                    </div>
-                </div>
+            if (foundStudents?.Count > 1)
+            {
+            <div class="alert alert-info">
+                @foundStudents.Count @(" students found with the same name.")
             </div>
-            <div class="row py-3">
-                <div class="col-md-6 mx-auto">
-                    <div class="form-group">
-                        <label>Course:</label>
-                        <input type="text" class="form-control" readonly value="@foundStudent.Course.CourseName" />
-                    </div>
-                </div>
-                <div class="col-md-6 mx-auto">
-                    <div class="form-group">
-                        <label>Instructor:</label>
-                        <input type="text" class="form-control" readonly
-                            value="@foundStudent.Instructor.FirstName @foundStudent.Instructor.LastName" />
-                    </div>
-                </div>
-            </div>
-            <hr />
-            <div class="row pt-3">
-                <div class="col-md-6 mx-auto">
-                    <div class="form-group">
-                        <label>Initials:</label>
-                        <select class="form-control" @bind="selectedInitials">
-                            <option value="">Select Initials</option>
-                            @foreach (var initial in initials)
-                            {
-                                <option value="@initial">@initial</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6 mx-auto">
-                    <div class="form-group">
-                        <label>Session Type:</label>
-                        <select class="form-control" @bind="selectedSessionType">
-                            <option value="">Select Session Type</option>
-                            <option value="Tutoring">Tutoring</option>
-                            <option value="Testing">Testing</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row pt-5">
-                <div class="col-md-12 mx-auto text-center">
-                    <button class="btn btn-primary btn-block w-100 btn-sign-on" @onclick="HandleSignIn">Sign-In</button>
-                </div>
-                @if (showSelectionError)
+                            @foreach (var student in foundStudents)
                 {
-                    <div class="col-md-12 mx-auto text-center pt-4">
-                        <label>Please select initials and session type before signing in.</label>
-                    </div>
+                    <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
                 }
+            }
 
-
-            </div>
-        }
-        else if (searchPerformed && foundStudent == null)
-        {
-            <div class="form-group text-center pt-5">
-                <label>'@searchTerm' Not Found</label>
-            </div>
+            else if (foundStudents?.Count > 0)
+            {
+                <hr />
+                <div class="row pt-3">
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>First Name:</label>
+                            <input type="text" class="form-control" readonly value="@foundStudent.FirstName" />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Last Name:</label>
+                            <input type="text" class="form-control" readonly value="@foundStudent.LastName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Course:</label>
+                            <input type="text" class="form-control" readonly value="@foundStudent.Course.CourseName" />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Instructor:</label>
+                            <input type="text" class="form-control" readonly
+                                value="@foundStudent?.Instructor.FirstName @foundStudent.Instructor.LastName" />
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row pt-3">
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Initials:</label>
+                            <select class="form-control" @bind="selectedInitials">
+                                <option value="">Select Initials</option>
+                                @foreach (var initial in initials)
+                                {
+                                    <option value="@initial">@initial</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Session Type:</label>
+                            <select class="form-control" @bind="selectedSessionType">
+                                <option value="">Select Session Type</option>
+                                <option value="Tutoring">Tutoring</option>
+                                <option value="Testing">Testing</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-5">
+                    <div class="col-md-12 mx-auto text-center">
+                        <button class="btn btn-primary btn-block w-100 btn-sign-on" @onclick="HandleSignIn">Sign-In</button>
+                    </div>
+                    @if (showSelectionError)
+                    {
+                        <div class="col-md-12 mx-auto text-center pt-4">
+                            <label>Please select initials and session type before signing in.</label>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="form-group text-center pt-5">
+                    <label>No students found with the name '@searchTerm'.</label>
+                </div>
+            }
         }
     </div>
 </div>
