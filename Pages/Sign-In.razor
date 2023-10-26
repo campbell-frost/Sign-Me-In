@@ -1,4 +1,4 @@
-﻿@page "/Sign-On"
+﻿@page "/Sign-In"
 @using Microsoft.EntityFrameworkCore;
 @inject Context dbContext
 
@@ -94,8 +94,8 @@
     }
 }
 
-<!-- HTML code for rendering the sign-on -->
-<PageTitle>Sign-On 😀</PageTitle>
+<!-- HTML code for rendering the sign-in -->
+<PageTitle>Sign-In 😀</PageTitle>
 
 <div class="logo-container pt-4 @(searchPerformed && !isLogoVisible ? "logo-move-up" : "")">
     <Logo />
@@ -205,7 +205,7 @@
                 </div>
                 <div class="row pt-5">
                     <div class="col-md-12 mx-auto text-center">
-                        <button class="btn btn-primary btn-block w-100 btn-sign-on" @onclick="HandleSignIn">Sign-In</button>
+                        <button class="btn btn-primary btn-block w-100 btn-sign-in" @onclick="HandleSignIn">Sign-In</button>
                     </div>
                     @if (showSelectionError)
                     {
