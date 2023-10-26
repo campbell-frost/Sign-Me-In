@@ -51,6 +51,7 @@
     private void SelectStudent(Student student)
     {
         foundStudent = student;
+        foundStudents = null; // Clear the list of found students
     }
 
     // Handles the sign-in function
@@ -138,15 +139,15 @@
             if (foundStudents?.Count > 1)
             {
                 <div class="alert alert-info">
-                    @foundStudents.Count @(" students found with the same name.")
+                    @foundStudents.Count @(" students found with the same name. Select one to continue.")
                 </div>
                 @foreach (var student in foundStudents)
                 {
-                    <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
+                    <StudentCard Student="@student" OnSelectStudent="SelectStudent"/>
                 }
             }
 
-            else if (foundStudents?.Count > 0 && !isSignedIn)
+            else if (foundStudent!= null && !isSignedIn)
             {
                 <hr />
                 <div class="row pt-3">
