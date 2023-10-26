@@ -20,32 +20,32 @@
 
     // Handles the search function
     private async Task HandleSearch()
-{
-    isLoading = true;
+    {
+        isLoading = true;
 
-    // Query the database to find students by first or last name
-    foundStudents = await dbContext.Students
+        // Query the database to find students by first or last name
+        foundStudents = await dbContext.Students
         .Include(s => s.Course)
         .Include(s => s.Instructor)
         .Where(s => s.FirstName == searchTerm || s.LastName == searchTerm)
         .ToListAsync();
 
-    // Query the database to retrieve distinct employee initials
-    initials = await dbContext.HubEmployees
+        // Query the database to retrieve distinct employee initials
+        initials = await dbContext.HubEmployees
         .Select(e => e.Initials)
         .Distinct()
         .ToListAsync();
 
-    isLoading = false;
-    searchPerformed = true;
-    isLogoVisible = false;
+        isLoading = false;
+        searchPerformed = true;
+        isLogoVisible = false;
 
-    if (foundStudents.Count == 1)
-    {
-        // If only one student is found, assign it to foundStudent
-        foundStudent = foundStudents.First();
+        if (foundStudents.Count == 1)
+        {
+            // If only one student is found, assign it to foundStudent
+            foundStudent = foundStudents.First();
+        }
     }
-}
 
     // Add a method to select a student from the list
     private void SelectStudent(Student student)
@@ -64,13 +64,13 @@
         {
             // Create a new session entry
             var newSession = new HubSession
-            {
-                TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")),
-                SessionType = selectedSessionType,
-                StudentID = foundStudent.StudentID, // Use foundStudent here
-                Date = DateTime.Now,
-                EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0
-            };
+                {
+                    TimeIn = TimeSpan.Parse(DateTime.Now.ToString("HH:mm:ss")),
+                    SessionType = selectedSessionType,
+                    StudentID = foundStudent.StudentID, // Use foundStudent here
+                    Date = DateTime.Now,
+                    EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0
+                };
             isSignedIn = true;
 
             // Add the new session to the database
@@ -107,7 +107,7 @@
             <div class="form-group py-4">
                 <div class="input-group mx-auto">
                     <input type="search" class="form-control shadow-none" placeholder="Search for Student"
-                           @bind="searchTerm" autofocus />
+                        @bind="searchTerm" autofocus />
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-default shadow-none my-auto">
                             <img src="search-icon.png" class="search-icon">
@@ -137,16 +137,16 @@
         {
             if (foundStudents?.Count > 1)
             {
-            <div class="alert alert-info">
-                @foundStudents.Count @(" students found with the same name.")
-            </div>
-                            @foreach (var student in foundStudents)
+                <div class="alert alert-info">
+                    @foundStudents.Count @(" students found with the same name.")
+                </div>
+                @foreach (var student in foundStudents)
                 {
                     <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
                 }
             }
 
-            else if (foundStudents?.Count > 0)
+            else if (foundStudents?.Count > 0 && !isSignedIn)
             {
                 <hr />
                 <div class="row pt-3">
@@ -215,7 +215,7 @@
                     }
                 </div>
             }
-            else
+            else if(!isSignedIn)
             {
                 <div class="form-group text-center pt-5">
                     <label>No students found with the name '@searchTerm'.</label>
