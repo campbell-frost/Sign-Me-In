@@ -46,15 +46,37 @@
         {
             // If only one student is found, assign it to foundStudent
             foundStudent = foundStudents.First();
+            
+            // Check if the student is already signed in without a sign-out
+            var existingSession = await dbContext.HubSessions.FirstOrDefaultAsync(s => s.StudentID == foundStudent.StudentID && !s.TimeOut.HasValue);
+            if (existingSession != null)
+            {
+                alreadySignedIn = true;
+            }
         }
     }
+    private void IsDuplicate()
+    {
 
+    }
     // Add a method to select a student from the list
-    private void SelectStudent(Student student)
+// Add a method to select a student from the list
+private void SelectStudent(Student student)
+{
+    // Check if the selected student is already signed in without a sign-out
+    var existingSession = dbContext.HubSessions.FirstOrDefault(s => s.StudentID == student.StudentID && !s.TimeOut.HasValue);
+    
+    if (existingSession != null)
+    {
+        alreadySignedIn = true;
+    }
+    else
     {
         foundStudent = student;
         foundStudents = null; // Clear the list of found students
     }
+}
+
 
     // Handles the sign-in function
     private async Task HandleSignIn()
@@ -127,10 +149,10 @@
                 </div>
             </div>
         </form>
-        
+
         @if (alreadySignedIn)
         {
-             <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first before signing in again. </div>
+            <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first before signing in again.</div>
         }
 
         @if (isSignedIn)
@@ -151,19 +173,32 @@
         }
         else if (searchPerformed)
         {
-            if (foundStudents?.Count > 1)
+           @if (foundStudents?.Count > 1 && !alreadySignedIn)
             {
                 <div class="alert alert-info">
                     @foundStudents.Count @(" students found with the same name. Select one to continue.")
                 </div>
+                
                 @foreach (var student in foundStudents)
                 {
-                    <StudentCard Student="@student" OnSelectStudent="SelectStudent"/>
+                    if (student != null && !alreadySignedIn) // Add the condition here
+                    {
+                        <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
+                    }
                 }
             }
+            else if(alreadySignedIn)
+            {
+                <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
+
+            }
+
 
             else if (foundStudent!= null && !isSignedIn)
             {
+                if(!alreadySignedIn)
+                {
+
                 <hr />
                 <div class="row pt-3">
                     <div class="col-md-6 mx-auto">
@@ -230,6 +265,11 @@
                         </div>
                     }
                 </div>
+                } 
+                else 
+                {
+                    <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first before signing in again. </div>
+                }
             }
             else if(!isSignedIn)
             {
