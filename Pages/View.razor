@@ -188,7 +188,7 @@
                         </td>
 
                         <td>
-                            @if (isEditing)
+                            @if (isEditing && !showOnlySignedIn)
                             {
                                 <input type="text" @bind="hubSession.TimeOut" />
                             }
@@ -241,7 +241,7 @@
                         @if (isEditing)
                         {
                             <td>
-                                <button class="btn btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
+                                <button class="btn btn-sm btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
                             </td>
                         }
                     </tr>
