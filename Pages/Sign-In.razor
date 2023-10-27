@@ -84,6 +84,7 @@ private void SelectStudent(Student student)
         if (string.IsNullOrWhiteSpace(selectedInitials) || string.IsNullOrWhiteSpace(selectedSessionType))
         {
             showSelectionError = true;
+            return;
         }
         // Check if the student is already signed in without a sign-out
         var existingSession = await dbContext.HubSessions.FirstOrDefaultAsync(s => s.StudentID == foundStudent.StudentID && !s.TimeOut.HasValue);
@@ -189,7 +190,9 @@ private void SelectStudent(Student student)
             }
             else if(alreadySignedIn)
             {
-                <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
+                <div class="text-center">
+                    <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
+                </div>
 
             }
 
@@ -261,7 +264,7 @@ private void SelectStudent(Student student)
                     @if (showSelectionError)
                     {
                         <div class="col-md-12 mx-auto text-center pt-4">
-                            <label>Please select initials and session type before signing in.</label>
+                            <div class="alert alert-warning">Please select initials and session type before signing in.</div>
                         </div>
                     }
                 </div>
