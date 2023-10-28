@@ -1,0 +1,18 @@
+@inherits LayoutComponentBase
+<PageTitle>Dashboard</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+        <hr class="my-0" />
+    </div>
+    
+    <div class="main-content">
+        <div class="dashboard-sidebar col-md-3">
+            <DashboardNavMenu />
+        </div>
+        <div class="content col-md-9">
+            @Body
+        </div>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+
+
+
+.oi {
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+}
+
+
+
+
+.collapse {
+    /* Never collapse the sidebar for wide screens */
+    display: flex;
+}
+
+

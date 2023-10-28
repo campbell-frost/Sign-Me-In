@@ -120,9 +120,9 @@
 
             StateHasChanged();
             
-            await Task.Delay(3000); // 3 second timer before ResetSignIn is called
+            await Task.Delay(3000); // 3 second timer 
 
-            // Resets fields after 3 seconds
+            // Resets fields 
             ResetSignIn();
             
         }
@@ -163,16 +163,11 @@
             </div>
         </form>
 
-        @if (alreadySignedIn)
-        {
-            <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first
-                before signing in again.</div>
-        }
 
         @if (isSignedIn)
         {
             <div class="form-group text-center pt-5">
-                <div class="alert alert-primary">Student signed in successfully!</div>
+                <div class="alert alert-info">Student signed in successfully!</div>
             </div>
         }
 
@@ -200,6 +195,8 @@
             }
             else if (alreadySignedIn)
             {
+                <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first
+                        before signing in again. </div>
                 <div class="text-center">
                     <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
                 </div>
@@ -279,10 +276,8 @@
                         }
                     </div>
                 }
-                else
-                {
-                    <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first
-                        before signing in again. </div>
+                else{
+                    <div class="alert alert-danger">ELSE ERROR</div>
                 }
             }
             else if (!isSignedIn)
