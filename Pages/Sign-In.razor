@@ -24,6 +24,8 @@
     private async Task HandleSearch()
     {
         isLoading = true;
+        foundStudents = null; // Clear previous search results
+        foundStudent = null;  // Clear the previously found student
 
         // Query the database to find students by first or last name
         foundStudents = await dbContext.Students
@@ -55,11 +57,7 @@
             }
         }
     }
-    private void IsDuplicate()
-    {
-
-    }
-    // Add a method to select a student from the list
+    
 // Add a method to select a student from the list
 private void SelectStudent(Student student)
 {
