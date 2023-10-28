@@ -1,5 +1,6 @@
 ﻿@page "/Sign-In"
 @using Microsoft.EntityFrameworkCore;
+@using System.Threading.Tasks;
 @inject Context dbContext
 
 @code {
@@ -11,13 +12,13 @@
     private bool searchPerformed = false; // Indicates if a search has been made
     private bool isLogoVisible = true; // Determines the visibility of the logo on the UI
     private bool isSignedIn = false; // Indicates if a student has successfully signed in
+    private bool showSelectionError; // Indicates that initials or session type are empty
+    private bool alreadySignedIn = false; // Indicates if the student is already signed in without being signed out
 
     // --- DROPDOWN MENU VARIABLES ---
     private string? selectedInitials; // The initials selected from the dropdown
     private string? selectedSessionType; // The session type selected from the dropdown
     private List<string?>? initials; // List of available initials for dropdown
-    private bool showSelectionError;
-    private bool alreadySignedIn = false; // Indicates if the student is already signed in without being signed out
 
 
     // Handles the search function
@@ -25,7 +26,7 @@
     {
         isLoading = true;
         foundStudents = null; // Clear previous search results
-        foundStudent = null;  // Clear the previously found student
+        foundStudent = null; // Clear the previously found student
 
         // Query the database to find students by first or last name
         foundStudents = await dbContext.Students
@@ -48,32 +49,34 @@
         {
             // If only one student is found, assign it to foundStudent
             foundStudent = foundStudents.First();
-            
+
             // Check if the student is already signed in without a sign-out
-            var existingSession = await dbContext.HubSessions.FirstOrDefaultAsync(s => s.StudentID == foundStudent.StudentID && !s.TimeOut.HasValue);
+            var existingSession = await dbContext.HubSessions.FirstOrDefaultAsync(s => s.StudentID == foundStudent.StudentID &&
+            !s.TimeOut.HasValue);
             if (existingSession != null)
             {
                 alreadySignedIn = true;
             }
         }
     }
-    
-// Add a method to select a student from the list
-private void SelectStudent(Student student)
-{
-    // Check if the selected student is already signed in without a sign-out
-    var existingSession = dbContext.HubSessions.FirstOrDefault(s => s.StudentID == student.StudentID && !s.TimeOut.HasValue);
-    
-    if (existingSession != null)
+
+    // Add a method to select a student from the list
+    private void SelectStudent(Student student)
     {
-        alreadySignedIn = true;
+        // Check if the selected student is already signed in without a sign-out
+        var existingSession = dbContext.HubSessions.FirstOrDefault(s => s.StudentID == student.StudentID &&
+        !s.TimeOut.HasValue);
+
+        if (existingSession != null)
+        {
+            alreadySignedIn = true;
+        }
+        else
+        {
+            foundStudent = student;
+            foundStudents = null; // Clear the list of found students
+        }
     }
-    else
-    {
-        foundStudent = student;
-        foundStudents = null; // Clear the list of found students
-    }
-}
 
 
     // Handles the sign-in function
@@ -85,7 +88,8 @@ private void SelectStudent(Student student)
             return;
         }
         // Check if the student is already signed in without a sign-out
-        var existingSession = await dbContext.HubSessions.FirstOrDefaultAsync(s => s.StudentID == foundStudent.StudentID && !s.TimeOut.HasValue);
+        var existingSession = await dbContext.HubSessions.FirstOrDefaultAsync(s => s.StudentID == foundStudent.StudentID &&
+        !s.TimeOut.HasValue);
         if (existingSession != null)
         {
             alreadySignedIn = true;
@@ -102,16 +106,25 @@ private void SelectStudent(Student student)
                     Date = DateTime.Now,
                     EmployeeID = dbContext.HubEmployees.FirstOrDefault(e => e.Initials == selectedInitials)?.EmployeeID ?? 0
                 };
-            isSignedIn = true;
 
             // Add the new session to the database
             dbContext.HubSessions.Add(newSession);
             await dbContext.SaveChangesAsync();
 
+            isSignedIn = true;
+
             // Clear the selected values and search term
             selectedInitials = "";
             selectedSessionType = "";
             searchTerm = "";
+
+            StateHasChanged();
+            
+            await Task.Delay(3000); // 3 second timer before ResetSignIn is called
+
+            // Resets fields after 3 seconds
+            ResetSignIn();
+            
         }
     }
 
@@ -124,6 +137,7 @@ private void SelectStudent(Student student)
         searchTerm = "";
         alreadySignedIn = false;
     }
+
 }
 
 <!-- HTML code for rendering the sign-in -->
@@ -151,16 +165,14 @@ private void SelectStudent(Student student)
 
         @if (alreadySignedIn)
         {
-            <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first before signing in again.</div>
+            <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first
+                before signing in again.</div>
         }
 
         @if (isSignedIn)
         {
             <div class="form-group text-center pt-5">
-                <label>Student signed in successfully!</label>
-                <br />
-                <br />
-                <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
+                <div class="alert alert-primary">Student signed in successfully!</div>
             </div>
         }
 
@@ -172,12 +184,12 @@ private void SelectStudent(Student student)
         }
         else if (searchPerformed)
         {
-           @if (foundStudents?.Count > 1 && !alreadySignedIn)
+            @if (foundStudents?.Count > 1 && !alreadySignedIn)
             {
                 <div class="alert alert-info">
                     @foundStudents.Count @(" students found with the same name. Select one to continue.")
                 </div>
-                
+
                 @foreach (var student in foundStudents)
                 {
                     if (student != null && !alreadySignedIn) // Add the condition here
@@ -186,7 +198,7 @@ private void SelectStudent(Student student)
                     }
                 }
             }
-            else if(alreadySignedIn)
+            else if (alreadySignedIn)
             {
                 <div class="text-center">
                     <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
@@ -195,84 +207,85 @@ private void SelectStudent(Student student)
             }
 
 
-            else if (foundStudent!= null && !isSignedIn)
+            else if (foundStudent != null && !isSignedIn)
             {
-                if(!alreadySignedIn)
+                if (!alreadySignedIn)
                 {
 
-                <hr />
-                <div class="row pt-3">
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <label>First Name:</label>
-                            <input type="text" class="form-control" readonly value="@foundStudent.FirstName" />
+                    <hr />
+                    <div class="row pt-3">
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group">
+                                <label>First Name:</label>
+                                <input type="text" class="form-control" readonly value="@foundStudent.FirstName" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group">
+                                <label>Last Name:</label>
+                                <input type="text" class="form-control" readonly value="@foundStudent.LastName" />
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <label>Last Name:</label>
-                            <input type="text" class="form-control" readonly value="@foundStudent.LastName" />
+                    <div class="row py-3">
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group">
+                                <label>Course:</label>
+                                <input type="text" class="form-control" readonly value="@foundStudent.Course.CourseName" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group">
+                                <label>Instructor:</label>
+                                <input type="text" class="form-control" readonly
+                                    value="@foundStudent?.Instructor.FirstName @foundStudent.Instructor.LastName" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row py-3">
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <label>Course:</label>
-                            <input type="text" class="form-control" readonly value="@foundStudent.Course.CourseName" />
+                    <hr />
+                    <div class="row pt-3">
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group">
+                                <label>Initials:</label>
+                                <select class="form-control" @bind="selectedInitials">
+                                    <option value="">Select Initials</option>
+                                    @foreach (var initial in initials)
+                                    {
+                                        <option value="@initial">@initial</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group">
+                                <label>Session Type:</label>
+                                <select class="form-control" @bind="selectedSessionType">
+                                    <option value="">Select Session Type</option>
+                                    <option value="Tutoring">Tutoring</option>
+                                    <option value="Testing">Testing</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <label>Instructor:</label>
-                            <input type="text" class="form-control" readonly
-                                value="@foundStudent?.Instructor.FirstName @foundStudent.Instructor.LastName" />
+                    <div class="row pt-5">
+                        <div class="col-md-12 mx-auto text-center">
+                            <button class="btn btn-primary btn-block w-100 btn-sign-in" @onclick="HandleSignIn">Sign-In</button>
                         </div>
+                        @if (showSelectionError)
+                        {
+                            <div class="col-md-12 mx-auto text-center pt-4">
+                                <div class="alert alert-warning">Please select initials and session type before signing in.</div>
+                            </div>
+                        }
                     </div>
-                </div>
-                <hr />
-                <div class="row pt-3">
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <label>Initials:</label>
-                            <select class="form-control" @bind="selectedInitials">
-                                <option value="">Select Initials</option>
-                                @foreach (var initial in initials)
-                                {
-                                    <option value="@initial">@initial</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <label>Session Type:</label>
-                            <select class="form-control" @bind="selectedSessionType">
-                                <option value="">Select Session Type</option>
-                                <option value="Tutoring">Tutoring</option>
-                                <option value="Testing">Testing</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row pt-5">
-                    <div class="col-md-12 mx-auto text-center">
-                        <button class="btn btn-primary btn-block w-100 btn-sign-in" @onclick="HandleSignIn">Sign-In</button>
-                    </div>
-                    @if (showSelectionError)
-                    {
-                        <div class="col-md-12 mx-auto text-center pt-4">
-                            <div class="alert alert-warning">Please select initials and session type before signing in.</div>
-                        </div>
-                    }
-                </div>
-                } 
-                else 
+                }
+                else
                 {
-                    <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first before signing in again. </div>
+                    <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first
+                        before signing in again. </div>
                 }
             }
-            else if(!isSignedIn)
+            else if (!isSignedIn)
             {
                 <div class="form-group text-center pt-5">
                     <label>No students found with the name '@searchTerm'.</label>
