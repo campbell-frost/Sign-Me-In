@@ -39,12 +39,8 @@ private async Task HandleLogin()
     if (user != null)
     {
         UserAppContext.CurrentAccountID = user.AccountID;
-        if(user.AccountID == 1){
-            navigation.NavigateTo("/Dashboard/Employee");
-        }
-        else{
-            navigation.NavigateTo("/HomePage");
-        }
+        navigation.NavigateTo("/Homepage");
+        
     }
     else
     {
