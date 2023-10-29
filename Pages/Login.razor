@@ -1,5 +1,7 @@
 @layout LoginLayout
-@page "/Login"
+@inject Context dbContext
+@inject NavigationManager navigation
+@page "/"
 
 
 <PageTitle>Login</PageTitle>
@@ -11,15 +13,43 @@
             </div>
             <div class="d-flex flex-column align-items-center">
                 <div class="form-group w-100">
-                    <input type="text" class="form-control shadow-none" placeholder="Username"  />
+                    <input type="text" @bind="username" class="form-control shadow-none" placeholder="Username"  />
                 </div>
                 <div class="form-group w-100 pb-3">
-                    <input type="password" class="form-control shadow-none" placeholder="Password" />
+                    <input type="password" @bind="password" class="form-control shadow-none" placeholder="Password" />
                 </div>
             </div>
             <div class="d-flex justify-content-end">
-                <button class="btn btn-primary">Sign In</button>
+                <button class="btn btn-primary" @onclick="HandleLogin">Sign In</button>
+                <div class="alert alert-warning text-center ">@feedbackMessage</div>
             </div>
         </div>
     </div>
 </div>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string feedbackMessage = "";
+private void HandleLogin()
+{
+    var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username && u.PasswordHash == password);
+    
+    if (user != null)
+    {
+        feedbackMessage = "Login successful!";
+        if(user.AccountID == 1){
+            navigation.NavigateTo("/Dashboard/Employee");
+        }
+        else{
+            navigation.NavigateTo("/HomePage");
+        }
+    }
+    else
+    {
+        feedbackMessage = "Invalid username or password.";
+    }
+}
+
+
+}
