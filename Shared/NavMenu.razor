@@ -1,4 +1,6 @@
-﻿<nav class="navbar navbar-expand-md navbar-light bg-white mt-1" style="margin-right: 15px;">
+﻿
+
+<nav class="navbar navbar-expand-md navbar-light bg-white mt-1" style="margin-right: 15px;">
     <div class="container-fluid">
         <a class="navbar-brand" href="Sign-Me-In">
             <NavLink class="navbar-brand" href="HomePage">
@@ -14,6 +16,7 @@
         </button>
         <div class="collapse navbar-collapse @NavBarCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                @if(UserAppContext.CurrentAccountID == 2){
                 <li class="nav-item">
                     <NavLink class="nav-link" style="margin-right: 15px;" href="Sign-In">
                         <span class="oi oi-pencil px-2" aria-hidden="true"></span> Sign-In
@@ -24,11 +27,14 @@
                         <span class="oi oi-list px-2" aria-hidden="true"></span> View
                     </NavLink>
                 </li>
+                }
+                @if(UserAppContext.CurrentAccountID == 1 ){
                 <li class="nav-item">
                     <NavLink class="nav-link" href="Dashboard/Employee">
                         <span class="oi oi-dashboard px-2" aria-hidden="true"></span> Dashboard
                     </NavLink>
                 </li>
+                }
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
