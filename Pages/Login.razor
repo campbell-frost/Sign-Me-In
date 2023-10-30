@@ -44,9 +44,11 @@ private async Task HandleLogin()
     }
     else
     {
+        username = "";
+        password = "";
         await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
- 
     }
+        
 }
 
 
