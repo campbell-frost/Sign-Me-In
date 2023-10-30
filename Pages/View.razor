@@ -38,7 +38,7 @@
                 .ThenInclude(s => s.Instructor)
                 .Include(h => h.HubEmployee)
                 .Where(h => !h.TimeOut.HasValue)
-                .OrderBy(h => h.SessionID);
+                .OrderByDescending(h => h.SessionID);
         
             query.Reverse();
         }
@@ -50,7 +50,7 @@
                 .Include(h => h.Student)
                 .ThenInclude(s => s.Instructor)
                 .Include(h => h.HubEmployee)
-                .OrderBy(h => h.SessionID);
+                .OrderByDescending(h => h.SessionID);
 
             query.Reverse();
         }
