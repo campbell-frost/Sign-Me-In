@@ -1,121 +1,63 @@
-
-CREATE TABLE [Accounts] (
-  [AccountID] INT,
-  [Username] NVARCHAR(255),
-  [PasswordHash] NVARCHAR(255),
-  PRIMARY KEY ([AccountID])
-);
-
-CREATE TABLE [HubEmployees] (
-  [EmployeeID] INT,
-  [FirstName] NVARCHAR(255),
-  [LastName] NVARCHAR(255),
-  [Initials] NVARCHAR(5),
-  [Role] NVARCHAR(20),
-  [AccountID] INT,
-  PRIMARY KEY ([EmployeeID]),
-  CONSTRAINT [FK_HubEmployee.AccountID]
-    FOREIGN KEY ([AccountID])
-      REFERENCES [Account]([AccountID])
-);
-
-CREATE TABLE [SecurityQuestion] (
-  [QuestionID] INT,
-  [Question] NVARCHAR(255),
-  [AnswerHash] NVARCHAR(255),
-  [AccountID] INT,
-  PRIMARY KEY ([QuestionID]),
-  CONSTRAINT [FK_SecurityQuestion.AccountID]
-    FOREIGN KEY ([AccountID])
-      REFERENCES [Account]([AccountID])
-);
-
-
-CREATE TABLE [Managers] (
-  [ManagerID] INT,
-  [FirstName] NVARCHAR(255),
-  [LastName] NVARCHAR(255),
-  [AccountID] INT,
-  PRIMARY KEY ([ManagerID])
-);
-
-CREATE TABLE [Courses] (
-  [CourseID] INT,
-  [CourseName] NVARCHAR(20),
-  PRIMARY KEY ([CourseID])
-);
-
-CREATE TABLE [Instructors] (
-  [InstructorID] INT,
-  [LastName] NVARCHAR(255),
-  [FirstName] NVARCHAR(255),
-  PRIMARY KEY ([InstructorID])
-);
-
-CREATE TABLE [Students] (
-  [StudentID] INT,
-  [FirstName] NVARCHAR(255),
-  [LastName] NVARCHAR(255),
-  [CourseID] INT,
-  [InstructorID] INT,
-  PRIMARY KEY ([StudentID]),
-  CONSTRAINT [FK_Student.InstructorID]
-    FOREIGN KEY ([InstructorID])
-      REFERENCES [Instructor]([InstructorID]),
-  CONSTRAINT [FK_Student.CourseID]
-    FOREIGN KEY ([CourseID])
-      REFERENCES [Course]([CourseID])
-);
-
-CREATE TABLE [HubSessions] (
-  [SessionID] INT,
-  [TimeIn] DATETIME,
-  [TimeOut] DATETIME,
-  [StudentID] INT,
-  [EmployeeID] INT,
-  PRIMARY KEY ([sessionID]),
-  CONSTRAINT [FK_HubSession.StudentID]
-    FOREIGN KEY ([StudentID])
-      REFERENCES [Student]([StudentID]),
-  CONSTRAINT [FK_HubSession.EmployeeID]
-    FOREIGN KEY ([EmployeeID])
-      REFERENCES [HubEmployee]([EmployeeID])
-);
-
-CREATE TABLE [SecurityQuestions] (
-  [QuestionID] INT,
-  [Question] NVARCHAR(255),
-  PRIMARY KEY ([QuestionID])
-);
-
 -- Insert sample data into Course, Instructor, and Student tables
 SET IDENTITY_INSERT [dbo].[Courses] ON
 INSERT INTO [Courses] ([CourseID], [CourseName])
 VALUES
     (1, '101'),
-    (2, '102');
+    (2, '102'),
+    (3, '201'),
+    (4, '202'),
+    (5, '203'),
+    (6, 'CPT 170');
 SET IDENTITY_INSERT [dbo].[Courses] OFF
 
 SET IDENTITY_INSERT [dbo].[Instructors] ON
 INSERT INTO [Instructors] ([InstructorID], [LastName], [FirstName])
 VALUES
-    (1, 'Rubin', 'Dr'),
-    (2, 'Araujo', 'Ken');
+    (1, 'Rubin', 'Steve'),
+    (2, 'Araujo', 'Ken'),
+    (3, 'Rao', 'Padmaja'),
+    (4, 'Panza', 'Nicole'),
+    (3, 'Dungan', 'Ivan');
 SET IDENTITY_INSERT [dbo].[Instructors] OFF
 
 SET IDENTITY_INSERT [dbo].[Students] ON
-INSERT INTO [Students] ([StudentID], [FirstName], [LastName], [CourseID], [InstructorID])
-VALUES
-    (1, 'John', 'Student', 1, 1),
-    (2, 'Emily', 'Pizza', 2, 2);
+
+INSERT INTO [dbo].[Students] (StudentID, FirstName, LastName, CourseID, InstructorID)
+VALUES 
+    (1, 'Michael', 'Scott', 1, 1),
+    (2, 'Jim', 'Halpert', 2, 2),
+    (3, 'Pam', 'Beesly', 1, 2),
+    (4, 'Dwight', 'Schrute', 1, 3), 
+	  (5, 'Ryan', 'Howard', 3, 5),
+    (6, 'Andy', 'Bernard', 4, 1),
+    (7, 'Kelly', 'Kapoor', 3, 2),
+    (8, 'Angela', 'Martin', 1, 3),
+    (9, 'Oscar', 'Martinez', 2, 4),
+    (10, 'Kevin', 'Malone', 1, 2),
+    (11, 'Stanley', 'Hudson', 3, 4),
+    (12, 'Phyllis', 'Smith', 2, 1),
+    (13, 'Meredith', 'Palmer', 3, 2),
+    (14, 'Creed', 'Bratton', 4, 3),
+    (15, 'Toby', 'Flenderson', 2, 4),
+    (16, 'Darryl', 'Philbin', 1, 5),
+    (17, 'Jan', 'Levinson', 4, 1),
+    (18, 'Roy', 'Anderson', 3, 5),
+    (19, 'Karen', 'Filippelli', 2, 4),
+    (20, 'Holly', 'Flax', 1, 3),
+    (21, 'Erin', 'Hannon', 4, 2),
+    (22, 'Gabe', 'Lewis', 2, 1),
+    (23, 'Nellie', 'Bertram', 3, 3);
+
 SET IDENTITY_INSERT [dbo].[Students] OFF
+
 
 SET IDENTITY_INSERT [dbo].[Accounts] ON
 
 INSERT INTO [dbo].[Accounts] ([AccountID], [UserName], [PasswordHash])
 VALUES
 	(1, 'Manager', 'admin'),
-	(2, 'Staff', 'fdtcstaff')
+	(2, 'Staff', 'fdtcstaff');
+
 SET IDENTITY_INSERT [dbo].[Accounts] OFF
 
 SET IDENTITY_INSERT [dbo].[HubEmployees] ON
@@ -123,6 +65,7 @@ SET IDENTITY_INSERT [dbo].[HubEmployees] ON
 INSERT INTO [dbo].[HubEmployees] ([EmployeeID], [FirstName], [LastName], [Initials], [Role], [AccountID])
 VALUES
   (1, 'Megan', 'Webster', 'MW', 'Tutor', 2),
-	(2, 'Charles', 'Canfield', 'CC', 'Tester', 2)
+	(2, 'Campbell', 'Frost', 'CF', 'Tester', 2),
+  (2, 'Bhakti', 'Patel', 'BP', 'Tester', 2);
 
 SET IDENTITY_INSERT [dbo].[HubEmployees] OFF
