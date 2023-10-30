@@ -11,6 +11,13 @@
     bool isEditing = false;
     private bool showOnlySignedIn = true;
 
+    // Variables for pagination
+    int currentPage = 1;
+    int pageSize = 10; 
+    int totalItems;
+    int totalPages;
+
+
     // Method called upon initialization
     protected override void OnInitialized()
     {
@@ -20,40 +27,47 @@
     // Loads the hub sessions based on the 'showOnlySignedIn' condition
     private void LoadHubSessions()
     {
+        IQueryable<HubSession> query;
+        
         if (showOnlySignedIn)
         {
-            // Fetch sessions where TimeOut is null (indicating currently signed-in)
-            hubSessions = dbContext.HubSessions
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Course)
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Instructor)
-            .Include(h => h.HubEmployee)
-            .Where(h => !h.TimeOut.HasValue) // This checks if TimeOut is null
-            .OrderBy(h => h.SessionID)
-
-            .ToList();
-
-            hubSessions.Reverse(); // Reverse the order for display
-
+            query = dbContext.HubSessions
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+                .Include(h => h.HubEmployee)
+                .Where(h => !h.TimeOut.HasValue)
+                .OrderBy(h => h.SessionID);
+        
+            query.Reverse();
         }
         else
         {
-            // Fetch all sessions and order by SessionID
-            
-            hubSessions = dbContext.HubSessions
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Course)
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Instructor)
-            .Include(h => h.HubEmployee)
-            .OrderBy(h => h.SessionID)
-            .ToList();
+            query = dbContext.HubSessions
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+                .Include(h => h.HubEmployee)
+                .OrderBy(h => h.SessionID);
 
-            hubSessions.Reverse(); // Reverse the order for display
-            
+            query.Reverse();
         }
+
+        totalItems = query.Count();
+        totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+        // Calculate which items to display on the current page
+        hubSessions = query
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+            
     }
+
+
+
 
     // Sets which button is active and updates the display mode accordingly
     void SetActiveButton(int index)
@@ -111,6 +125,15 @@
             LoadHubSessions(); // Refresh the sessions
         }
     }
+
+    void ChangePage(int page)
+    {
+        currentPage = page;
+        LoadHubSessions(); // Refresh the sessions for the selected page
+        Console.WriteLine("total items " + totalItems);
+        Console.WriteLine("ChangePage called with page: " + page);
+    }
+
 }
 
 <!-- HTML code for rendering the view -->
@@ -247,7 +270,22 @@
                     </tr>
                 }
             }
+            
 
         </tbody>
     </table>
+    <div class="pagination-container">
+        <ul class="pagination">
+            @for (int page = 1; page <= totalPages; page++)
+            {
+                int localPage = page; // Create a local copy of page
+                <li class="page-item @(localPage == currentPage ? "active" : "")">
+                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
+                </li>
+            }
+
+
+        </ul>
+    </div>
+
 </div>
