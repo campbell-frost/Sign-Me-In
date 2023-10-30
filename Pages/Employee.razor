@@ -1,8 +1,153 @@
 @page "/Dashboard/Employee"
 @layout DashboardLayout
+@inject Context dbContext
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+
+@code{
+    private string searchTerm = ""; // The term used to search for employees
+    private List<HubEmployee> foundEmployees; // List of employees that match the search term
+    private HubEmployee foundEmployee; // The selected employee
+    private bool isLoading = false; // Indicates if the search is currently running
+    private bool searchPerformed = false; // Indicates if a search has been made
+
+    private async Task Search()
+    {
+        isLoading = true;
+        foundEmployees = null; // Clear previous search results
+        foundEmployee = null; // Clear the previously found Employee
+
+        // Query the database to retrieve all employees
+        foundEmployees = await dbContext.HubEmployees
+        .Where(employee => employee.FirstName.Contains(searchTerm) || employee.LastName.Contains(searchTerm))
+        .ToListAsync();
+
+        isLoading = false;
+        searchPerformed = true;
+
+        if (foundEmployees.Count == 1)
+        {
+            // If only one employee is found, assign it to foundEmployee
+            foundEmployee = foundEmployees.First();
+        }
+        
+    }
+
+    private void SelectEmployee(HubEmployee employee)
+    {
+        // Check if the selected employee is already signed in without a sign-out
+        var existingSession = dbContext.HubSessions.FirstOrDefault(e => e.EmployeeID == employee.EmployeeID);
 
 
-<div class=" pt-5 py-5">
-    <div class="alert alert-warning text-center ">💪</div>
+            foundEmployee = employee;
+            foundEmployees = null; // Clear the list of found employees
+        
+    }
+
+        private async Task HandleUpdate()
+    {
+        if (foundEmployee != null)
+        {
+            // Implement your update logic here
+            // You can use dbContext to update the employee's information in the database.
+            // For example: dbContext.Update(foundEmployee);
+            // Then, call dbContext.SaveChanges() to save changes.
+            // Remember to add validation and error handling.
+        }
+    }
+}
+
+
+<div class="container-md">
+
 </div>
+    <form @onsubmit="Search">
+        <div class="form-group py-4">
+            <div class="input-group mx-auto">
+                <input type="search" class="form-control shadow-none" placeholder="Search for an Employee"
+                    @bind="searchTerm" autofocus />
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default shadow-none my-auto">
+                        <img src="search-icon.png" class="search-icon">
+                    </button>
+                </span>
+            </div>
+        </div>
+    </form>
+
+    @if (isLoading)
+        {
+            <div class="form-group text-center pt-5">
+                <img src="loading.gif">
+            </div>
+        }
+
+        else if (searchPerformed)
+        {
+            @if (foundEmployees?.Count > 1 && foundEmployee != null)
+            {
+                <div class="alert alert-info">
+                    @foundEmployees.Count @(" Employees found with the same name. Select one to continue.")
+                </div>
+
+                @foreach (var employee in foundEmployees)
+                {
+                    if (employee != null) // Add the condition here
+                    {
+                        <EmployeeCard Employee="@employee" OnSelectEmployee="SelectEmployee" />
+                    }
+                }
+            }
+
+
+            else if (foundEmployees?.Count == 1)
+            {
+                <hr />
+                <div class="row pt-3">
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>First Name:</label>
+                            <input type="text" class="form-control" value="@foundEmployee.FirstName" />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Last Name:</label>
+                            <input type="text" class="form-control" value="@foundEmployee.LastName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Employee ID:</label>
+                            <input type="text" class="form-control" value="@foundEmployee.EmployeeID" />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mx-auto">
+                        <div class="form-group">
+                            <label>Employee Initials:</label>
+                            <input type="text" class="form-control"
+                                value="@foundEmployee?.Initials" />
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            
+                <div class="row pt-5">
+                    <div class="col-md-12 mx-auto text-center">
+                        <button class="btn btn-primary btn-block w-100 btn-sign-in" @onclick="HandleUpdate">Update</button>
+                    </div>
+                    
+                </div>
+            }
+            else if (searchPerformed == true) {
+            <div class="form-group text-center pt-5">
+                <label>No Employees found with the name '@searchTerm'.</label>
+            </div>
+                
+            }
+       
+        }
+
+
