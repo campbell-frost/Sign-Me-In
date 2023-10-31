@@ -1,7 +1,6 @@
 @inject Context dbContext
-@page "/Dashboard/Reports"
-@layout DashboardLayout
-
+@page "/Reports"
+<div class = "Container">
 <div class="row">
     <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
         <label for="startDate">From:</label>
@@ -15,9 +14,9 @@
     </div>
     </div>
 <div>
-<table class="table mt-3">
+<table class="table mt-5">
     <thead>
-        <tr>
+        <tr class = "table-header">
             <th>Questions</th>
             <th>Testing</th>
             <th>Tutoring</th>
@@ -46,7 +45,7 @@
     </tbody>
 </table>
 </div>
-
+</div>
 @code {
     private double HoursTesting { get; set; }
     private int StudentsTesting { get; set; }
