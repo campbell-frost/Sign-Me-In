@@ -54,8 +54,8 @@
     private int StudentsTutoring { get; set; }
     private int DistinctStudentsTutoring { get; set; }
 
-    private DateTime ? startDate { get; set; } = DateTime.Now;
-    private DateTime ? endDate { get; set; } = DateTime.Now;
+    private DateTime ? startDate { get; set; } = DateTime.Now.Date;
+    private DateTime ? endDate { get; set; } = DateTime.Now.Date;
 
     protected override void OnInitialized()
 {
@@ -70,6 +70,8 @@ private void FetchData()
     // Check if both start and end dates are selected
     if (startDate.HasValue && endDate.HasValue)
     {
+
+         Console.WriteLine("Dates from "+ startDate+ " to "+ endDate);
         // Filter data between start and end dates
         testing = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
@@ -83,7 +85,8 @@ private void FetchData()
     {
         // Start date is selected, but end date is not
         // Filter data from start date to the current date
-        var currentDate = DateTime.Now;
+        var currentDate = DateTime.Now.Date;
+        Console.WriteLine("Dates from "+ startDate+ " to "+ currentDate);
         testing = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing")
             .ToList();
@@ -94,6 +97,7 @@ private void FetchData()
     }
     else if (endDate.HasValue)
     {
+         Console.WriteLine("Dates from "+ startDate+ " to "+ endDate);
         // End date is selected, but start date is not
         // Filter data from the beginning till the end date
         testing = dbContext.HubSessions
@@ -106,6 +110,7 @@ private void FetchData()
     }
     else
     {
+         Console.WriteLine("Dates from "+ startDate+ " to "+ endDate);
         // Both start and end dates are empty, so don't show any data
         HoursTesting = 0;
         HoursTutoring = 0;
