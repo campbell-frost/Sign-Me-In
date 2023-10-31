@@ -18,7 +18,7 @@
 
         // Query the database to retrieve all employees
         foundEmployees = await dbContext.HubEmployees
-        .Where(employee => employee.FirstName.Contains(searchTerm) || employee.LastName.Contains(searchTerm))
+        .Where(e => e.FirstName.Contains(searchTerm) || e.LastName.Contains(searchTerm))
         .ToListAsync();
 
         isLoading = false;
