@@ -62,46 +62,74 @@
     startDate = null;
     endDate = null;
 }
+private void FetchData()
+{
+    List<HubSession> testing = null;
+    List<HubSession> tutoring = null;
 
-
-    private void FetchData()
+    // Check if both start and end dates are selected
+    if (startDate.HasValue && endDate.HasValue)
     {
-
-        //grabbing all the sessions based on different criteria
-        var testing = dbContext.HubSessions
+        // Filter data between start and end dates
+        testing = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
             .ToList();
 
-        var tutoring= dbContext.HubSessions
+        tutoring = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
             .ToList();
+    }
+    else if (startDate.HasValue)
+    {
+        // Start date is selected, but end date is not
+        // Filter data from start date to the current date
+        var currentDate = DateTime.Now;
+        testing = dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing")
+            .ToList();
 
-        // how many hours was the hub used?
-        HoursTesting = Math.Round(testing.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours),2);
-        HoursTutoring = Math.Round(tutoring.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours),2);
+        tutoring = dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring")
+            .ToList();
+    }
+    else if (endDate.HasValue)
+    {
+        // End date is selected, but start date is not
+        // Filter data from the beginning till the end date
+        testing = dbContext.HubSessions
+            .Where(s => s.Date <= endDate && s.SessionType == "Testing")
+            .ToList();
 
-        //how many students used the hub?
-        StudentsTesting = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
-            .Count();
-        StudentsTutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
-            .Count();
-
-        //how many distinct students used the hub?
-        DistinctStudentsTesting = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
-            .Select(s => s.StudentID)
-            .Distinct()
-            .Count();
-        DistinctStudentsTutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
-            .Select(s => s.StudentID)
-            .Distinct()
-            .Count();
-
+        tutoring = dbContext.HubSessions
+            .Where(s => s.Date <= endDate && s.SessionType == "Tutoring")
+            .ToList();
+    }
+    else
+    {
+        // Both start and end dates are empty, so don't show any data
+        HoursTesting = 0;
+        HoursTutoring = 0;
+        StudentsTesting = 0;
+        StudentsTutoring = 0;
+        DistinctStudentsTesting = 0;
+        DistinctStudentsTutoring = 0;
         StateHasChanged();
+        return;
+    }
+
+    // Continue with the rest of your calculations as before
+    HoursTesting = Math.Round(testing.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
+    HoursTutoring = Math.Round(tutoring.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
+
+    StudentsTesting = testing.Count;
+    StudentsTutoring = tutoring.Count;
+
+    DistinctStudentsTesting = testing.Select(s => s.StudentID).Distinct().Count();
+    DistinctStudentsTutoring = tutoring.Select(s => s.StudentID).Distinct().Count();
+
+    StateHasChanged();
 }
+
 
 private void StartDateChanged(ChangeEventArgs e)
 {
@@ -120,6 +148,7 @@ private void EndDateChanged(ChangeEventArgs e)
         FetchData();
     }
 }
+
 
 
 }
