@@ -1,5 +1,4 @@
-@page "/Dashboard/Employee"
-@layout DashboardLayout
+@page "/Employee"
 @inject Context dbContext
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
@@ -48,11 +47,10 @@
     {
         if (foundEmployee != null)
         {
-            // Implement your update logic here
-            // You can use dbContext to update the employee's information in the database.
-            // For example: dbContext.Update(foundEmployee);
-            // Then, call dbContext.SaveChanges() to save changes.
-            // Remember to add validation and error handling.
+
+           dbContext.Update(foundEmployee);
+           await dbContext.SaveChangesAsync();
+    
         }
     }
 }
