@@ -1,3 +1,4 @@
+@inject Context dbContext
 @page "/Dashboard/Reports"
 @layout DashboardLayout
 
@@ -5,11 +6,121 @@
     <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
         <label for="startDate">From:</label>
  
-        <input type="date" id="startDate" name="startDate" class="form-control w-75">
+        <input type="date" id="startDate" name="startDate" @bind = "startDate" @oninput= "StartDateChanged" class="form-control">
     </div>
     <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
         <label for="endDate">To:</label>
       
-        <input type="date" id="endDate" name="endDate" class="form-control w-75">
+        <input type="date" id="endDate" name="endDate" @bind = "endDate" @oninput="EndDateChanged" class="form-control">
     </div>
+    </div>
+<div>
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Questions</th>
+            <th>Testing</th>
+            <th>Tutoring</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>How many hours was the math hub used?</td>
+            <td>@HoursTesting</td>
+            <td>@HoursTutoring</td>
+            <td>@Math.Round((HoursTesting + HoursTutoring),2)</td>
+        </tr>
+        <tr>
+            <td>How many students used the math hub?</td>
+            <td>@StudentsTesting</td>
+            <td>@StudentsTutoring</td>
+            <td>@(StudentsTesting + StudentsTutoring)</td>
+        </tr>
+        <tr>
+            <td>How many distinct students used the math hub?</td>
+            <td>@DistinctStudentsTesting</td>
+            <td>@DistinctStudentsTutoring</td>
+            <td>@(DistinctStudentsTesting + DistinctStudentsTutoring)</td>
+        </tr>
+    </tbody>
+</table>
 </div>
+
+@code {
+    private double HoursTesting { get; set; }
+    private int StudentsTesting { get; set; }
+    private int DistinctStudentsTesting { get; set; }
+    private double HoursTutoring { get; set; }
+    private int StudentsTutoring { get; set; }
+    private int DistinctStudentsTutoring { get; set; }
+
+    private DateTime ? startDate { get; set; } = DateTime.Now;
+    private DateTime ? endDate { get; set; } = DateTime.Now;
+
+    protected override void OnInitialized()
+{
+    startDate = null;
+    endDate = null;
+}
+
+
+    private void FetchData()
+    {
+
+        //grabbing all the sessions based on different criteria
+        var testing = dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
+            .ToList();
+
+        var tutoring= dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
+            .ToList();
+
+        // how many hours was the hub used?
+        HoursTesting = Math.Round(testing.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours),2);
+        HoursTutoring = Math.Round(tutoring.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours),2);
+
+        //how many students used the hub?
+        StudentsTesting = dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
+            .Count();
+        StudentsTutoring = dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
+            .Count();
+
+        //how many distinct students used the hub?
+        DistinctStudentsTesting = dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
+            .Select(s => s.StudentID)
+            .Distinct()
+            .Count();
+        DistinctStudentsTutoring = dbContext.HubSessions
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
+            .Select(s => s.StudentID)
+            .Distinct()
+            .Count();
+
+        StateHasChanged();
+}
+
+private void StartDateChanged(ChangeEventArgs e)
+{
+    if (e.Value != null)
+    {
+        startDate = DateTime.Parse(e.Value.ToString());
+        FetchData();
+    }
+}
+
+private void EndDateChanged(ChangeEventArgs e)
+{
+    if (e.Value != null)
+    {
+        endDate = DateTime.Parse(e.Value.ToString());
+        FetchData();
+    }
+}
+
+
+}
