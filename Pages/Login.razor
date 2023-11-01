@@ -5,7 +5,6 @@
 
 @page "/"
 
-
 <PageTitle>Login</PageTitle>
 <div class="background">
     <div class="login-container small">
@@ -13,17 +12,19 @@
             <div class="logo d-flex justify-content-lg-start">
                 <img src="FDTC-LOGO2.png" alt="Logo" class="login-logo mb-4 align-content-end" />
             </div>
-            <div class="d-flex flex-column align-items-center">
-                <div class="form-group w-100">
-                    <input type="text" @bind="username" class="form-control shadow-none" placeholder="Username"  />
+            <form @onsubmit="HandleLogin">
+                <div class="d-flex flex-column align-items-center">
+                    <div class="form-group w-100">
+                        <input type="text" @bind="username" class="form-control shadow-none" placeholder="Username" />
+                    </div>
+                    <div class="form-group w-100 pb-3">
+                        <input type="password" @bind="password" class="form-control shadow-none" placeholder="Password" />
+                    </div>
                 </div>
-                <div class="form-group w-100 pb-3">
-                    <input type="password" @bind="password" class="form-control shadow-none" placeholder="Password" />
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Sign In</button>
                 </div>
-            </div>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-primary" @onclick="HandleLogin">Sign In</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -32,24 +33,20 @@
     private string username = "";
     private string password = "";
 
-private async Task HandleLogin()
-{
-    var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username && u.PasswordHash == password);
-    
-    if (user != null)
+    private async Task HandleLogin()
     {
-        UserAppContext.CurrentAccountID = user.AccountID;
-        navigation.NavigateTo("/Homepage");
-        
-    }
-    else
-    {
-        username = "";
-        password = "";
-        await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
-    }
-        
-}
+        var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username && u.PasswordHash == password);
 
-
+        if (user != null)
+        {
+            UserAppContext.CurrentAccountID = user.AccountID;
+            navigation.NavigateTo("/Homepage");
+        }
+        else
+        {
+            username = "";
+            password = "";
+            await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
+        }
+    }
 }
