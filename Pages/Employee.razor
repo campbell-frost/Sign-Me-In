@@ -44,21 +44,33 @@
         
     }
 
-        private async Task HandleUpdate(HubEmployee employee)
+    private async Task HandleUpdate(HubEmployee employee)
+    {
+        updated = false;
+        if (employee != null)
         {
-            updated = false;
-            if (employee != null)
-            {
-                dbContext.Update(employee);
-                await dbContext.SaveChangesAsync();
-                updated = true;
-            }
+            dbContext.Update(employee);
+            await dbContext.SaveChangesAsync();
+            updated = true;
         }
+
+        StateHasChanged();
+            
+        await Task.Delay(3000); // 3 second timer
+        ResetSignIn();
+    }
+    private void ResetSignIn()
+    {
+        searchPerformed = false;
+        foundEmployees = null;
+        searchTerm = "";
+        updated = false;
+    }
 
 }
 
 
-<div class="container-md">
+<div class="container">
 
     <form @onsubmit="Search">
         <div class="form-group py-4">
@@ -87,7 +99,7 @@
         </div>
     }
 
-        else if (searchPerformed)
+        else if (searchPerformed && !updated)
         {
             @if (foundEmployees?.Count > 1 && foundEmployee != null)
             {
