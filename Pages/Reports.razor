@@ -1,50 +1,52 @@
 @inject Context dbContext
 @page "/Reports"
-<div class = "container">
-<div class="row">
-    <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
-        <label for="startDate">From:</label>
- 
-        <input type="date" id="startDate" name="startDate" @bind = "startDate" @oninput= "StartDateChanged" class="form-control">
+<div class="container">
+    <div class="row">
+        <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
+            <label for="startDate">From:</label>
+
+            <input type="date" id="startDate" name="startDate" @bind="startDate" @oninput="StartDateChanged"
+                class="form-control">
+        </div>
+        <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
+            <label for="endDate">To:</label>
+
+            <input type="date" id="endDate" name="endDate" @bind="endDate" @oninput="EndDateChanged"
+                class="form-control">
+        </div>
     </div>
-    <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
-        <label for="endDate">To:</label>
-      
-        <input type="date" id="endDate" name="endDate" @bind = "endDate" @oninput="EndDateChanged" class="form-control">
+    <div>
+        <table class="table mt-5">
+            <thead>
+                <tr class="table-header">
+                    <th>Questions</th>
+                    <th>Testing</th>
+                    <th>Tutoring</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>How many hours was the math hub used?</td>
+                    <td>@HoursTesting</td>
+                    <td>@HoursTutoring</td>
+                    <td>@Math.Round((HoursTesting + HoursTutoring), 2)</td>
+                </tr>
+                <tr>
+                    <td>How many students used the math hub?</td>
+                    <td>@StudentsTesting</td>
+                    <td>@StudentsTutoring</td>
+                    <td>@(StudentsTesting + StudentsTutoring)</td>
+                </tr>
+                <tr>
+                    <td>How many distinct students used the math hub?</td>
+                    <td>@DistinctStudentsTesting</td>
+                    <td>@DistinctStudentsTutoring</td>
+                    <td>@(DistinctStudentsTesting + DistinctStudentsTutoring)</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    </div>
-<div>
-<table class="table mt-5">
-    <thead>
-        <tr class = "table-header">
-            <th>Questions</th>
-            <th>Testing</th>
-            <th>Tutoring</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>How many hours was the math hub used?</td>
-            <td>@HoursTesting</td>
-            <td>@HoursTutoring</td>
-            <td>@Math.Round((HoursTesting + HoursTutoring),2)</td>
-        </tr>
-        <tr>
-            <td>How many students used the math hub?</td>
-            <td>@StudentsTesting</td>
-            <td>@StudentsTutoring</td>
-            <td>@(StudentsTesting + StudentsTutoring)</td>
-        </tr>
-        <tr>
-            <td>How many distinct students used the math hub?</td>
-            <td>@DistinctStudentsTesting</td>
-            <td>@DistinctStudentsTutoring</td>
-            <td>@(DistinctStudentsTesting + DistinctStudentsTutoring)</td>
-        </tr>
-    </tbody>
-</table>
-</div>
 </div>
 @code {
     private double HoursTesting { get; set; }
@@ -54,105 +56,105 @@
     private int StudentsTutoring { get; set; }
     private int DistinctStudentsTutoring { get; set; }
 
-    private DateTime ? startDate { get; set; } = DateTime.Now.Date;
-    private DateTime ? endDate { get; set; } = DateTime.Now.Date;
+    private DateTime? startDate { get; set; } = DateTime.Now.Date;
+    private DateTime? endDate { get; set; } = DateTime.Now.Date;
 
     protected override void OnInitialized()
-{
-    startDate = null;
-    endDate = null;
-}
-private void FetchData()
-{
-    List<HubSession> testing = null;
-    List<HubSession> tutoring = null;
-
-    // Check if both start and end dates are selected
-    if (startDate.HasValue && endDate.HasValue)
     {
+        startDate = null;
+        endDate = null;
+    }
+    private void FetchData()
+    {
+        List<HubSession> testing = null;
+        List<HubSession> tutoring = null;
 
-         Console.WriteLine("Dates from "+ startDate+ " to "+ endDate);
-        // Filter data between start and end dates
-        testing = dbContext.HubSessions
+        // Check if both start and end dates are selected
+        if (startDate.HasValue && endDate.HasValue)
+        {
+
+            Console.WriteLine("Dates from " + startDate + " to " + endDate);
+            // Filter data between start and end dates
+            testing = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
             .ToList();
 
-        tutoring = dbContext.HubSessions
+            tutoring = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
             .ToList();
-    }
-    else if (startDate.HasValue)
-    {
-        // Start date is selected, but end date is not
-        // Filter data from start date to the current date
-        var currentDate = DateTime.Now.Date;
-        Console.WriteLine("Dates from "+ startDate+ " to "+ currentDate);
-        testing = dbContext.HubSessions
+        }
+        else if (startDate.HasValue)
+        {
+            // Start date is selected, but end date is not
+            // Filter data from start date to the current date
+            var currentDate = DateTime.Now.Date;
+            Console.WriteLine("Dates from " + startDate + " to " + currentDate);
+            testing = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing")
             .ToList();
 
-        tutoring = dbContext.HubSessions
+            tutoring = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring")
             .ToList();
-    }
-    else if (endDate.HasValue)
-    {
-         Console.WriteLine("Dates from "+ startDate+ " to "+ endDate);
-        // End date is selected, but start date is not
-        // Filter data from the beginning till the end date
-        testing = dbContext.HubSessions
+        }
+        else if (endDate.HasValue)
+        {
+            Console.WriteLine("Dates from " + startDate + " to " + endDate);
+            // End date is selected, but start date is not
+            // Filter data from the beginning till the end date
+            testing = dbContext.HubSessions
             .Where(s => s.Date <= endDate && s.SessionType == "Testing")
             .ToList();
 
-        tutoring = dbContext.HubSessions
+            tutoring = dbContext.HubSessions
             .Where(s => s.Date <= endDate && s.SessionType == "Tutoring")
             .ToList();
-    }
-    else
-    {
-         Console.WriteLine("Dates from "+ startDate+ " to "+ endDate);
-        // Both start and end dates are empty, so don't show any data
-        HoursTesting = 0;
-        HoursTutoring = 0;
-        StudentsTesting = 0;
-        StudentsTutoring = 0;
-        DistinctStudentsTesting = 0;
-        DistinctStudentsTutoring = 0;
+        }
+        else
+        {
+            Console.WriteLine("Dates from " + startDate + " to " + endDate);
+            // Both start and end dates are empty, so don't show any data
+            HoursTesting = 0;
+            HoursTutoring = 0;
+            StudentsTesting = 0;
+            StudentsTutoring = 0;
+            DistinctStudentsTesting = 0;
+            DistinctStudentsTutoring = 0;
+            StateHasChanged();
+            return;
+        }
+
+        // Continue with the rest of your calculations as before
+        HoursTesting = Math.Round(testing.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
+        HoursTutoring = Math.Round(tutoring.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
+
+        StudentsTesting = testing.Count;
+        StudentsTutoring = tutoring.Count;
+
+        DistinctStudentsTesting = testing.Select(s => s.StudentID).Distinct().Count();
+        DistinctStudentsTutoring = tutoring.Select(s => s.StudentID).Distinct().Count();
+
         StateHasChanged();
-        return;
     }
 
-    // Continue with the rest of your calculations as before
-    HoursTesting = Math.Round(testing.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
-    HoursTutoring = Math.Round(tutoring.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
 
-    StudentsTesting = testing.Count;
-    StudentsTutoring = tutoring.Count;
-
-    DistinctStudentsTesting = testing.Select(s => s.StudentID).Distinct().Count();
-    DistinctStudentsTutoring = tutoring.Select(s => s.StudentID).Distinct().Count();
-
-    StateHasChanged();
-}
-
-
-private void StartDateChanged(ChangeEventArgs e)
-{
-    if (e.Value != null)
+    private void StartDateChanged(ChangeEventArgs e)
     {
-        startDate = DateTime.Parse(e.Value.ToString());
-        FetchData();
+        if (e.Value != null)
+        {
+            startDate = DateTime.Parse(e.Value.ToString());
+            FetchData();
+        }
     }
-}
 
-private void EndDateChanged(ChangeEventArgs e)
-{
-    if (e.Value != null)
+    private void EndDateChanged(ChangeEventArgs e)
     {
-        endDate = DateTime.Parse(e.Value.ToString());
-        FetchData();
+        if (e.Value != null)
+        {
+            endDate = DateTime.Parse(e.Value.ToString());
+            FetchData();
+        }
     }
-}
 
 
 
