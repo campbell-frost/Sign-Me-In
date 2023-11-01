@@ -9,6 +9,7 @@
     private HubEmployee foundEmployee; // The selected employee
     private bool isLoading = false; // Indicates if the search is currently running
     private bool searchPerformed = false; // Indicates if a search has been made
+    private bool updated = false;
 
     private async Task Search()
     {
@@ -43,16 +44,17 @@
         
     }
 
-        private async Task HandleUpdate()
-    {
-        if (foundEmployee != null)
+        private async Task HandleUpdate(HubEmployee employee)
         {
-
-           dbContext.Update(foundEmployee);
-           await dbContext.SaveChangesAsync();
-    
+            updated = false;
+            if (employee != null)
+            {
+                dbContext.Update(employee);
+                await dbContext.SaveChangesAsync();
+                updated = true;
+            }
         }
-    }
+
 }
 
 
@@ -72,12 +74,18 @@
         </div>
     </form>
 
+    @if(updated)
+    {
+        <div class="alert alert-primary text-center">
+            <label>Employee data updated</label>
+        </div>
+    }
     @if (isLoading)
-        {
-            <div class="form-group text-center pt-5">
-                <img src="loading.gif">
-            </div>
-        }
+    {
+        <div class="form-group text-center pt-5">
+            <img src="loading.gif">
+        </div>
+    }
 
         else if (searchPerformed)
         {
@@ -104,13 +112,13 @@
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>First Name:</label>
-                            <input type="text" class="form-control" value="@foundEmployee.FirstName" />
+                            <input type="text" class="form-control" @bind="foundEmployee.FirstName" />
                         </div>
                     </div>
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>Last Name:</label>
-                            <input type="text" class="form-control" value="@foundEmployee.LastName" />
+                            <input type="text" class="form-control" @bind="foundEmployee.LastName" />
                         </div>
                     </div>
                 </div>
@@ -118,14 +126,13 @@
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>Employee ID:</label>
-                            <input type="text" class="form-control" value="@foundEmployee.EmployeeID" />
+                            <input type="text" class="form-control" @bind="foundEmployee.EmployeeID" />
                         </div>
                     </div>
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>Employee Initials:</label>
-                            <input type="text" class="form-control"
-                                value="@foundEmployee?.Initials" />
+                            <input type="text" class="form-control" @bind="foundEmployee.Initials" />
                         </div>
                     </div>
                 </div>
@@ -133,7 +140,7 @@
             
                 <div class="row py-5">
                     <div class="col-md-12 mx-auto text-center">
-                        <button class="btn btn-primary btn-block w-100 btn-sign-in" @onclick="HandleUpdate">Update</button>
+                        <button class="btn btn-primary btn-block w-100 btn-sign-in" @onclick="() => HandleUpdate(foundEmployee)">Update</button>
                     </div>
                     
                 </div>
@@ -144,6 +151,7 @@
             </div>
                 
             }
+
        
         }
 </div>
