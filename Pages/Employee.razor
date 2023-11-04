@@ -19,7 +19,7 @@
 
         // Query the database to retrieve all employees
         foundEmployees = await dbContext.HubEmployees
-        .Where(e => e.FirstName.Contains(searchTerm) || e.LastName.Contains(searchTerm))
+        .Where(e => (e.FirstName != null && e.FirstName.Contains(searchTerm)) || (e.LastName != null && e.LastName.Contains(searchTerm)))
         .ToListAsync();
 
         isLoading = false;
@@ -124,13 +124,19 @@
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>First Name:</label>
-                            <input type="text" class="form-control" @bind="foundEmployee.FirstName" />
+                            @if (foundEmployee != null)
+                            {
+                                <input type="text" class="form-control" @bind="foundEmployee.FirstName" />
+                            }
                         </div>
                     </div>
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>Last Name:</label>
-                            <input type="text" class="form-control" @bind="foundEmployee.LastName" />
+                            @if (foundEmployee != null)
+                            {
+                                <input type="text" class="form-control" @bind="foundEmployee.LastName" />
+                            }
                         </div>
                     </div>
                 </div>
@@ -138,13 +144,19 @@
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>Employee ID:</label>
-                            <input type="text" class="form-control" @bind="foundEmployee.EmployeeID" />
+                            @if (foundEmployee != null)
+                            {
+                                <input type="text" class="form-control" @bind="foundEmployee.EmployeeID" />
+                            }
                         </div>
                     </div>
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
                             <label>Employee Initials:</label>
-                            <input type="text" class="form-control" @bind="foundEmployee.Initials" />
+                            @if (foundEmployee != null)
+                            {
+                                <input type="text" class="form-control" @bind="foundEmployee.Initials" />
+                            }
                         </div>
                     </div>
                 </div>

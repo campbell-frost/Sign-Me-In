@@ -66,8 +66,8 @@
     }
     private void FetchData()
     {
-        List<HubSession> testing = null;
-        List<HubSession> tutoring = null;
+        List<HubSession> ? testing = null;
+        List<HubSession> ? tutoring = null;
 
         // Check if both start and end dates are selected
         if (startDate.HasValue && endDate.HasValue)
@@ -138,24 +138,31 @@
     }
 
 
-    private void StartDateChanged(ChangeEventArgs e)
+  private void StartDateChanged(ChangeEventArgs e)
+{
+    if (e.Value != null)
     {
-        if (e.Value != null)
+        string dateString = e.Value.ToString()!;
+        if (!string.IsNullOrEmpty(dateString))
         {
-            startDate = DateTime.Parse(e.Value.ToString());
+            startDate = DateTime.Parse(dateString);
             FetchData();
         }
     }
+}
 
-    private void EndDateChanged(ChangeEventArgs e)
+private void EndDateChanged(ChangeEventArgs e)
+{
+    if (e.Value != null)
     {
-        if (e.Value != null)
+        string dateString = e.Value.ToString()!;
+        if (!string.IsNullOrEmpty(dateString))
         {
-            endDate = DateTime.Parse(e.Value.ToString());
+            endDate = DateTime.Parse(dateString);
             FetchData();
         }
     }
-
+}
 
 
 }
