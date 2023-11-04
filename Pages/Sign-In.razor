@@ -6,8 +6,8 @@
 @code {
     // --- SEARCH FUNCTIONALITY VARIABLES ---
     private string searchTerm = ""; // The term used to search for students
-    private List<Student> foundStudents; // List of students that match the search term
-    private Student foundStudent; // The selected student
+    private List<Student>? foundStudents; // List of students that match the search term
+    private Student? foundStudent; // The selected student
     private bool isLoading = false; // Indicates if the search is currently running
     private bool searchPerformed = false; // Indicates if a search has been made
     private bool isLogoVisible = true; // Determines the visibility of the logo on the UI
@@ -78,7 +78,6 @@
         }
     }
 
-
     // Handles the sign-in function
     private async Task HandleSignIn()
     {
@@ -119,12 +118,12 @@
             searchTerm = "";
 
             StateHasChanged();
-            
-            await Task.Delay(3000); // 3 second timer 
 
-            // Resets fields 
+            await Task.Delay(3000); // 3 second timer
+
+            // Resets fields
             ResetSignIn();
-            
+
         }
     }
 
@@ -137,8 +136,6 @@
         searchTerm = "";
         alreadySignedIn = false;
     }
-
-}
 
 <!-- HTML code for rendering the sign-in -->
 <PageTitle>Sign-In 😀</PageTitle>
@@ -196,7 +193,7 @@
             else if (alreadySignedIn)
             {
                 <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first
-                        before signing in again. </div>
+                    before signing in again. </div>
                 <div class="text-center">
                     <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
                 </div>
@@ -241,12 +238,12 @@
                     </div>
                     <hr />
                     <div class="row pt-3">
-                        <div class="col-md-6 mx-auto">
-                            <div class="form-group">
-                                <label>Initials:</label>
-                                <select class="form-control" @bind="selectedInitials">
-                                    <option value="">Select Initials</option>
-                                    @foreach (var initial in initials)
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label>Initials:</label>
+                    <select class="form-control" @bind="selectedInitials">
+                        <option value="">Select Initials</option>
+                        @foreach (var initial in initials)
                                     {
                                         <option value="@initial">@initial</option>
                                     }
@@ -276,7 +273,8 @@
                         }
                     </div>
                 }
-                else{
+                else
+                {
                     <div class="alert alert-danger">ELSE ERROR</div>
                 }
             }

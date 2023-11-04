@@ -66,9 +66,6 @@
             
     }
 
-
-
-
     // Sets which button is active and updates the display mode accordingly
     void SetActiveButton(int index)
     {
@@ -120,7 +117,7 @@
         {
             var currentTime = DateTime.Now.TimeOfDay; // Fetch the current time
             var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds); // Truncate to remove milliseconds
-        sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
+            sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
             dbContext.SaveChanges(); // Persist the changes
             LoadHubSessions(); // Refresh the sessions
         }

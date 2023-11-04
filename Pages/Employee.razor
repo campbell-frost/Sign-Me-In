@@ -5,8 +5,8 @@
 
 @code{
     private string searchTerm = ""; // The term used to search for employees
-    private List<HubEmployee> foundEmployees; // List of employees that match the search term
-    private HubEmployee foundEmployee; // The selected employee
+    private List<HubEmployee> ? foundEmployees; // List of employees that match the search term
+    private HubEmployee ? foundEmployee; // The selected employee
     private bool isLoading = false; // Indicates if the search is currently running
     private bool searchPerformed = false; // Indicates if a search has been made
     private bool updated = false;
@@ -163,8 +163,6 @@
             </div>
                 
             }
-
-       
         }
 </div>
 
