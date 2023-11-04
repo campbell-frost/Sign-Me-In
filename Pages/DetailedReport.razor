@@ -38,6 +38,8 @@
             }
         </ul>
     </div>
+
+<button class="btn btn-primary" @onclick="gobacktoReports">Go Back</button>
 </div>
 
 @code {
@@ -87,5 +89,9 @@
     void ChangePage(int page)
     {
         currentPage = page;
+    }
+
+    private void gobacktoReports(){
+        navigationManager.NavigateTo("/Reports");
     }
 }
