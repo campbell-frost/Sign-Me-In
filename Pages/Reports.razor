@@ -75,8 +75,6 @@
         // Check if both start and end dates are selected
         if (startDate.HasValue && endDate.HasValue)
         {
-
-            Console.WriteLine("Dates from " + startDate + " to " + endDate);
             // Filter data between start and end dates
             testing = dbContext.HubSessions
             .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
@@ -171,7 +169,6 @@ private void EndDateChanged(ChangeEventArgs e)
     {
                // Pass the selected dates as route parameters
            navigationManager.NavigateTo($"/DetailedReport/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
-
         
     }
 

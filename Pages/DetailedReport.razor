@@ -15,18 +15,29 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var session in hubSessions)
-    {
-        <tr>
-            <td>@session.Date</td>
-            <td>@session.StudentID</td>
-            <td>@(GetStudentName(session.StudentID))</td>
-            <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalHours ?? 0),2)</td>
-            <td>@session.SessionType</td>
-        </tr>
-    }
+            @foreach (var session in GetPaginatedSessions())
+            {
+                <tr>
+                    <td>@session.Date</td>
+                    <td>@session.StudentID</td>
+                    <td>@(GetStudentName(session.StudentID))</td>
+                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalHours ?? 0), 2)</td>
+                    <td>@session.SessionType</td>
+                </tr>
+            }
         </tbody>
     </table>
+    <div class="pagination-container">
+        <ul class="pagination">
+            @for (int page = 1; page <= totalPages; page++)
+            {
+                int localPage = page; // Create a local copy of page
+                <li class="page-item @(localPage == currentPage ? "active" : "")">
+                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
+                </li>
+            }
+        </ul>
+    </div>
 </div>
 
 @code {
@@ -34,6 +45,12 @@
     [Parameter] public string endDate { get; set; }
 
     private List<HubSession> hubSessions = new List<HubSession>();
+
+    // Variables for client-side pagination
+    int currentPage = 1;
+    int pageSize = 5;
+    int totalItems;
+    int totalPages;
 
     protected override void OnInitialized()
     {
@@ -44,11 +61,31 @@
             hubSessions = dbContext.HubSessions
                 .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
                 .ToList();
+
+            // Calculate the total number of items and pages
+            totalItems = hubSessions.Count;
+            totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
         }
     }
+
+    private IEnumerable<HubSession> GetPaginatedSessions()
+    {
+        // Calculate the range of items to display for the current page
+        int startIndex = (currentPage - 1) * pageSize;
+        int endIndex = Math.Min(startIndex + pageSize, totalItems);
+
+        // Return the items for the current page
+        return hubSessions.Skip(startIndex).Take(endIndex - startIndex);
+    }
+
     private string GetStudentName(int studentID)
     {
         var student = dbContext.Students.FirstOrDefault(s => s.StudentID == studentID);
         return student != null ? $"{student.FirstName} {student.LastName}" : "N/A";
+    }
+
+    void ChangePage(int page)
+    {
+        currentPage = page;
     }
 }
