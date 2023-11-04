@@ -15,10 +15,10 @@
             <form @onsubmit="HandleLogin">
                 <div class="d-flex flex-column align-items-center">
                     <div class="form-group w-100">
-                        <input type="text" @bind="username" class="form-control shadow-none" placeholder="Username" @onkeyup = "HandleKeyUp"/>
+                        <input type="text" @bind="username" class="form-control shadow-none" placeholder="Username" />
                     </div>
                     <div class="form-group w-100 pb-3">
-                        <input type="password" @bind="password" class="form-control shadow-none" placeholder="Password" @onkeyup = "HandleKeyUp" />
+                        <input type="password" @bind="password" class="form-control shadow-none" placeholder="Password" />
                     </div>
                 </div>
                 <div class="d-flex justify-content-end">
@@ -49,13 +49,4 @@
             await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
         }
     }
-
-    private async Task HandleKeyUp(KeyboardEventArgs e)
-{
-    if (e.Key == "Enter")
-    {
-        // Enter key is pressed, trigger the form submission
-        await HandleLogin();
-    }
-}
 }

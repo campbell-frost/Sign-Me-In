@@ -1,4 +1,5 @@
 @inject Context dbContext
+@inject NavigationManager navigationManager
 @page "/Reports"
 <div class="container">
     <div class="row">
@@ -46,7 +47,9 @@
                 </tr>
             </tbody>
         </table>
+
     </div>
+        <button class="btn btn-primary mt-3" @onclick="ShowDetailedReport"> View more detailed report </button>
 </div>
 @code {
     private double HoursTesting { get; set; }
@@ -61,8 +64,8 @@
 
     protected override void OnInitialized()
     {
-        startDate = null;
-        endDate = null;
+        startDate = DateTime.Now.Date;
+        endDate = DateTime.Now.Date;
     }
     private void FetchData()
     {
@@ -164,5 +167,12 @@ private void EndDateChanged(ChangeEventArgs e)
     }
 }
 
+    private void ShowDetailedReport()
+    {
+               // Pass the selected dates as route parameters
+           navigationManager.NavigateTo($"/DetailedReport/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
+
+        
+    }
 
 }

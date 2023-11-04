@@ -1,0 +1,54 @@
+@page "/DetailedReport/{startDate}/{endDate}"
+@inject NavigationManager navigationManager
+@inject Context dbContext
+<h2 class="mb-3" style="text-align: center; color: #212529;">Detailed Report</h2>
+<div class="container">
+    <p>Selected Date Range: From "@startDate" to "@endDate"</p>
+    <table class="table">
+        <thead>
+            <tr class="table-header">
+                <th> Date</th>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Total Time (Hours)</th>
+                <th>Session Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var session in hubSessions)
+    {
+        <tr>
+            <td>@session.Date</td>
+            <td>@session.StudentID</td>
+            <td>@(GetStudentName(session.StudentID))</td>
+            <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalHours ?? 0),2)</td>
+            <td>@session.SessionType</td>
+        </tr>
+    }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public string startDate { get; set; }
+    [Parameter] public string endDate { get; set; }
+
+    private List<HubSession> hubSessions = new List<HubSession>();
+
+    protected override void OnInitialized()
+    {
+        // Parse the start and end date strings into DateTime objects
+        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime parsedEndDate))
+        {
+            // Query the database to retrieve hub session data for the selected date range
+            hubSessions = dbContext.HubSessions
+                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+                .ToList();
+        }
+    }
+    private string GetStudentName(int studentID)
+    {
+        var student = dbContext.Students.FirstOrDefault(s => s.StudentID == studentID);
+        return student != null ? $"{student.FirstName} {student.LastName}" : "N/A";
+    }
+}
