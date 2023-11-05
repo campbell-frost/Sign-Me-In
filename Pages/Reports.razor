@@ -168,7 +168,7 @@ private void EndDateChanged(ChangeEventArgs e)
     private void ShowDetailedReport()
     {
                // Pass the selected dates as route parameters
-           navigationManager.NavigateTo($"/DetailedReport/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
+           navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
         
     }
 
