@@ -1,46 +1,6 @@
 @page "/Reports/Detailed/{startDate}/{endDate}"
 @inject NavigationManager navigationManager
 @inject Context dbContext
-<h2 class="mb-3" style="text-align: center; color: #212529;">Detailed Report</h2>
-<div class="container">
-    <p>Selected Date Range: From "@startDate" to "@endDate"</p>
-    <table class="table">
-        <thead>
-            <tr class="table-header">
-                <th> Date</th>
-                <th>Student ID</th>
-                <th>Student Name</th>
-                <th>Total Time (Hours)</th>
-                <th>Session Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var session in GetPaginatedSessions())
-            {
-                <tr>
-                    <td>@session.Date</td>
-                    <td>@session.StudentID</td>
-                    <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalHours ?? 0), 2)</td>
-                    <td>@session.SessionType</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="pagination-container">
-        <ul class="pagination">
-            @for (int page = 1; page <= totalPages; page++)
-            {
-                int localPage = page; // Create a local copy of page
-                <li class="page-item @(localPage == currentPage ? "active" : "")">
-                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
-                </li>
-            }
-        </ul>
-    </div>
-
-<button class="btn btn-primary" @onclick="gobacktoReports">Go Back</button>
-</div>
 
 @code {
     [Parameter] public string startDate { get; set; }
@@ -50,9 +10,10 @@
 
     // Variables for client-side pagination
     int currentPage = 1;
-    int pageSize = 5;
+    int pageSize = 10;
     int totalItems;
     int totalPages;
+    string searchTerm = "";
 
     protected override void OnInitialized()
     {
@@ -94,4 +55,92 @@
     private void gobacktoReports(){
         navigationManager.NavigateTo("/Reports");
     }
+
+  private void HandleSearch()
+    {
+        // Clear the current list of hubSessions
+        hubSessions.Clear();
+
+        // Query the database to retrieve hub session data for the selected date range
+        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime parsedEndDate))
+        {
+            hubSessions = dbContext.HubSessions
+                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+                .ToList();
+
+            // Filter hubSessions to include only sessions where the student's name matches the search term
+            hubSessions = hubSessions
+                .Where(session => GetStudentName(session.StudentID).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            // Recalculate the total number of items and pages
+            totalItems = hubSessions.Count;
+            totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+        }
+    }
+
 }
+
+<div class="container">
+    <div class="row pt-4">
+        <div class="col-md-6">
+
+        <form @onsubmit="HandleSearch">
+                <div class="form-group">
+                    <div class="input-group mx-auto">
+                        <input type="search" class="form-control shadow-none" placeholder="Search for Student"
+                            @bind="searchTerm" autofocus />
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default shadow-none my-auto">
+                                <img src="search-icon.png" class="search-icon">
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+            <div class="col-md-6">
+                
+            <div class="alert alert-info">Selected Date Range: From "@startDate" to "@endDate"</div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr class="table-header">
+                <th> Date</th>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Total Time (Hours)</th>
+                <th>Session Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var session in GetPaginatedSessions())
+            {
+                <tr>
+                    <td>@session.Date</td>
+                    <td>@session.StudentID</td>
+                    <td>@(GetStudentName(session.StudentID))</td>
+                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalHours ?? 0), 2)</td>
+                    <td>@session.SessionType</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row pagination-container pl-1">
+        <ul class="col-md-11 pagination" style="padding-left: 15px;">
+            @for (int page = 1; page <= totalPages; page++)
+            {
+                int localPage = page; // Create a local copy of page
+                <li class="page-item @(localPage == currentPage ? "active" : "")">
+                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
+                </li>
+            }
+        </ul>
+        <div class="col-md-1 text-end">
+            <button class="btn btn-primary text-end" @onclick="gobacktoReports">Go Back</button>
+        </div>
+    </div>
+
+</div>
+
