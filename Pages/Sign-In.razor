@@ -141,11 +141,11 @@
 <!-- HTML code for rendering the sign-in -->
 <PageTitle>Sign-In 😀</PageTitle>
 
-<div class="logo-container text-center @(searchPerformed && !isLogoVisible ? "logo-move-up" : "")">
+<div class="logo-container pt-5 pb-3 text-center @(searchPerformed && !isLogoVisible ? "logo-move-up" : "")">
     <img src="/logo-transparent.png" class="image">
 </div>
 
-<div class="container-md">
+<div class="container-md py-5">
     <div class="content-container @(searchPerformed && !isLogoVisible ? "content-move-up" : "")">
         <form @onsubmit="HandleSearch">
             <div class="form-group py-4">
