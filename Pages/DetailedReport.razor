@@ -110,7 +110,7 @@
                 <th> Date</th>
                 <th>Student ID</th>
                 <th>Student Name</th>
-                <th>Total Time (Hours)</th>
+                <th>Total Time (Minutes)</th>
                 <th>Session Type</th>
             </tr>
         </thead>
@@ -121,7 +121,7 @@
                     <td>@session.Date</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalHours ?? 0), 2)</td>
+                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalMinutes ?? 0), 2)</td>
                     <td>@session.SessionType</td>
                 </tr>
             }
@@ -137,10 +137,12 @@
                 </li>
             }
         </ul>
-        <div class="col-md-1 text-end">
-            <button class="btn btn-primary text-end" @onclick="gobacktoReports">Go Back</button>
-        </div>
     </div>
-
+    <div class="col-md-1">
+            <button class="btn btn-primary" @onclick="gobacktoReports">Go Back</button>
+    </div>
+            <button class="btn btn-primary">Export</button>
+        <div class="mt-2">
+        </div>
 </div>
 
