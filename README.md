@@ -32,5 +32,24 @@ To get started with the Sign Me In web app, follow these steps:
    dotnet watch run
 
 ## Screenshots
-# Login
-https://github.com/campbell-frost/Sign-Me-In/assets/122552993/43bc7ac9-d5fc-411a-997d-0dba956b9545
+## Staff view
+### Login
+![login](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/43bc7ac9-d5fc-411a-997d-0dba956b9545)
+### Default Sign In View
+![DefaultSignIn](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/74428c20-c40b-4117-a645-6843619f9854)
+### Searched Student
+![SignInSearchStudent](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/fcc2dccb-0781-41ff-8478-0569c6023adc)
+### Duplicate Students
+![DuplicateStudents](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/e75b3717-26ca-42d1-be2c-39896a530a00)
+### Default View
+![DefaultView](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/69673934-6731-4f0a-9dbd-063fea5ef48d)
+### View All
+![ViewAll](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/8e0789a9-7b8d-4be0-974e-a8798a72128e)
+
+## Manager View
+### Employee Page
+![SearchEmployee](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/f7bc4937-a191-4b1a-b587-b0dcb7a1988c)
+### Reports page
+![Reports](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/4124c1f8-7f50-41d0-910b-b0e9aba44ec4)
+### Detailed Reports page
+![DetailedReports](https://github.com/campbell-frost/Sign-Me-In/assets/122552993/2d5e3e7f-ee22-417f-bd9e-f6075ea1098d)
