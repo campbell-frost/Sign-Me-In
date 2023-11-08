@@ -5,6 +5,7 @@ Welcome to the Sign Me In web application! This application is designed to aid e
 ## Table of Contents
 - [Features](#features)
 - [Getting Started](#getting-started)
+- [Screenshots](#screenshots)
 
 ## Features
 
@@ -30,3 +31,6 @@ To get started with the Sign Me In web app, follow these steps:
    ```bash
    dotnet watch run
 
+## Screenshots
+# Login
+https://github.com/campbell-frost/Sign-Me-In/assets/122552993/43bc7ac9-d5fc-411a-997d-0dba956b9545
