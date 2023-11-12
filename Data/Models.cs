@@ -59,7 +59,6 @@ public class Student
     public int StudentID { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-   public bool? SignedIn { get; set; }
 
     [ForeignKey("Course")]
     public int CourseID { get; set; }
@@ -73,7 +72,6 @@ public class Student
 public class HubSession
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int SessionID { get; set; }
     public DateTime Date {get; set;}
     public TimeSpan TimeIn { get; set; }
