@@ -40,7 +40,7 @@
 
     private void NavigateToPasswordReset()
     {
-        navigationManager.NavigateTo("/Account/PasswordReset");
+        navigationManager.NavigateTo("/Account/ChangePassword");
     }
 }
 <div class="content pt-5">
@@ -83,7 +83,7 @@
                 </div>
                 <div class="col-md-6">
                     <label></label>
-                    <button class="btn btn-primary w-100" onclick="NavigateToPasswordReset">Change Password</button>
+                    <button class="btn btn-primary w-100" @onclick="NavigateToPasswordReset">Change Password</button>
                 </div>
             </div>
         </div>
