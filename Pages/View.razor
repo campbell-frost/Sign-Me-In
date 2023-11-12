@@ -131,6 +131,31 @@
         Console.WriteLine("ChangePage called with page: " + page);
     }
 
+        string FormatTotalTime(TimeSpan totalTime)
+    {
+        int hours = (int)totalTime.TotalHours;
+        int minutes = totalTime.Minutes;
+
+        if (hours > 0 && minutes > 0)
+        {
+            return $"{hours} hr {minutes} min";
+        }
+        else if (hours > 0)
+        {
+            return $"{hours} hr";
+        }
+        else if (minutes > 0)
+        {
+            return $"{minutes} min";
+        }
+        else
+        {
+            return ""; 
+        }
+    }
+
+
+
 }
 
 <!-- HTML code for rendering the view -->
@@ -256,8 +281,15 @@
                         </td>
                         @if (!showOnlySignedIn)
                         {
-                            <td>@(hubSession.TimeOut - hubSession.TimeIn)</td>
+                            if(hubSession.TimeOut> hubSession.TimeIn){
+                            var totalTime = hubSession.TimeOut - hubSession.TimeIn;
+                            <td>@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
+                            }
+                            else{
+                                <td style="color: red;">Invalid time input</td>
+                            }
                         }
+
                         @if (isEditing)
                         {
                             <td>
