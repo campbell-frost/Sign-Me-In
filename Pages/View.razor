@@ -285,6 +285,9 @@
                             var totalTime = hubSession.TimeOut - hubSession.TimeIn;
                             <td>@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
                             }
+                            else if(hubSession.TimeOut == null){
+                              <td style="color: orange;">In Progress</td>  
+                            }
                             else{
                                 <td style="color: red;">Invalid time input</td>
                             }
