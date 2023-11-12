@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-primary" @onclick="() => HandleSelectAccount(Account)">Select</button>
+        <button class="btn btn-primary"@onclick="HandleAccountSelect">Select</button>
     </div>
 </div>
 
@@ -23,8 +23,11 @@
     [Parameter]
     public EventCallback<Account> OnSelectAccount { get; set; }
 
-    private async Task HandleSelectAccount()
+    private async Task HandleAccountSelect()
     {
+        // Invoke the parent component's SelectAccount method and pass the Account
         await OnSelectAccount.InvokeAsync(Account);
     }
 }
+
+

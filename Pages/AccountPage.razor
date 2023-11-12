@@ -1,0 +1,91 @@
+@page "/Account"
+@inject Context dbContext
+@using Microsoft.EntityFrameworkCore;
+@inject NavigationManager navigationManager
+
+@code {
+    private bool selectAccount = false;
+    private List<Account> Accounts;
+    private Account? selectedAccount;
+    public string TxtType = "password";
+
+    protected override void OnInitialized()
+    {
+        LoadAccounts();
+    }
+
+    private void LoadAccounts()
+    {
+        Accounts = dbContext.Accounts.ToList();
+    }
+
+    private void SelectAccount(Account account)
+    {
+        selectedAccount = dbContext.Accounts
+        .FirstOrDefault(s => s.AccountID == account.AccountID);
+
+        selectAccount = true;
+    }
+    private void ShowPassword()
+    {
+        if (this.TxtType == "password")
+        {
+            this.TxtType = "text";
+        }
+        else
+        {
+            this.TxtType = "password";
+        }
+    }
+
+    private void NavigateToPasswordReset()
+    {
+        navigationManager.NavigateTo("/Account/PasswordReset");
+    }
+}
+<div class="content pt-5">
+    <div class="account-cards px-5">
+        @if (!selectAccount)
+        {
+
+            @foreach (var account in Accounts)
+            {
+                <AccountCard Account="account" OnSelectAccount="() => SelectAccount(account)" />
+            }
+        }
+    </div>
+
+    @if (selectAccount)
+    {
+        <div class="main-content ">
+
+            <div class="row pb-3 ">
+                <div class="col-md-6">
+                    <label>Account ID</label>
+                    <input type="text" readonly class="form-control" value="@selectedAccount.AccountID" />
+                </div>
+                <div class="col-md-6">
+                    <label>Role</label>
+                    <input type="text" readonly class="form-control" value="@selectedAccount.UserName" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Password</label>
+                    <div class="input-group">
+                        <input type="@TxtType" readonly class="form-control" value="@selectedAccount.PasswordHash" />
+                        <span class="input-group-append">
+                            <button class="btn btn-outline-none shadow-none" type="button" @onclick="ShowPassword">
+                                <i class="oi oi-eye"></i> 
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label></label>
+                    <button class="btn btn-primary w-100" onclick="NavigateToPasswordReset">Change Password</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

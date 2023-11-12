@@ -185,7 +185,7 @@
 
                 @foreach (var student in foundStudents)
                 {
-                    if (student != null && !alreadySignedIn) // Add the condition here
+                    if (student != null && !alreadySignedIn) 
                     {
                         <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
                     }
