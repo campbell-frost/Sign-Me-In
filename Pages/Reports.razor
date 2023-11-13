@@ -77,11 +77,11 @@
         {
             // Filter data between start and end dates
             testing = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing")
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut!= null)
             .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring")
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut!= null)
             .ToList();
         }
         else if (startDate.HasValue)
@@ -91,11 +91,11 @@
             var currentDate = DateTime.Now.Date;
             Console.WriteLine("Dates from " + startDate + " to " + currentDate);
             testing = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing")
+            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing" && s.TimeOut!= null)
             .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring")
+            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring" && s.TimeOut!= null)
             .ToList();
         }
         else if (endDate.HasValue)
@@ -104,11 +104,11 @@
             // End date is selected, but start date is not
             // Filter data from the beginning till the end date
             testing = dbContext.HubSessions
-            .Where(s => s.Date <= endDate && s.SessionType == "Testing")
+            .Where(s => s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut!= null)
             .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date <= endDate && s.SessionType == "Tutoring")
+            .Where(s => s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut!= null)
             .ToList();
         }
         else
