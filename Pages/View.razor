@@ -1,6 +1,7 @@
 ﻿@page "/View"
 @using Microsoft.EntityFrameworkCore;
 @inject Context dbContext
+@inject IJSRuntime JSRuntime
 
 @code {
     // A list to store the sessions retrieved from the database
@@ -22,6 +23,7 @@
     protected override void OnInitialized()
     {
         LoadHubSessions(); // Load sessions when page initializes
+        CheckAndSignOutStudents(); //
     }
 
     // Loads the hub sessions based on the 'showOnlySignedIn' condition
@@ -120,6 +122,32 @@
             sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
             dbContext.SaveChanges(); // Persist the changes
             LoadHubSessions(); // Refresh the sessions
+        }
+    }
+
+    private async Task CheckAndSignOutStudents()
+    {
+        var currentTime = DateTime.Now;
+        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Set the target sign-out time to 8:30 pm
+
+        if (currentTime >= signOutTime)
+        {
+            // Get sessions that need to be signed out
+            var sessionsToSignOut = dbContext.HubSessions
+                .Where(h => !h.TimeOut.HasValue && h.TimeIn < signOutTime.TimeOfDay)
+                .ToList();
+
+            // Sign out each session
+            foreach (var session in sessionsToSignOut)
+            {
+                SignOutStudent(session);
+            }
+
+            // Refresh the sessions after signing out students
+            LoadHubSessions();
+
+            // You can also display a notification if needed
+            await JSRuntime.InvokeVoidAsync("alert", "Students signed out automatically after 8:30 pm.");
         }
     }
 
