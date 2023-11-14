@@ -14,7 +14,7 @@
 
     // Variables for pagination
     int currentPage = 1;
-    int pageSize = 10;
+    int pageSize = 1; 
     int totalItems;
     int totalPages;
 
@@ -30,29 +30,29 @@
     private void LoadHubSessions()
     {
         IQueryable<HubSession> query;
-
+        
         if (showOnlySignedIn)
         {
             query = dbContext.HubSessions
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Course)
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Instructor)
-            .Include(h => h.HubEmployee)
-            .Where(h => !h.TimeOut.HasValue)
-            .OrderByDescending(h => h.SessionID);
-
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+                .Include(h => h.HubEmployee)
+                .Where(h => !h.TimeOut.HasValue)
+                .OrderByDescending(h => h.SessionID);
+        
             query.Reverse();
         }
         else
         {
             query = dbContext.HubSessions
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Course)
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Instructor)
-            .Include(h => h.HubEmployee)
-            .OrderByDescending(h => h.SessionID);
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+                .Include(h => h.HubEmployee)
+                .OrderByDescending(h => h.SessionID);
 
             query.Reverse();
         }
@@ -62,10 +62,10 @@
 
         // Calculate which items to display on the current page
         hubSessions = query
-        .Skip((currentPage - 1) * pageSize)
-        .Take(pageSize)
-        .ToList();
-
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+            
     }
 
     // Sets which button is active and updates the display mode accordingly
@@ -76,7 +76,7 @@
         {
             showOnlySignedIn = true;
         }
-        else if (index == 1)
+        else if(index == 1)
         {
             showOnlySignedIn = false;
         }
@@ -118,7 +118,7 @@
         if (sessionToUpdate != null && !sessionToUpdate.TimeOut.HasValue)
         {
             var currentTime = DateTime.Now.TimeOfDay; // Fetch the current time
-            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds); // Truncate to remove milliseconds
             sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
             dbContext.SaveChanges(); // Persist the changes
             LoadHubSessions(); // Refresh the sessions
@@ -128,14 +128,14 @@
     private async Task CheckAndSignOutStudents()
     {
         var currentTime = DateTime.Now;
-        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Set time to 8:30pm
+        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Set the target sign-out time to 8:30 pm
 
         if (currentTime >= signOutTime)
         {
             // Get sessions that need to be signed out
             var sessionsToSignOut = dbContext.HubSessions
-            .Where(h => !h.TimeOut.HasValue && h.TimeIn < signOutTime.TimeOfDay)
-            .ToList();
+                .Where(h => !h.TimeOut.HasValue && h.TimeIn < signOutTime.TimeOfDay)
+                .ToList();
 
             // Sign out each session
             foreach (var session in sessionsToSignOut)
@@ -145,9 +145,6 @@
 
             // Refresh the sessions after signing out students
             LoadHubSessions();
-
-            // You can also display a notification if needed
-            await JSRuntime.InvokeVoidAsync("alert", "Students signed out automatically after 8:30 pm.");
         }
     }
 
@@ -155,11 +152,23 @@
     {
         currentPage = page;
         LoadHubSessions(); // Refresh the sessions for the selected page
-        Console.WriteLine("total items " + totalItems);
-        Console.WriteLine("ChangePage called with page: " + page);
     }
 
-    string FormatTotalTime(TimeSpan totalTime)
+    void MovePages(int offset)
+    {
+        currentPage += offset;
+        LoadHubSessions(); // Refresh the sessions for the new page range
+    }
+
+    IEnumerable<int> GetPageRange()
+    {
+        int startPage = Math.Max(1, currentPage - 4);
+        int endPage = Math.Min(totalPages, startPage + 9);
+        return Enumerable.Range(startPage, endPage - startPage + 1);
+    }
+
+
+        string FormatTotalTime(TimeSpan totalTime)
     {
         int hours = (int)totalTime.TotalHours;
         int minutes = totalTime.Minutes;
@@ -178,7 +187,7 @@
         }
         else
         {
-            return "";
+            return ""; 
         }
     }
 
@@ -242,13 +251,12 @@
                 {
                     <tr>
                         <td>@hubSession.Date.ToString("MM/dd/yyyy")</td>
-                        @if (hubSession.Student != null)
-                        {
-                            <td>@hubSession.SessionID</td>
-                            <td>@hubSession.Student.FirstName @hubSession.Student.LastName</td>
-                            <td>@hubSession.Student.StudentID</td>
-                            <td>@hubSession.Student?.Course?.CourseName</td>
-                            <td>@hubSession.Student?.Instructor?.FirstName @hubSession.Student?.Instructor?.LastName</td>
+                        @if (hubSession.Student != null){
+                        <td>@hubSession.SessionID</td>
+                        <td>@hubSession.Student.FirstName @hubSession.Student.LastName</td>
+                        <td>@hubSession.Student.StudentID</td>
+                        <td>@hubSession.Student?.Course?.CourseName</td>
+                        <td>@hubSession.Student?.Instructor?.FirstName @hubSession.Student?.Instructor?.LastName</td>
                         }
                         <td>
                             @if (isEditing)
@@ -288,9 +296,8 @@
                             }
                             else
                             {
-                                @if (hubSession.HubEmployee != null)
-                                {
-                                    @hubSession.HubEmployee.Initials
+                                @if (hubSession.HubEmployee != null){
+                                @hubSession.HubEmployee.Initials
                                 }
                             }
                         </td>
@@ -311,17 +318,14 @@
                         </td>
                         @if (!showOnlySignedIn)
                         {
-                            if (hubSession.TimeOut > hubSession.TimeIn)
-                            {
-                                var totalTime = hubSession.TimeOut - hubSession.TimeIn;
-                                <td>@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
+                            if(hubSession.TimeOut> hubSession.TimeIn){
+                            var totalTime = hubSession.TimeOut - hubSession.TimeIn;
+                            <td>@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
                             }
-                            else if (hubSession.TimeOut == null)
-                            {
-                                <td style="color: orange;">In Progress</td>
+                            else if(hubSession.TimeOut == null){
+                              <td style="color: orange;">In Progress</td>  
                             }
-                            else
-                            {
+                            else{
                                 <td style="color: red;">Invalid time input</td>
                             }
                         }
@@ -335,22 +339,31 @@
                     </tr>
                 }
             }
-
+            
 
         </tbody>
     </table>
     <div class="pagination-container">
-        <ul class="pagination">
-            @for (int page = 1; page <= totalPages; page++)
-            {
-                int localPage = page; // Create a local copy of page
-                <li class="page-item @(localPage == currentPage ? "active" : "")">
-                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
-                </li>
-            }
+    <ul class="pagination">
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <a class="page-link" @onclick="() => MovePages(-1)" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
 
+        @foreach (var pageNumber in GetPageRange())
+        {
+            <li class="page-item @(pageNumber == currentPage ? "active" : "")">
+                <a class="page-link" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
+            </li>
+        }
 
-        </ul>
-    </div>
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+            <a class="page-link" @onclick="() => MovePages(1)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</div>
 
 </div>
