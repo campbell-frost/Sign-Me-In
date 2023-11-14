@@ -14,7 +14,7 @@
 
     // Variables for pagination
     int currentPage = 1;
-    int pageSize = 10; 
+    int pageSize = 10;
     int totalItems;
     int totalPages;
 
@@ -30,29 +30,29 @@
     private void LoadHubSessions()
     {
         IQueryable<HubSession> query;
-        
+
         if (showOnlySignedIn)
         {
             query = dbContext.HubSessions
-                .Include(h => h.Student)
-                .ThenInclude(s => s.Course)
-                .Include(h => h.Student)
-                .ThenInclude(s => s.Instructor)
-                .Include(h => h.HubEmployee)
-                .Where(h => !h.TimeOut.HasValue)
-                .OrderByDescending(h => h.SessionID);
-        
+            .Include(h => h.Student)
+            .ThenInclude(s => s.Course)
+            .Include(h => h.Student)
+            .ThenInclude(s => s.Instructor)
+            .Include(h => h.HubEmployee)
+            .Where(h => !h.TimeOut.HasValue)
+            .OrderByDescending(h => h.SessionID);
+
             query.Reverse();
         }
         else
         {
             query = dbContext.HubSessions
-                .Include(h => h.Student)
-                .ThenInclude(s => s.Course)
-                .Include(h => h.Student)
-                .ThenInclude(s => s.Instructor)
-                .Include(h => h.HubEmployee)
-                .OrderByDescending(h => h.SessionID);
+            .Include(h => h.Student)
+            .ThenInclude(s => s.Course)
+            .Include(h => h.Student)
+            .ThenInclude(s => s.Instructor)
+            .Include(h => h.HubEmployee)
+            .OrderByDescending(h => h.SessionID);
 
             query.Reverse();
         }
@@ -62,10 +62,10 @@
 
         // Calculate which items to display on the current page
         hubSessions = query
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-            
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+
     }
 
     // Sets which button is active and updates the display mode accordingly
@@ -76,7 +76,7 @@
         {
             showOnlySignedIn = true;
         }
-        else if(index == 1)
+        else if (index == 1)
         {
             showOnlySignedIn = false;
         }
@@ -118,7 +118,7 @@
         if (sessionToUpdate != null && !sessionToUpdate.TimeOut.HasValue)
         {
             var currentTime = DateTime.Now.TimeOfDay; // Fetch the current time
-            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds); // Truncate to remove milliseconds
+            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
             sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
             dbContext.SaveChanges(); // Persist the changes
             LoadHubSessions(); // Refresh the sessions
@@ -128,14 +128,14 @@
     private async Task CheckAndSignOutStudents()
     {
         var currentTime = DateTime.Now;
-        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Set the target sign-out time to 8:30 pm
+        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Set time to 8:30pm
 
         if (currentTime >= signOutTime)
         {
             // Get sessions that need to be signed out
             var sessionsToSignOut = dbContext.HubSessions
-                .Where(h => !h.TimeOut.HasValue && h.TimeIn < signOutTime.TimeOfDay)
-                .ToList();
+            .Where(h => !h.TimeOut.HasValue && h.TimeIn < signOutTime.TimeOfDay)
+            .ToList();
 
             // Sign out each session
             foreach (var session in sessionsToSignOut)
@@ -159,7 +159,7 @@
         Console.WriteLine("ChangePage called with page: " + page);
     }
 
-        string FormatTotalTime(TimeSpan totalTime)
+    string FormatTotalTime(TimeSpan totalTime)
     {
         int hours = (int)totalTime.TotalHours;
         int minutes = totalTime.Minutes;
@@ -178,7 +178,7 @@
         }
         else
         {
-            return ""; 
+            return "";
         }
     }
 
@@ -242,12 +242,13 @@
                 {
                     <tr>
                         <td>@hubSession.Date.ToString("MM/dd/yyyy")</td>
-                        @if (hubSession.Student != null){
-                        <td>@hubSession.SessionID</td>
-                        <td>@hubSession.Student.FirstName @hubSession.Student.LastName</td>
-                        <td>@hubSession.Student.StudentID</td>
-                        <td>@hubSession.Student?.Course?.CourseName</td>
-                        <td>@hubSession.Student?.Instructor?.FirstName @hubSession.Student?.Instructor?.LastName</td>
+                        @if (hubSession.Student != null)
+                        {
+                            <td>@hubSession.SessionID</td>
+                            <td>@hubSession.Student.FirstName @hubSession.Student.LastName</td>
+                            <td>@hubSession.Student.StudentID</td>
+                            <td>@hubSession.Student?.Course?.CourseName</td>
+                            <td>@hubSession.Student?.Instructor?.FirstName @hubSession.Student?.Instructor?.LastName</td>
                         }
                         <td>
                             @if (isEditing)
@@ -287,8 +288,9 @@
                             }
                             else
                             {
-                                @if (hubSession.HubEmployee != null){
-                                @hubSession.HubEmployee.Initials
+                                @if (hubSession.HubEmployee != null)
+                                {
+                                    @hubSession.HubEmployee.Initials
                                 }
                             }
                         </td>
@@ -309,14 +311,17 @@
                         </td>
                         @if (!showOnlySignedIn)
                         {
-                            if(hubSession.TimeOut> hubSession.TimeIn){
-                            var totalTime = hubSession.TimeOut - hubSession.TimeIn;
-                            <td>@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
+                            if (hubSession.TimeOut > hubSession.TimeIn)
+                            {
+                                var totalTime = hubSession.TimeOut - hubSession.TimeIn;
+                                <td>@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
                             }
-                            else if(hubSession.TimeOut == null){
-                              <td style="color: orange;">In Progress</td>  
+                            else if (hubSession.TimeOut == null)
+                            {
+                                <td style="color: orange;">In Progress</td>
                             }
-                            else{
+                            else
+                            {
                                 <td style="color: red;">Invalid time input</td>
                             }
                         }
@@ -330,7 +335,7 @@
                     </tr>
                 }
             }
-            
+
 
         </tbody>
     </table>
