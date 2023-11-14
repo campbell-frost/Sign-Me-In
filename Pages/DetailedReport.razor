@@ -79,6 +79,29 @@
         }
     }
 
+    string FormatTotalTime(TimeSpan totalTime)
+    {
+        int hours = (int)totalTime.TotalHours;
+        int minutes = totalTime.Minutes;
+
+        if (hours > 0 && minutes > 0)
+        {
+            return $"{hours} hr {minutes} min";
+        }
+        else if (hours > 0)
+        {
+            return $"{hours} hr";
+        }
+        else if (minutes > 0)
+        {
+            return $"{minutes} min";
+        }
+        else
+        {
+            return ""; 
+        }
+    }
+
 }
 
 <div class="container">
@@ -121,7 +144,7 @@
                     <td>@session.Date</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalMinutes ?? 0), 2)</td>
+                    <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")</td>
                     <td>@session.SessionType</td>
                 </tr>
             }
@@ -144,6 +167,5 @@
             <button class="btn btn-primary">Export</button>
         </div>
     </div>
-
 </div>
 
