@@ -156,7 +156,7 @@
             @foreach (var session in GetPaginatedSessions())
             {
                 <tr>
-                    <td>@session.Date.ToString("MM-dd-yyy"), @session.TimeIn</td>
+                    <td>@session.Date.ToString("MM-dd-yyy") @session.TimeIn</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
                     <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut -
