@@ -52,11 +52,12 @@
         currentPage = page;
     }
 
-    private void gobacktoReports(){
+    private void gobacktoReports()
+    {
         navigationManager.NavigateTo("/Reports");
     }
 
-  private void HandleSearch()
+    private void HandleSearch()
     {
         // Clear the current list of hubSessions
         hubSessions.Clear();
@@ -98,7 +99,7 @@
         }
         else
         {
-            return ""; 
+            return "";
         }
     }
 
@@ -123,7 +124,7 @@
             </form>
         </div>
             <div class="col-md-6">
-                
+
             <div class="alert alert-info">Selected Date Range: From "@startDate" to "@endDate"</div>
         </div>
     </div>
@@ -140,13 +141,13 @@
         <tbody>
             @foreach (var session in GetPaginatedSessions())
             {
-                <tr>
-                    <td>@session.Date</td>
-                    <td>@session.StudentID</td>
-                    <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")</td>
-                    <td>@session.SessionType</td>
-                </tr>
+                    <tr>
+                        <td>@session.Date</td>
+                        <td>@session.StudentID</td>
+                        <td>@(GetStudentName(session.StudentID))</td>
+                        <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")</td>
+                        <td>@session.SessionType</td>
+                    </tr>
             }
         </tbody>
     </table>
@@ -155,9 +156,9 @@
             @for (int page = 1; page <= totalPages; page++)
             {
                 int localPage = page; // Create a local copy of page
-                <li class="page-item @(localPage == currentPage ? "active" : "")">
-                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
-                </li>
+                    <li class="page-item @(localPage == currentPage ? "active" : "")">
+                        <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
+                    </li>
             }
         </ul>
     </div>
