@@ -65,11 +65,12 @@
         return Enumerable.Range(startPage, endPage - startPage + 1);
     }
 
-    private void gobacktoReports(){
+    private void gobacktoReports()
+    {
         navigationManager.NavigateTo("/Reports");
     }
 
-  private void HandleSearch()
+    private void HandleSearch()
     {
         // Clear the current list of hubSessions
         hubSessions.Clear();
@@ -112,7 +113,7 @@
         }
         else
         {
-            return ""; 
+            return "";
         }
     }
 
@@ -155,7 +156,7 @@
             @foreach (var session in GetPaginatedSessions())
             {
                 <tr>
-                    <td>@session.Date</td>
+                    <td>@session.Date.ToString("MM-dd-yyy"), @session.TimeIn</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
                     <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut -
@@ -165,7 +166,7 @@
             }
         </tbody>
     </table>
-   <div class="pagination-container">
+    <div class="pagination-container">
         <ul class="pagination">
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                 <a class="page-link" @onclick="() => MovePages(-1)" aria-label="Previous">
