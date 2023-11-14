@@ -52,6 +52,18 @@
         currentPage = page;
     }
 
+    void MovePages(int offset)
+    {
+        currentPage += offset;
+    }
+
+    IEnumerable<int> GetPageRange()
+    {
+        int startPage = Math.Max(1, currentPage - 4);
+        int endPage = Math.Min(totalPages, startPage + 9);
+        return Enumerable.Range(startPage, endPage - startPage + 1);
+    }
+
     private void gobacktoReports(){
         navigationManager.NavigateTo("/Reports");
     }
@@ -150,15 +162,25 @@
             }
         </tbody>
     </table>
-    <div class="row pagination-container pl-1">
+     <div class="row pagination-container pl-1">
         <ul class="col-md-11 pagination" style="padding-left: 15px;">
-            @for (int page = 1; page <= totalPages; page++)
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" @onclick="() => MovePages(-1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @foreach (var pageNumber in GetPageRange())
             {
-                int localPage = page; // Create a local copy of page
-                <li class="page-item @(localPage == currentPage ? "active" : "")">
-                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
+                <li class="page-item @(pageNumber == currentPage ? "active" : "")">
+                    <a class="page-link" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
                 </li>
             }
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" @onclick="() => MovePages(1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
         </ul>
     </div>
     <div class="row">
