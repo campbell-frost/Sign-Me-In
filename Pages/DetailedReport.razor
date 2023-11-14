@@ -65,12 +65,23 @@
         return Enumerable.Range(startPage, endPage - startPage + 1);
     }
 
-    private void gobacktoReports()
+    void MovePages(int offset)
     {
+        currentPage += offset;
+    }
+
+    IEnumerable<int> GetPageRange()
+    {
+        int startPage = Math.Max(1, currentPage - 4);
+        int endPage = Math.Min(totalPages, startPage + 9);
+        return Enumerable.Range(startPage, endPage - startPage + 1);
+    }
+
+    private void gobacktoReports(){
         navigationManager.NavigateTo("/Reports");
     }
 
-    private void HandleSearch()
+  private void HandleSearch()
     {
         // Clear the current list of hubSessions
         hubSessions.Clear();
@@ -113,7 +124,7 @@
         }
         else
         {
-            return "";
+            return ""; 
         }
     }
 
