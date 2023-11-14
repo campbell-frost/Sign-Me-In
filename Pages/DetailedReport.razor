@@ -141,13 +141,13 @@
         <tbody>
             @foreach (var session in GetPaginatedSessions())
             {
-                    <tr>
-                        <td>@session.Date</td>
-                        <td>@session.StudentID</td>
-                        <td>@(GetStudentName(session.StudentID))</td>
-                        <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")</td>
-                        <td>@session.SessionType</td>
-                    </tr>
+                <tr>
+                    <td>@session.Date</td>
+                    <td>@session.StudentID</td>
+                    <td>@(GetStudentName(session.StudentID))</td>
+                    <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")</td>
+                    <td>@session.SessionType</td>
+                </tr>
             }
         </tbody>
     </table>
