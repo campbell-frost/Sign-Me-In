@@ -1,0 +1,30 @@
+.table-header[b-rw2h5nkb2i]{
+    background-color: #0078C9;
+    color: white;
+    font-weight: bolder;
+    outline: white 2px;
+}
+
+.input-group[b-rw2h5nkb2i], .form-control[b-rw2h5nkb2i]{
+    height: 3.85rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+
+.input-group[b-rw2h5nkb2i]{
+    border-radius: 4px;
+}
+
+.input-group-btn[b-rw2h5nkb2i]{
+    display: flex;
+    justify-content: center;
+}
+
+.search-icon[b-rw2h5nkb2i]{
+    display: flex;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+}

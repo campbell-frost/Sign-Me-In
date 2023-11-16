@@ -1,0 +1,223 @@
+/* _content/Sign-Me-In/Pages/AccountPage.razor.rz.scp.css */
+
+.input-group[b-onui6cwo5x], .form-control[b-onui6cwo5x]{
+    height: 3.3125rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+.btn[b-onui6cwo5x]{
+    height: 3.3125rem;
+}
+
+.main-content[b-onui6cwo5x]{
+    padding-left: 6rem;
+    padding-right: 6rem;
+}
+/* _content/Sign-Me-In/Pages/ChangePassword.razor.rz.scp.css */
+
+.input-group[b-lwtiamtktr], .form-control[b-lwtiamtktr]{
+    height: 3.3125rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+/* _content/Sign-Me-In/Pages/DetailedReport.razor.rz.scp.css */
+.table-header[b-rw2h5nkb2i]{
+    background-color: #0078C9;
+    color: white;
+    font-weight: bolder;
+    outline: white 2px;
+}
+
+.input-group[b-rw2h5nkb2i], .form-control[b-rw2h5nkb2i]{
+    height: 3.85rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+
+.input-group[b-rw2h5nkb2i]{
+    border-radius: 4px;
+}
+
+.input-group-btn[b-rw2h5nkb2i]{
+    display: flex;
+    justify-content: center;
+}
+
+.search-icon[b-rw2h5nkb2i]{
+    display: flex;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+}
+/* _content/Sign-Me-In/Pages/Employee.razor.rz.scp.css */
+.input-group[b-66q4wy8fes], .form-control[b-66q4wy8fes]{
+    height: 3.3125rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+.container-md[b-66q4wy8fes]{
+    max-width: 43rem;
+    margin: 0 auto;
+}
+
+.input-group[b-66q4wy8fes]{
+    border-radius: 4px;
+}
+
+.input-group-btn[b-66q4wy8fes]{
+    display: flex;
+    justify-content: center;
+}
+
+.search-icon[b-66q4wy8fes]{
+    display: flex;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+}
+
+.btn-sign-in[b-66q4wy8fes]{
+    height: 3.3125rem;
+}
+/* _content/Sign-Me-In/Pages/HomePage.razor.rz.scp.css */
+.main-color[b-he288y8cdq] {
+    color: #002B49;
+    border-color: #002B49;
+}
+/* _content/Sign-Me-In/Pages/Login.razor.rz.scp.css */
+
+.background[b-whle3o546i] {
+    background-image: url('fdtc-background.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container[b-whle3o546i] {
+    background-color: white; /* Background overlay color */
+    border-radius: 4px;
+    padding: 20px;
+    width: 21.8125rem;
+    height: 17.8125rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box[b-whle3o546i] {
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 20px;
+    width: 340px;
+    text-align: center;
+}
+
+.login-logo[b-whle3o546i] {
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+.form-group[b-whle3o546i] {
+    margin: 10px 0;
+}
+
+.form-control[b-whle3o546i] {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+}
+/* _content/Sign-Me-In/Pages/Reports.razor.rz.scp.css */
+.table-header[b-l8n76yym99]{
+    background-color: #0078C9;
+    color: white;
+    font-weight: bolder;
+    outline: white 2px;
+}
+/* _content/Sign-Me-In/Pages/Sign-In.razor.rz.scp.css */
+
+.input-group[b-96kmsymoci], .form-control[b-96kmsymoci]{
+    height: 3.3125rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+.container-md[b-96kmsymoci]{
+    max-width: 43rem;
+
+}
+
+.input-group[b-96kmsymoci]{
+    border-radius: 4px;
+}
+
+.input-group-btn[b-96kmsymoci]{
+    display: flex;
+    justify-content: center;
+}
+
+.search-icon[b-96kmsymoci]{
+    display: flex;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+}
+.container[b-96kmsymoci]{
+    width: 44rem;
+}
+.btn-sign-in[b-96kmsymoci]{
+    height: 3.3125rem;
+}
+
+
+.content-container[b-96kmsymoci] {
+    transition: transform 0.5s;
+}
+
+.content-move-up[b-96kmsymoci] {
+    transform: translateY(-260px);
+}
+
+.logo-container[b-96kmsymoci] {
+    transition: transform 0.5s;
+}
+
+.logo-move-up[b-96kmsymoci] {
+    transform: translateY(-500px);
+}
+.image[b-96kmsymoci]{
+    max-height: 100px;
+    align-items: center;
+}
+/* _content/Sign-Me-In/Pages/View.razor.rz.scp.css */
+.btn.inactive[b-ezzwafbiqs] {
+    background-color: white;
+    color: #0078C9;
+    border-color: #0078C9;
+    border-width: 2px;
+}
+.btn-active[b-ezzwafbiqs]{
+    border: none;
+}
+.table-header[b-ezzwafbiqs]{
+    background-color: #0078C9;
+    color: white;
+    font-weight: bolder;
+    outline: white 2px;
+}
+
+th[b-ezzwafbiqs]{
+    font-weight: bolder;
+}

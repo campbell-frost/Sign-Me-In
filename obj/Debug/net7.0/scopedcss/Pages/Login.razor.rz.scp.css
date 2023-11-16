@@ -1,0 +1,45 @@
+
+.background[b-whle3o546i] {
+    background-image: url('fdtc-background.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container[b-whle3o546i] {
+    background-color: white; /* Background overlay color */
+    border-radius: 4px;
+    padding: 20px;
+    width: 21.8125rem;
+    height: 17.8125rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box[b-whle3o546i] {
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 20px;
+    width: 340px;
+    text-align: center;
+}
+
+.login-logo[b-whle3o546i] {
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+.form-group[b-whle3o546i] {
+    margin: 10px 0;
+}
+
+.form-control[b-whle3o546i] {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+}

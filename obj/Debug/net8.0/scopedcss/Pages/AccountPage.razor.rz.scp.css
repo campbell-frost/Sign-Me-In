@@ -1,0 +1,16 @@
+
+.input-group[b-onui6cwo5x], .form-control[b-onui6cwo5x]{
+    height: 3.3125rem;
+    flex-shrink: 0;
+    border: none;
+    background-color: #e3e3e3;
+    
+}
+.btn[b-onui6cwo5x]{
+    height: 3.3125rem;
+}
+
+.main-content[b-onui6cwo5x]{
+    padding-left: 6rem;
+    padding-right: 6rem;
+}

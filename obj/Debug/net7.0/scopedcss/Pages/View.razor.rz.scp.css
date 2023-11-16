@@ -1,0 +1,19 @@
+.btn.inactive[b-ezzwafbiqs] {
+    background-color: white;
+    color: #0078C9;
+    border-color: #0078C9;
+    border-width: 2px;
+}
+.btn-active[b-ezzwafbiqs]{
+    border: none;
+}
+.table-header[b-ezzwafbiqs]{
+    background-color: #0078C9;
+    color: white;
+    font-weight: bolder;
+    outline: white 2px;
+}
+
+th[b-ezzwafbiqs]{
+    font-weight: bolder;
+}
