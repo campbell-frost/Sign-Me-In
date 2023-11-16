@@ -52,6 +52,18 @@
         currentPage = page;
     }
 
+    void MovePages(int offset)
+    {
+        currentPage += offset;
+    }
+
+    IEnumerable<int> GetPageRange()
+    {
+        int startPage = Math.Max(1, currentPage - 4);
+        int endPage = Math.Min(totalPages, startPage + 9);
+        return Enumerable.Range(startPage, endPage - startPage + 1);
+    }
+
     private void gobacktoReports(){
         navigationManager.NavigateTo("/Reports");
     }
@@ -76,6 +88,29 @@
             // Recalculate the total number of items and pages
             totalItems = hubSessions.Count;
             totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+        }
+    }
+
+    string FormatTotalTime(TimeSpan totalTime)
+    {
+        int hours = (int)totalTime.TotalHours;
+        int minutes = totalTime.Minutes;
+
+        if (hours > 0 && minutes > 0)
+        {
+            return $"{hours} hr {minutes} min";
+        }
+        else if (hours > 0)
+        {
+            return $"{hours} hr";
+        }
+        else if (minutes > 0)
+        {
+            return $"{minutes} min";
+        }
+        else
+        {
+            return ""; 
         }
     }
 
@@ -110,7 +145,7 @@
                 <th> Date</th>
                 <th>Student ID</th>
                 <th>Student Name</th>
-                <th>Total Time (Minutes)</th>
+                <th>Total Time</th>
                 <th>Session Type</th>
             </tr>
         </thead>
@@ -118,32 +153,41 @@
             @foreach (var session in GetPaginatedSessions())
             {
                 <tr>
-                    <td>@session.Date</td>
+                    <td>@session.Date.ToString("MM-dd-yyy") @session.TimeIn</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalMinutes ?? 0), 2)</td>
+                    <td>@(session.TimeOut != null && session.TimeIn != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "0") </td>
                     <td>@session.SessionType</td>
                 </tr>
             }
         </tbody>
     </table>
-    <div class="row pagination-container pl-1">
+     <div class="row pagination-container pl-1">
         <ul class="col-md-11 pagination" style="padding-left: 15px;">
-            @for (int page = 1; page <= totalPages; page++)
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" @onclick="() => MovePages(-1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @foreach (var pageNumber in GetPageRange())
             {
-                int localPage = page; // Create a local copy of page
-                <li class="page-item @(localPage == currentPage ? "active" : "")">
-                    <a class="page-link" @onclick="() => ChangePage(localPage)">@localPage</a>
+                <li class="page-item @(pageNumber == currentPage ? "active" : "")">
+                    <a class="page-link" @onclick="() => ChangePage(pageNumber)">@pageNumber</a>
                 </li>
             }
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" @onclick="() => MovePages(1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
         </ul>
     </div>
     <div class="row">
-        <div class="col-md-12 d-flex justify-content-between">
+        <div class="col-md-12 d-flex justify-content-between pb-5">
             <button class="btn btn-primary" @onclick="gobacktoReports">Go Back</button>
             <button class="btn btn-primary">Export</button>
         </div>
     </div>
-
 </div>
 
