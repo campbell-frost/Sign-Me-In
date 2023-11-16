@@ -79,29 +79,6 @@
         }
     }
 
-    string FormatTotalTime(TimeSpan totalTime)
-    {
-        int hours = (int)totalTime.TotalHours;
-        int minutes = totalTime.Minutes;
-
-        if (hours > 0 && minutes > 0)
-        {
-            return $"{hours} hr {minutes} min";
-        }
-        else if (hours > 0)
-        {
-            return $"{hours} hr";
-        }
-        else if (minutes > 0)
-        {
-            return $"{minutes} min";
-        }
-        else
-        {
-            return ""; 
-        }
-    }
-
 }
 
 <div class="container">
@@ -133,7 +110,7 @@
                 <th> Date</th>
                 <th>Student ID</th>
                 <th>Student Name</th>
-                <th>Total Time</th>
+                <th>Total Time (Minutes)</th>
                 <th>Session Type</th>
             </tr>
         </thead>
@@ -141,10 +118,10 @@
             @foreach (var session in GetPaginatedSessions())
             {
                 <tr>
-                    <td>@session.Date.ToString("MM-dd-yyy") @session.TimeIn</td>
+                    <td>@session.Date</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@(session.TimeOut != null && session.TimeIn != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "0") </td>
+                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalMinutes ?? 0), 2)</td>
                     <td>@session.SessionType</td>
                 </tr>
             }
@@ -162,10 +139,11 @@
         </ul>
     </div>
     <div class="row">
-        <div class="col-md-12 d-flex justify-content-between pb-5">
+        <div class="col-md-12 d-flex justify-content-between">
             <button class="btn btn-primary" @onclick="gobacktoReports">Go Back</button>
             <button class="btn btn-primary">Export</button>
         </div>
     </div>
+
 </div>
 

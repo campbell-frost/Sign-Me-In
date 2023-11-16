@@ -29,9 +29,9 @@
             <tbody>
                 <tr>
                     <td>How many hours was the math hub used?</td>
-                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTesting))</td>
-                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTutoring))</td>
-                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTesting + HoursTutoring))</td>
+                    <td>@HoursTesting</td>
+                    <td>@HoursTutoring</td>
+                    <td>@Math.Round((HoursTesting + HoursTutoring), 2)</td>
                 </tr>
                 <tr>
                     <td>How many students used the math hub?</td>
@@ -170,29 +170,6 @@ private void EndDateChanged(ChangeEventArgs e)
                // Pass the selected dates as route parameters
            navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
         
-    }
-
-        string FormatTotalTime(TimeSpan totalTime)
-    {
-        int hours = (int)totalTime.TotalHours;
-        int minutes = totalTime.Minutes;
-
-        if (hours > 0 && minutes > 0)
-        {
-            return $"{hours} hr {minutes} min";
-        }
-        else if (hours > 0)
-        {
-            return $"{hours} hr";
-        }
-        else if (minutes > 0)
-        {
-            return $"{minutes} min";
-        }
-        else
-        {
-            return ""; 
-        }
     }
 
 }
