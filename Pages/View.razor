@@ -14,7 +14,7 @@
 
     // Variables for pagination
     int currentPage = 1;
-    int pageSize = 1; 
+    int pageSize = 10; 
     int totalItems;
     int totalPages;
 
@@ -172,6 +172,7 @@
     {
         int hours = (int)totalTime.TotalHours;
         int minutes = totalTime.Minutes;
+        int seconds = totalTime.Seconds;
 
         if (hours > 0 && minutes > 0)
         {
@@ -187,7 +188,7 @@
         }
         else
         {
-            return ""; 
+            return $"{seconds} sec"; 
         }
     }
 
