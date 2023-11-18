@@ -29,9 +29,9 @@
             <tbody>
                 <tr>
                     <td>How many hours was the math hub used?</td>
-                    <td>@HoursTesting</td>
-                    <td>@HoursTutoring</td>
-                    <td>@Math.Round((HoursTesting + HoursTutoring), 2)</td>
+                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTesting))</td>
+                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTutoring))</td>
+                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTesting + HoursTutoring))</td>
                 </tr>
                 <tr>
                     <td>How many students used the math hub?</td>
@@ -113,7 +113,6 @@
         }
         else
         {
-            Console.WriteLine("Dates from " + startDate + " to " + endDate);
             // Both start and end dates are empty, so don't show any data
             HoursTesting = 0;
             HoursTutoring = 0;
@@ -125,7 +124,6 @@
             return;
         }
 
-        // Continue with the rest of your calculations as before
         HoursTesting = Math.Round(testing.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
         HoursTutoring = Math.Round(tutoring.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
 
@@ -171,5 +169,36 @@ private void EndDateChanged(ChangeEventArgs e)
            navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
         
     }
+
+     string FormatTotalTime(TimeSpan? totalTime)
+{
+    if (totalTime.HasValue)
+    {
+        int hours = totalTime.Value.Hours;
+        int minutes = totalTime.Value.Minutes;
+        int seconds = totalTime.Value.Seconds;
+
+        if (hours > 0 && minutes > 0)
+        {
+            return $"{hours} hr {minutes} min";
+        }
+        else if (hours > 0)
+        {
+            return $"{hours} hr";
+        }
+        else if (minutes > 0)
+        {
+            return $"{minutes} min";
+        }
+        else
+        {
+            return $"{seconds} sec";
+        }
+    }
+    else
+    {
+        return "N/A"; // default value for null TimeSpan
+    }
+}
 
 }

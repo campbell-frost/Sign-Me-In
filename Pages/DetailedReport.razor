@@ -79,6 +79,38 @@
         }
     }
 
+     string FormatTotalTime(TimeSpan? totalTime)
+{
+    if (totalTime.HasValue)
+    {
+        int hours = totalTime.Value.Hours;
+        int minutes = totalTime.Value.Minutes;
+        int seconds = totalTime.Value.Seconds;
+
+        if (hours > 0 && minutes > 0)
+        {
+            return $"{hours} hr {minutes} min";
+        }
+        else if (hours > 0)
+        {
+            return $"{hours} hr";
+        }
+        else if (minutes > 0)
+        {
+            return $"{minutes} min";
+        }
+        else
+        {
+            return $"{seconds} sec";
+        }
+    }
+    else
+    {
+        return "N/A"; // default value for null 
+    }
+}
+
+
 }
 
 <div class="container">
@@ -110,7 +142,7 @@
                 <th> Date</th>
                 <th>Student ID</th>
                 <th>Student Name</th>
-                <th>Total Time (Minutes)</th>
+                <th>Total Time</th>
                 <th>Session Type</th>
             </tr>
         </thead>
@@ -118,10 +150,10 @@
             @foreach (var session in GetPaginatedSessions())
             {
                 <tr>
-                    <td>@session.Date</td>
+                    <td>@session.Date.ToString("MM/dd/yyyy") @session.TimeIn</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@Math.Round((session.TimeOut?.Subtract(session.TimeIn).TotalMinutes ?? 0), 2)</td>
+                    <td>@FormatTotalTime(session.TimeOut - session.TimeIn)</td>
                     <td>@session.SessionType</td>
                 </tr>
             }
