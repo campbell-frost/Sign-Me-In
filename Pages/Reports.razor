@@ -172,8 +172,7 @@ private void EndDateChanged(ChangeEventArgs e)
 
      string FormatTotalTime(TimeSpan? totalTime)
 {
-    if (totalTime.HasValue)
-    {
+
         int hours = totalTime.Value.Hours;
         int minutes = totalTime.Value.Minutes;
         int seconds = totalTime.Value.Seconds;
@@ -194,11 +193,8 @@ private void EndDateChanged(ChangeEventArgs e)
         {
             return $"{seconds} sec";
         }
-    }
-    else
-    {
-        return "N/A"; // default value for null TimeSpan
-    }
+
+
 }
 
 }
