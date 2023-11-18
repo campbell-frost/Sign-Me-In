@@ -93,13 +93,11 @@
         }
     }
 
-     string FormatTotalTime(TimeSpan? totalTime)
+     string FormatTotalTime(TimeSpan totalTime)
 {
-    if (totalTime.HasValue)
-    {
-        int hours = totalTime.Value.Hours;
-        int minutes = totalTime.Value.Minutes;
-        int seconds = totalTime.Value.Seconds;
+        int hours = totalTime.Hours;
+        int minutes = totalTime.Minutes;
+        int seconds = totalTime.Seconds;
 
         if (hours > 0 && minutes > 0)
         {
@@ -117,11 +115,6 @@
         {
             return $"{seconds} sec";
         }
-    }
-    else
-    {
-        return "N/A"; // default value for null 
-    }
 }
 
 
@@ -167,7 +160,7 @@
                     <td>@session.Date.ToString("MM/dd/yyyy") @session.TimeIn</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@FormatTotalTime(session.TimeOut - session.TimeIn)</td>
+                    <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")</td>
                     <td>@session.SessionType</td>
                 </tr>
             }
