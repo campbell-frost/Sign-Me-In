@@ -29,9 +29,9 @@
             <tbody>
                 <tr>
                     <td>How many hours was the math hub used?</td>
-                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTesting))</td>
-                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTutoring))</td>
-                    <td>@FormatTotalTime(TimeSpan.FromHours(HoursTesting + HoursTutoring))</td>
+                    <td>@FormatTotalTime(HoursTesting)</td>
+                    <td>@FormatTotalTime(HoursTutoring)</td>
+                    <td>@FormatTotalTime(totalHours)</td>
                 </tr>
                 <tr>
                     <td>How many students used the math hub?</td>
@@ -58,7 +58,7 @@
     private double HoursTutoring { get; set; }
     private int StudentsTutoring { get; set; }
     private int DistinctStudentsTutoring { get; set; }
-
+    private double totalHours { get; set;}
     private DateTime? startDate { get; set; } = DateTime.Now.Date;
     private DateTime? endDate { get; set; } = DateTime.Now.Date;
 
@@ -113,8 +113,9 @@
         else
         {
             // Both start and end dates are empty, so don't show any data
-            HoursTesting = 0;
+            HoursTesting =0;
             HoursTutoring = 0;
+            totalHours = 0;
             StudentsTesting = 0;
             StudentsTutoring = 0;
             DistinctStudentsTesting = 0;
@@ -123,8 +124,9 @@
             return;
         }
 
-        HoursTesting = Math.Round(testing.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
-        HoursTutoring = Math.Round(tutoring.Sum(s => ((s.TimeOut ?? TimeSpan.Zero) - s.TimeIn).TotalHours), 2);
+        HoursTesting = Math.Round(testing.Sum(s => (s.TimeOut - s.TimeIn)?.Ticks ?? 0) / (double)TimeSpan.TicksPerHour, 2);
+        HoursTutoring = Math.Round(tutoring.Sum(s => (s.TimeOut - s.TimeIn)?.Ticks ?? 0) / (double)TimeSpan.TicksPerHour, 2);
+        totalHours = (HoursTesting + HoursTutoring);
 
         StudentsTesting = testing.Count;
         StudentsTutoring = tutoring.Count;
@@ -164,36 +166,34 @@ private void EndDateChanged(ChangeEventArgs e)
 
     private void ShowDetailedReport()
     {
-               // Pass the selected dates as route parameters
+          // Pass the selected dates as route parameters
            navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
-        
     }
 
-     string FormatTotalTime(TimeSpan? totalTime)
-{
+     string FormatTotalTime(double totalTime){
+        
+        int hours = (int)totalTime;
+        int minutes = (int)((totalTime - hours) * 60);
+        int seconds = (int)(((totalTime - hours) * 60 - minutes) * 60);
 
-        int hours = totalTime.Value.Hours;
-        int minutes = totalTime.Value.Minutes;
-        int seconds = totalTime.Value.Seconds;
+        string formattedTime = "";
 
-        if (hours > 0 && minutes > 0)
+        if (hours > 0)
         {
-            return $"{hours} hr {minutes} min";
-        }
-        else if (hours > 0)
-        {
-            return $"{hours} hr";
-        }
-        else if (minutes > 0)
-        {
-            return $"{minutes} min";
-        }
-        else
-        {
-            return $"{seconds} sec";
+            formattedTime += $"{hours} hr ";
         }
 
+        if (minutes > 0)
+        {
+            formattedTime += $"{minutes} min ";
+        }
 
+        if (seconds > 0 || (hours == 0 && minutes == 0))
+        {
+            formattedTime += $"{seconds} sec";
+        }
+
+        return formattedTime.Trim();
 }
 
 }
