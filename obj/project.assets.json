@@ -2848,19 +2848,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Campbell\\.nuget\\packages\\": {}
+    "/Users/bhaktipatel/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Campbell\\Projects\\Sign-Me-In\\Sign-Me-In.csproj",
+      "projectUniqueName": "/Users/bhaktipatel/Sign-Me-In/Sign-Me-In.csproj",
       "projectName": "Sign-Me-In",
-      "projectPath": "C:\\Users\\Campbell\\Projects\\Sign-Me-In\\Sign-Me-In.csproj",
-      "packagesPath": "C:\\Users\\Campbell\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Campbell\\Projects\\Sign-Me-In\\obj\\",
+      "projectPath": "/Users/bhaktipatel/Sign-Me-In/Sign-Me-In.csproj",
+      "packagesPath": "/Users/bhaktipatel/.nuget/packages/",
+      "outputPath": "/Users/bhaktipatel/Sign-Me-In/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Campbell\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/bhaktipatel/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -2918,7 +2918,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
