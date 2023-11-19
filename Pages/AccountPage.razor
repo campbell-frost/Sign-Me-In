@@ -23,7 +23,6 @@
     {
         selectedAccount = dbContext.Accounts
         .FirstOrDefault(s => s.AccountID == account.AccountID);
-
         selectAccount = true;
     }
     private void ShowPassword()
@@ -40,7 +39,10 @@
 
     private void NavigateToPasswordReset()
     {
-        navigationManager.NavigateTo("/Account/ChangePassword");
+        if (selectedAccount != null)
+        {
+            navigationManager.NavigateTo($"/Account/ChangePassword/{selectedAccount.AccountID}");
+        }
     }
 }
 <div class="main-content content pt-5">
@@ -61,8 +63,8 @@
 
             <div class="row pb-3 ">
                 <div class="col-md-6">
-                    <label>Account ID</label>
-                    <input type="text" readonly class="form-control" value="@selectedAccount.AccountID" />
+                    <label for = "AccountID">Account ID</label>
+                    <input type="text" id= "AccountID" readonly class="form-control" value="@selectedAccount.AccountID" />
                 </div>
                 <div class="col-md-6">
                     <label>Role</label>
