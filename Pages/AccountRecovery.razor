@@ -4,20 +4,20 @@
 @using Microsoft.EntityFrameworkCore
 
 @code
-{
+{  
     private List<SecurityQuestion> ? SecurityQuestions;
-        
     [Parameter]
     public String AccountID { get; set; }
+    private String checkAnswer{get; set;}
 
-    private string checkAnswer{get; set;}
     private void getSecurityQuestions()
     {
-        // Parse the string to an integer
+        @* Parse the string to an integer *@
         if (int.TryParse(AccountID, out int accountId))
         {
+             // Fetch security questions from the database for the specified AccountID
             SecurityQuestions = dbContext.SecurityQuestions
-                .Where(q => accountId == 1 ? q.QuestionID <= 3 : q.QuestionID > 3)
+                .Where(q => q.AccountID == accountId)
                 .ToList();
         }
         else
@@ -30,6 +30,7 @@
     {
              getSecurityQuestions();
     }
+    
     private void GoBackToAccounts()
     {
         navigationManager.NavigateTo("/Account");
