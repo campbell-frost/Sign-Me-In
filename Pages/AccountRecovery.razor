@@ -1,0 +1,223 @@
+@page "/Account/AccountRecovery/{AccountID}"
+@inject Context dbContext
+@inject NavigationManager navigationManager
+@using Microsoft.EntityFrameworkCore
+
+@code
+{  
+    private List<SecurityQuestion> ? SecurityQuestions ;
+    [Parameter]
+    public String AccountID { get; set; }
+    private List<String> userAnswers;
+
+    private void getSecurityQuestions()
+{
+    // Parse the string to an integer
+    if (int.TryParse(AccountID, out int accountId))
+    {
+        Console.WriteLine($"Fetching security questions for AccountID: {accountId}");
+
+        // Fetch security questions from the database for the specified AccountID
+        SecurityQuestions = dbContext.SecurityQuestions
+            .Where(q => q.AccountID == accountId)
+            .ToList();
+
+        if (SecurityQuestions.Count > 0)
+        {
+            Console.WriteLine($"Found {SecurityQuestions.Count} security questions.");
+
+            // Initialize userAnswers with the same number of elements as SecurityQuestions
+            userAnswers = new List<string>(SecurityQuestions.Count);
+            for (var i = 0; i < SecurityQuestions.Count; i++)
+            {
+                userAnswers.Add(string.Empty); // You can initialize with default values if needed
+            }
+        }
+        else
+        {
+            Console.WriteLine("No security questions found.");
+        }
+    }
+    else
+    {
+        navigationManager.NavigateTo("/Account");
+    }
+}
+
+
+
+   protected override void OnInitialized()
+{
+    Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
+    getSecurityQuestions();
+
+    // Initialize userAnswers if it's null
+    if (userAnswers == null)
+    {
+        userAnswers = new List<string>(SecurityQuestions.Count);
+        for (var i = 0; i < SecurityQuestions.Count; i++)
+        {
+            userAnswers.Add(string.Empty);
+        }
+    }
+}
+
+
+    
+    private void GoBackToAccounts()
+    {
+        navigationManager.NavigateTo("/Account");
+    }
+
+private void UpdateUserAnswer(string value, int index)
+{
+    Console.WriteLine($"UpdateUserAnswer - Index: {index}, userAnswers Count: {userAnswers.Count}");
+    try
+    {
+        if (index >= 0 && index < userAnswers.Count)
+        {
+            userAnswers[index] = value;
+        }
+        else
+        {
+            Console.WriteLine($"Index out of range: {index}");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Exception in UpdateUserAnswer: {ex.Message}");
+    }
+}
+
+
+private bool ValidateSecurityQuestions()
+{
+    if (SecurityQuestions == null || userAnswers == null || SecurityQuestions.Count != userAnswers.Count)
+    {
+        Console.WriteLine("Validation failed: Null or mismatched counts.");
+        return false;
+    }
+
+    for (var i = 0; i < SecurityQuestions.Count; i++)
+    {
+        var question = SecurityQuestions[i];
+        var userAnswer = userAnswers[i];
+
+        if (string.IsNullOrEmpty(question.AnswerHash))
+        {
+            Console.WriteLine($"Validation failed for Question {i + 1}: AnswerHash is null or empty.");
+            return false;
+        }
+
+        var storedAnswer = GetStoredAnswerFromDatabase(question.QuestionID);
+
+        Console.WriteLine($"User Answer for Question {i + 1}: {userAnswer}");
+        Console.WriteLine($"Stored Answer for Question {i + 1}: {storedAnswer}");
+
+        if (storedAnswer != null && userAnswer == storedAnswer)
+        {
+            continue;
+        }
+        else
+        {
+            Console.WriteLine($"Validation failed for Question {i + 1}: Answer mismatch.");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+
+private string GetStoredAnswerFromDatabase(int questionID)
+{
+    var storedAnswer = dbContext.SecurityQuestions
+        .Where(q => q.QuestionID == questionID)
+        .Select(q => q.AnswerHash)
+        .FirstOrDefault();
+
+    Console.WriteLine($"Stored Answer for Question ID {questionID}: {storedAnswer}");
+
+    return storedAnswer;
+}
+
+
+   private void GoToChangePassword()
+{
+    try
+    {
+        if (ValidateSecurityQuestions())
+        {
+            StateHasChanged(); // Ensure the component state is updated
+            navigationManager.NavigateTo($"/Account/AccountRecovery/{AccountID}/ResetPassword");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error during navigation: {ex.Message}");
+    }
+}
+}
+
+<div class="content p-5">
+    <div class="row">
+        @if (SecurityQuestions != null && SecurityQuestions.Any())
+        {
+            @for (var i = 0; i < SecurityQuestions.Count; i++)
+            {
+                var question = SecurityQuestions[i];
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <div>
+                            <h4><b>@($"Question {i + 1}")</b></h4>
+                        </div>
+                        <div>
+                            @* Add a check before accessing the question *@
+                            @if (question != null)
+                            {
+                                <h5>@question.Question</h5>
+                                @* Check if userAnswers contains enough elements *@
+                                @if (i < userAnswers.Count)
+                                {
+                                    <div>
+                                       <input type="text" class="form-control" value="@userAnswers.ElementAtOrDefault(i)" />
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p>Error: No user answer found for the question.</p>
+                                }
+                            }
+                            else
+                            {
+                                <p>Error: Security question is null.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No security questions available.</p>
+        }
+    </div>
+    <div class="row">
+        <div class="col-md-12 d-flex justify-content-between">
+            <button class="btn btn-primary" @onclick="GoBackToAccounts">Go Back</button>
+            <button class="btn btn-primary" @onclick="GoToChangePassword">Reset Password</button>
+        </div>
+    </div>
+</div>
+
+
+    @* @if (!ValidateSecurityQuestions())
+    {
+        <div class="alert alert-danger mt-5" role="alert">
+            Security question answers are incorrect. Please check your answers.
+        </div>
+    } *@
+
