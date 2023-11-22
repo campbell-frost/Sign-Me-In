@@ -13,7 +13,12 @@ builder.Services.AddServerSideBlazor();
 // Database stuff
 builder.Services.AddDbContext<Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnections")));
+    
+// Register AuthenticationService
+builder.Services.AddScoped<AuthenticationService>();
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
