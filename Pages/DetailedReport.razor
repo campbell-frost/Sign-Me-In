@@ -1,6 +1,7 @@
 @page "/Reports/Detailed/{startDate}/{endDate}"
 @inject NavigationManager navigationManager
 @inject Context dbContext
+@inject AuthenticationService authService
 
 @code {
     [Parameter] public string startDate { get; set; }
@@ -17,18 +18,29 @@
 
     protected override void OnInitialized()
     {
+        var currentUser = authService.GetLoggedInUser();
+
+        if (currentUser.AccountID != 1) 
+        {
+            Console.WriteLine("User is unautherized");
+            
+            navigationManager.NavigateTo("/Forbidden"); // Redirect to another page
+            return;
+        }
         // Parse the start and end date strings into DateTime objects
-        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime parsedEndDate))
+        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime
+        parsedEndDate))
         {
             // Query the database to retrieve hub session data for the selected date range
             hubSessions = dbContext.HubSessions
-                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
-                .ToList();
+            .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+            .ToList();
 
             // Calculate the total number of items and pages
             totalItems = hubSessions.Count;
             totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
         }
+
     }
 
     private IEnumerable<HubSession> GetPaginatedSessions()
@@ -64,26 +76,28 @@
         return Enumerable.Range(startPage, endPage - startPage + 1);
     }
 
-    private void gobacktoReports(){
+    private void gobacktoReports()
+    {
         navigationManager.NavigateTo("/Reports");
     }
 
-  private void HandleSearch()
+    private void HandleSearch()
     {
         // Clear the current list of hubSessions
         hubSessions.Clear();
 
         // Query the database to retrieve hub session data for the selected date range
-        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime parsedEndDate))
+        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime
+        parsedEndDate))
         {
             hubSessions = dbContext.HubSessions
-                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
-                .ToList();
+            .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+            .ToList();
 
             // Filter hubSessions to include only sessions where the student's name matches the search term
             hubSessions = hubSessions
-                .Where(session => GetStudentName(session.StudentID).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
-                .ToList();
+            .Where(session => GetStudentName(session.StudentID).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+            .ToList();
 
             // Recalculate the total number of items and pages
             totalItems = hubSessions.Count;
@@ -91,8 +105,8 @@
         }
     }
 
-     string FormatTotalTime(TimeSpan totalTime)
-{
+    string FormatTotalTime(TimeSpan totalTime)
+    {
         int hours = totalTime.Hours;
         int minutes = totalTime.Minutes;
         int seconds = totalTime.Seconds;
@@ -113,14 +127,14 @@
         {
             return $"{seconds} sec";
         }
-}
+    }
 }
 
 <div class="container">
     <div class="row pt-4">
         <div class="col-md-6">
 
-        <form @onsubmit="HandleSearch">
+            <form @onsubmit="HandleSearch">
                 <div class="form-group">
                     <div class="input-group mx-auto">
                         <input type="search" class="form-control shadow-none" placeholder="Search for Student"
@@ -134,8 +148,8 @@
                 </div>
             </form>
         </div>
-            <div class="col-md-6">
-                
+        <div class="col-md-6">
+
             <div class="alert alert-info">Selected Date Range: From "@startDate" to "@endDate"</div>
         </div>
     </div>
@@ -156,7 +170,8 @@
                     <td>@session.Date.ToString("MM/dd/yyyy") @session.TimeIn</td>
                     <td>@session.StudentID</td>
                     <td>@(GetStudentName(session.StudentID))</td>
-                    <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")</td>
+                    <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut -
+                            session.TimeIn).Value) : "")</td>
                     <td>@session.SessionType</td>
                 </tr>
             }
@@ -191,4 +206,3 @@
     </div>
 
 </div>
-

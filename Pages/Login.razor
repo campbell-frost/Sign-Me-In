@@ -44,6 +44,7 @@
         {
             authService.SetLoggedInUser(user); // Set the logged-in user
             navigation.NavigateTo("/HomePage");
+            Console.WriteLine($"User Account ID: {user.AccountID}");
         }
         else
         {

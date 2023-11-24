@@ -1,5 +1,6 @@
 @inject Context dbContext
 @inject NavigationManager navigationManager
+@inject AuthenticationService authService
 @page "/Reports"
 <div class="container">
     <div class="row">
@@ -64,6 +65,16 @@
 
     protected override void OnInitialized()
     {
+        var currentUser = authService.GetLoggedInUser();
+        Console.WriteLine($"User Account ID: {currentUser.AccountID}");
+        if (currentUser.AccountID != 1) 
+        {
+            Console.WriteLine("User is unautherized");
+            
+            navigationManager.NavigateTo("/Forbidden"); // Redirect to another page
+            return;
+        }
+        
         FetchData();
     }
     private void FetchData()
