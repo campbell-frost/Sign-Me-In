@@ -46,7 +46,9 @@ VALUES
     (20, 'Holly', 'Flax', 1, 3),
     (21, 'Erin', 'Hannon', 4, 2),
     (22, 'Gabe', 'Lewis', 2, 1),
-    (23, 'Nellie', 'Bertram', 3, 3);
+    (23, 'Nellie', 'Bertram', 3, 3),
+    (24, 'Michael', 'Tots', 4, 3);
+
 
 SET IDENTITY_INSERT [dbo].[Students] OFF
 
