@@ -2,6 +2,8 @@
 @using Microsoft.EntityFrameworkCore;
 @using System.Threading.Tasks;
 @inject Context dbContext
+@inject AuthenticationService authService
+@inject NavigationManager navigationManager
 
 @code {
     // --- SEARCH FUNCTIONALITY VARIABLES ---
@@ -20,7 +22,16 @@
     private string? selectedSessionType; // The session type selected from the dropdown
     private List<string?>? initials; // List of available initials for dropdown
 
-
+    protected override void OnInitialized(){
+        var currentUser = authService.GetLoggedInUser();
+        if (currentUser.AccountID != 2) 
+        {
+            Console.WriteLine("User is unautherized");
+            
+            navigationManager.NavigateTo("/Forbidden"); // Redirect to another page
+            return;
+        }
+    }
     // Handles the search function
     private async Task HandleSearch()
     {

@@ -2,162 +2,163 @@
 @inject Context dbContext
 @inject NavigationManager navigationManager
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.Forms
 
 @code
-{  
-    private List<SecurityQuestion> ? SecurityQuestions ;
+{
+    private List<SecurityQuestion>? SecurityQuestions;
     [Parameter]
     public String AccountID { get; set; }
     private List<String> userAnswers;
 
     private void getSecurityQuestions()
-{
-    // Parse the string to an integer
-    if (int.TryParse(AccountID, out int accountId))
     {
-        Console.WriteLine($"Fetching security questions for AccountID: {accountId}");
+        // Parse the string to an integer
+        if (int.TryParse(AccountID, out int accountId))
+        {
+            Console.WriteLine($"Fetching security questions for AccountID: {accountId}");
 
-        // Fetch security questions from the database for the specified AccountID
-        SecurityQuestions = dbContext.SecurityQuestions
+            // Fetch security questions from the database for the specified AccountID
+            SecurityQuestions = dbContext.SecurityQuestions
             .Where(q => q.AccountID == accountId)
             .ToList();
 
-        if (SecurityQuestions.Count > 0)
-        {
-            Console.WriteLine($"Found {SecurityQuestions.Count} security questions.");
-
-            // Initialize userAnswers with the same number of elements as SecurityQuestions
-            userAnswers = new List<string>(SecurityQuestions.Count);
-            for (var i = 0; i < SecurityQuestions.Count; i++)
+            if (SecurityQuestions.Count > 0)
             {
-                userAnswers.Add(string.Empty); // You can initialize with default values if needed
+                Console.WriteLine($"Found {SecurityQuestions.Count} security questions.");
+
+                // Initialize userAnswers with the same number of elements as SecurityQuestions
+                userAnswers = new List<string>(SecurityQuestions.Count);
+                for (var i = 0; i < SecurityQuestions.Count; i++)
+                {
+                    userAnswers.Add(string.Empty); // You can initialize with default values if needed
+                }
+            }
+            else
+            {
+                Console.WriteLine("No security questions found.");
             }
         }
         else
         {
-            Console.WriteLine("No security questions found.");
+            navigationManager.NavigateTo("/Account");
         }
     }
-    else
+
+
+
+    protected override void OnInitialized()
     {
-        navigationManager.NavigateTo("/Account");
-    }
-}
+        Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
+        getSecurityQuestions();
 
-
-
-   protected override void OnInitialized()
-{
-    Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
-    getSecurityQuestions();
-
-    // Initialize userAnswers if it's null
-    if (userAnswers == null)
-    {
-        userAnswers = new List<string>(SecurityQuestions.Count);
-        for (var i = 0; i < SecurityQuestions.Count; i++)
+        // Initialize userAnswers if it's null
+        if (userAnswers == null)
         {
-            userAnswers.Add(string.Empty);
+            userAnswers = new List<string>(SecurityQuestions.Count);
+            for (var i = 0; i < SecurityQuestions.Count; i++)
+            {
+                userAnswers.Add(string.Empty);
+            }
         }
     }
-}
 
 
-    
+
     private void GoBackToAccounts()
     {
         navigationManager.NavigateTo("/Account");
     }
 
-private void UpdateUserAnswer(string value, int index)
-{
-    Console.WriteLine($"UpdateUserAnswer - Index: {index}, userAnswers Count: {userAnswers.Count}");
-    try
+    private void UpdateUserAnswer(string value, int index)
     {
-        if (index >= 0 && index < userAnswers.Count)
+        Console.WriteLine($"UpdateUserAnswer - Index: {index}, userAnswers Count: {userAnswers.Count}");
+        try
         {
-            userAnswers[index] = value;
+            if (index >= 0 && index < userAnswers.Count)
+            {
+                userAnswers[index] = value;
+            }
+            else
+            {
+                Console.WriteLine($"Index out of range: {index}");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine($"Index out of range: {index}");
+            Console.WriteLine($"Exception in UpdateUserAnswer: {ex.Message}");
         }
     }
-    catch (Exception ex)
+
+
+    private bool ValidateSecurityQuestions()
     {
-        Console.WriteLine($"Exception in UpdateUserAnswer: {ex.Message}");
-    }
-}
-
-
-private bool ValidateSecurityQuestions()
-{
-    if (SecurityQuestions == null || userAnswers == null || SecurityQuestions.Count != userAnswers.Count)
-    {
-        Console.WriteLine("Validation failed: Null or mismatched counts.");
-        return false;
-    }
-
-    for (var i = 0; i < SecurityQuestions.Count; i++)
-    {
-        var question = SecurityQuestions[i];
-        var userAnswer = userAnswers[i];
-
-        if (string.IsNullOrEmpty(question.AnswerHash))
+        if (SecurityQuestions == null || userAnswers == null || SecurityQuestions.Count != userAnswers.Count)
         {
-            Console.WriteLine($"Validation failed for Question {i + 1}: AnswerHash is null or empty.");
+            Console.WriteLine("Validation failed: Null or mismatched counts.");
             return false;
         }
 
-        var storedAnswer = GetStoredAnswerFromDatabase(question.QuestionID);
-
-        Console.WriteLine($"User Answer for Question {i + 1}: {userAnswer}");
-        Console.WriteLine($"Stored Answer for Question {i + 1}: {storedAnswer}");
-
-        if (storedAnswer != null && userAnswer == storedAnswer)
+        for (var i = 0; i < SecurityQuestions.Count; i++)
         {
-            continue;
+            var question = SecurityQuestions[i];
+            var userAnswer = userAnswers[i];
+
+            if (string.IsNullOrEmpty(question.AnswerHash))
+            {
+                Console.WriteLine($"Validation failed for Question {i + 1}: AnswerHash is null or empty.");
+                return false;
+            }
+
+            var storedAnswer = GetStoredAnswerFromDatabase(question.QuestionID);
+
+            Console.WriteLine($"User Answer for Question {i + 1}: {userAnswer}");
+            Console.WriteLine($"Stored Answer for Question {i + 1}: {storedAnswer}");
+
+            if (storedAnswer != null && userAnswer == storedAnswer)
+            {
+                continue;
+            }
+            else
+            {
+                Console.WriteLine($"Validation failed for Question {i + 1}: Answer mismatch.");
+                return false;
+            }
         }
-        else
-        {
-            Console.WriteLine($"Validation failed for Question {i + 1}: Answer mismatch.");
-            return false;
-        }
+
+        return true;
     }
 
-    return true;
-}
 
 
-
-private string GetStoredAnswerFromDatabase(int questionID)
-{
-    var storedAnswer = dbContext.SecurityQuestions
+    private string GetStoredAnswerFromDatabase(int questionID)
+    {
+        var storedAnswer = dbContext.SecurityQuestions
         .Where(q => q.QuestionID == questionID)
         .Select(q => q.AnswerHash)
         .FirstOrDefault();
 
-    Console.WriteLine($"Stored Answer for Question ID {questionID}: {storedAnswer}");
+        Console.WriteLine($"Stored Answer for Question ID {questionID}: {storedAnswer}");
 
-    return storedAnswer;
-}
+        return storedAnswer;
+    }
 
 
-   private void GoToChangePassword()
-{
-    try
+    private void GoToChangePassword()
     {
-        if (ValidateSecurityQuestions())
+        try
         {
-            StateHasChanged(); // Ensure the component state is updated
-            navigationManager.NavigateTo($"/Account/AccountRecovery/{AccountID}/ResetPassword");
+            if (ValidateSecurityQuestions())
+            {
+                StateHasChanged(); // Ensure the component state is updated
+                navigationManager.NavigateTo($"/Account/AccountRecovery/{AccountID}/ResetPassword");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during navigation: {ex.Message}");
         }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error during navigation: {ex.Message}");
-    }
-}
 }
 
 <div class="content p-5">
@@ -167,7 +168,7 @@ private string GetStoredAnswerFromDatabase(int questionID)
             @for (var i = 0; i < SecurityQuestions.Count; i++)
             {
                 var question = SecurityQuestions[i];
-
+            
                 <div class="col-md-4">
                     <div class="mb-3">
                         <div>
@@ -182,8 +183,9 @@ private string GetStoredAnswerFromDatabase(int questionID)
                                 @if (i < userAnswers.Count)
                                 {
                                     <div>
-                                       <input type="text" class="form-control" value="@userAnswers.ElementAtOrDefault(i)" />
-
+                                        @($"i:  {i}")
+                                        
+                                        <input type="text" class="form-control" @bind="@userAnswers[i]" />
                                     </div>
                                 }
                                 else
@@ -198,6 +200,7 @@ private string GetStoredAnswerFromDatabase(int questionID)
                         </div>
                     </div>
                 </div>
+
             }
         }
         else
@@ -214,10 +217,9 @@ private string GetStoredAnswerFromDatabase(int questionID)
 </div>
 
 
-    @* @if (!ValidateSecurityQuestions())
-    {
-        <div class="alert alert-danger mt-5" role="alert">
-            Security question answers are incorrect. Please check your answers.
-        </div>
-    } *@
-
+@* @if (!ValidateSecurityQuestions())
+{
+<div class="alert alert-danger mt-5" role="alert">
+Security question answers are incorrect. Please check your answers.
+</div>
+} *@
