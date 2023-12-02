@@ -10,94 +10,93 @@
     [Parameter]
     public String AccountID { get; set; }
     private List<String> userAnswers;
+    private bool showInvalidAlert = false;
 
     private void getSecurityQuestions()
-{
-    // Parse the string to an integer
-    if (int.TryParse(AccountID, out int accountId))
     {
-        Console.WriteLine($"Fetching security questions for AccountID: {accountId}");
+        // Parse the string to an integer
+        if (int.TryParse(AccountID, out int accountId))
+        {
+            Console.WriteLine($"Fetching security questions for AccountID: {accountId}");
 
-        // Fetch security questions from the database for the specified AccountID
-        SecurityQuestions = dbContext.SecurityQuestions
+            // Fetch security questions from the database for the specified AccountID
+            SecurityQuestions = dbContext.SecurityQuestions
             .Where(q => q.AccountID == accountId)
             .ToList();
 
-        if (SecurityQuestions.Count > 0)
-        {
-            Console.WriteLine($"Found {SecurityQuestions.Count} security questions.");
-
-            // Initialize userAnswers with the same number of elements as SecurityQuestions
-            userAnswers = new List<string>(SecurityQuestions.Count);
-            for (var i = 0; i < SecurityQuestions.Count; i++)
+            if (SecurityQuestions.Count > 0)
             {
-                userAnswers.Add(string.Empty); // You can initialize with default values if needed
+                Console.WriteLine($"Found {SecurityQuestions.Count} security questions.");
+
+                // Initialize userAnswers with the same number of elements as SecurityQuestions
+                userAnswers = new List<string>(SecurityQuestions.Count);
+                for (var i = 0; i < SecurityQuestions.Count; i++)
+                {
+                    userAnswers.Add(string.Empty); // You can initialize with default values if needed
+                }
+            }
+            else
+            {
+                Console.WriteLine("No security questions found.");
             }
         }
         else
         {
-            Console.WriteLine("No security questions found.");
+            navigationManager.NavigateTo("/Account");
         }
     }
-    else
+
+
+
+    protected override void OnInitialized()
     {
-        navigationManager.NavigateTo("/Account");
-    }
-}
+        Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
+        getSecurityQuestions();
 
-
-
-   protected override void OnInitialized()
-{
-    Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
-    getSecurityQuestions();
-
-    // Initialize userAnswers if it's null
-    if (userAnswers == null)
-    {
-        userAnswers = new List<string>(SecurityQuestions.Count);
-        for (var i = 0; i < SecurityQuestions.Count; i++)
+        // Initialize userAnswers if it's null
+        if (userAnswers == null)
         {
-            userAnswers.Add(string.Empty);
+            userAnswers = new List<string>(SecurityQuestions.Count);
+            for (var i = 0; i < SecurityQuestions.Count; i++)
+            {
+                userAnswers.Add(string.Empty);
+            }
         }
     }
-}
 
-
-    
     private void GoBackToAccounts()
     {
         navigationManager.NavigateTo("/Account");
     }
 
-private void UpdateUserAnswer(string value, int index)
-{
-    Console.WriteLine($"UpdateUserAnswer - Index: {index}, userAnswers Count: {userAnswers.Count}");
-    try
+    private void UpdateUserAnswer(string value, int index)
     {
-        if (index >= 0 && index < userAnswers.Count)
+        Console.WriteLine($"UpdateUserAnswer - Index: {index}, userAnswers Count: {userAnswers.Count}");
+        try
         {
-            userAnswers[index] = value;
+            if (index >= 0 && index < userAnswers.Count)
+            {
+                userAnswers[index] = value;
+            }
+            else
+            {
+                Console.WriteLine($"Index out of range: {index}");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine($"Index out of range: {index}");
+            Console.WriteLine($"Exception in UpdateUserAnswer: {ex.Message}");
         }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Exception in UpdateUserAnswer: {ex.Message}");
-    }
-}
 
 
-private bool ValidateSecurityQuestions()
-{
-    if (SecurityQuestions == null || userAnswers == null || SecurityQuestions.Count != userAnswers.Count)
+    private bool ValidateSecurityQuestions()
     {
-        Console.WriteLine("Validation failed: Null or mismatched counts.");
-        return false;
-    }
+        if (SecurityQuestions == null || userAnswers == null || SecurityQuestions.Count != userAnswers.Count)
+        {
+            Console.WriteLine("Validation failed: Null or mismatched counts.");
+            return false;
+        }
 
         for (var i = 0; i < SecurityQuestions.Count; i++)
         {
@@ -126,8 +125,8 @@ private bool ValidateSecurityQuestions()
             }
         }
 
-    return true;
-}
+        return true;
+    }
 
 
 
@@ -140,25 +139,29 @@ private bool ValidateSecurityQuestions()
 
         Console.WriteLine($"Stored Answer for Question ID {questionID}: {storedAnswer}");
 
-    return storedAnswer;
-}
+        return storedAnswer;
+    }
 
 
-   private void GoToChangePassword()
-{
-    try
+    private void GoToChangePassword()
     {
-        if (ValidateSecurityQuestions())
+        try
         {
-            StateHasChanged(); // Ensure the component state is updated
-            navigationManager.NavigateTo($"/Account/AccountRecovery/{AccountID}/ResetPassword");
+            if (ValidateSecurityQuestions())
+            {
+                StateHasChanged(); // Ensure the component state is updated
+                navigationManager.NavigateTo($"/Account/AccountRecovery/{AccountID}/ResetPassword");
+            }
+            else
+            {
+                showInvalidAlert = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during navigation: {ex.Message}");
         }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error during navigation: {ex.Message}");
-    }
-}
 }
 
 <div class="content p-5">
@@ -166,31 +169,30 @@ private bool ValidateSecurityQuestions()
         @if (SecurityQuestions != null && SecurityQuestions.Any())
         {
             @for (var i = 0; i < SecurityQuestions.Count; i++)
-{
-    var questionIndex = i; // Capture the loop variable
+            {
+                var questionIndex = i; // Capture the loop variable
 
-    <div class="col-md-4">
-        <div class="mb-3">
-            <div>
-                <h4><b>@($"Question {i + 1}")</b></h4>
-            </div>
-            <div>
-                <h5>@SecurityQuestions[i].Question</h5>
-                <div>
-                    <p>Debug Info: i=@i, userAnswers.Count=@userAnswers.Count, SecurityQuestions.Count=@SecurityQuestions.Count</p>
-                    @if (userAnswers != null && questionIndex < userAnswers.Count)
-                    {
-                        <input type="text" class="form-control" @bind="userAnswers[questionIndex]" />
-                    }
-                    else
-                    {
-                        <p>Invalid user answer index.</p>
-                    }
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <div>
+                            <h4><b>@($"Question {i + 1}")</b></h4>
+                        </div>
+                        <div>
+                            <h5>@SecurityQuestions[i].Question</h5>
+                            <div>
+                                @if (userAnswers != null && questionIndex < userAnswers.Count)
+                                {
+                                    <input type="text" class="form-control" @bind="userAnswers[questionIndex]" />
+                                }
+                                else
+                                {
+                                    <p>Invalid user answer index.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-}
+            }
 
         }
         else
@@ -198,6 +200,14 @@ private bool ValidateSecurityQuestions()
             <p>No security questions available.</p>
         }
     </div>
+    @if (showInvalidAlert)
+    {
+        <div class="row px-3">
+            <div class="alert alert-danger mt-3" role="alert">
+                Security question answers are incorrect. Please check your answers.
+            </div>
+        </div>
+    }
     <div class="row">
         <div class="col-md-12 d-flex justify-content-between">
             <button class="btn btn-primary" @onclick="GoBackToAccounts">Go Back</button>
@@ -205,11 +215,3 @@ private bool ValidateSecurityQuestions()
         </div>
     </div>
 </div>
-
-
-@* @if (!ValidateSecurityQuestions())
-{
-<div class="alert alert-danger mt-5" role="alert">
-Security question answers are incorrect. Please check your answers.
-</div>
-} *@
