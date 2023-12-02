@@ -8,9 +8,12 @@
 @code{
     private String firstName;
     private String lastName;
-    private String employeeID;
+    private int employeeID;
     private String employeeInitials;
     private String hubRole;
+    private int accountID;
+
+    private bool inserted = false;
     protected override void OnInitialized()
     {
         // Only allows user logged in as manager to view page
@@ -24,11 +27,36 @@
     }
 
     private void insertEmployee(){
+        if(hubRole =="Testing Assistant" || hubRole =="Tutoring"){
+                    accountID = 2;
+                }
+                else{
+                    accountID = 1;
+                }
 
+        var newEmployee = new HubEmployee
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                EmployeeID = employeeID,
+                Initials = employeeInitials,
+                Role = hubRole,
+                AccountID = accountID
+                
+            };
+
+            dbContext.HubEmployees.Add(newEmployee);
+            dbContext.SaveChanges();
+            inserted = true;
+    }
+
+    private void goBackToEmployee()
+    {
+        navigationManager.NavigateTo("/Employee");
     }
 
 }
-
+@if(!inserted){
 <div class="container">
     <div class="row pt-3">
         <div class="col-md-6">
@@ -78,4 +106,15 @@
         </div>
     </div>
 </div>
-
+}
+@if(inserted)
+{
+    <div class="alert alert-success mt-3" role="alert">
+        <label>@firstName @lastName inserted successfully.</label>
+    </div>
+     <div class="row mt-3 justify-content-center">
+        <div class="col-md-12 d-flex justify-content-center">
+            <button class="btn btn-primary" @onclick="goBackToEmployee">Done</button>
+        </div>
+    </div>
+}
