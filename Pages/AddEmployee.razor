@@ -59,12 +59,11 @@
             </div>
         </div>
     </div>
-
     <div class="row py-3">
-        <div class="col-md-6">
+        <div class="col-md-12 text-center">
             <div class="form-group">
                 <label>Hub Role:</label>
-                <select class="form-control" @bind="hubRole">
+                <select class="form-control mx-auto w-25" @bind="hubRole">
                     <option value="">Select Hub Role</option>
                     <option value="Tutor">Tutor</option>
                     <option value="Testing Assistant">Testing Assistant</option>
@@ -75,7 +74,7 @@
 
     <div class="row pt-5">
         <div class="col-md-12 text-center">
-            <button class="btn btn-primary btn-block w-75 btn-sign-in" @onclick="insertEmployee">Insert Employee</button>
+            <button class="btn btn-primary btn-block" @onclick="insertEmployee">Insert Employee</button>
         </div>
     </div>
 </div>
