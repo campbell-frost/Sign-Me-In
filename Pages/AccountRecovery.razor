@@ -166,40 +166,32 @@ private bool ValidateSecurityQuestions()
         @if (SecurityQuestions != null && SecurityQuestions.Any())
         {
             @for (var i = 0; i < SecurityQuestions.Count; i++)
-            {
-                var question = SecurityQuestions[i];
+{
+    var questionIndex = i; // Capture the loop variable
 
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <div>
-                            <h4><b>@($"Question {i + 1}")</b></h4>
-                        </div>
-                        <div>
-                            @* Add a check before accessing the question *@
-                            @if (question != null)
-                            {
-                                <h5>@question.Question</h5>
-                                @* Check if userAnswers contains enough elements *@
-                                @if (i < userAnswers.Count)
-                                {
-                                    <div>
-                                       <input type="text" class="form-control" value="@userAnswers.ElementAtOrDefault(i)" />
-
-                                    </div>
-                                }
-                                else
-                                {
-                                    <p>Error: No user answer found for the question.</p>
-                                }
-                            }
-                            else
-                            {
-                                <p>Error: Security question is null.</p>
-                            }
-                        </div>
-                    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <div>
+                <h4><b>@($"Question {i + 1}")</b></h4>
+            </div>
+            <div>
+                <h5>@SecurityQuestions[i].Question</h5>
+                <div>
+                    <p>Debug Info: i=@i, userAnswers.Count=@userAnswers.Count, SecurityQuestions.Count=@SecurityQuestions.Count</p>
+                    @if (userAnswers != null && questionIndex < userAnswers.Count)
+                    {
+                        <input type="text" class="form-control" @bind="userAnswers[questionIndex]" />
+                    }
+                    else
+                    {
+                        <p>Invalid user answer index.</p>
+                    }
                 </div>
-            }
+            </div>
+        </div>
+    </div>
+}
+
         }
         else
         {
