@@ -3,6 +3,7 @@
 @inject NavigationManager navigationManager
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.Forms
+@inject AuthenticationService authService
 
 @code
 {
@@ -50,6 +51,15 @@
 
     protected override void OnInitialized()
     {
+        // Only allows user logged in as manager to view page
+        var currentUser = authService.GetLoggedInUser();
+
+        if (currentUser == null || currentUser.AccountID != 1)
+        {
+            navigationManager.NavigateTo("/Forbidden");
+            return;
+        }
+
         Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
         getSecurityQuestions();
 
