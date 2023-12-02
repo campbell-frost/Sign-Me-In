@@ -27,7 +27,7 @@
         // Only allows user logged in as manager to view page
         var currentUser = authService.GetLoggedInUser();
 
-        if (currentUser == null || currentUser.AccountID != 1)
+        if (currentUser == null|| currentUser.AccountID != 2)
         {
             navigationManager.NavigateTo("/Forbidden");
             return;
