@@ -82,6 +82,9 @@
         updated = false;
     }
 
+    private void goToAddEmployee(){
+        navigationManager.NavigateTo("/Employee/AddEmployee");
+    }
 }
 
 
@@ -99,6 +102,7 @@
                 </span>
             </div>
         </div>
+        <button class="btn btn-primary" @onclick = "goToAddEmployee"> Create New Employee </button>
     </form>
 
     @if (updated)

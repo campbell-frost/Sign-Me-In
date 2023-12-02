@@ -1,0 +1,82 @@
+@page "/Employee/AddEmployee"
+@inject Context dbContext
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@inject AuthenticationService authService
+@inject NavigationManager navigationManager
+
+@code{
+    private String firstName;
+    private String lastName;
+    private String employeeID;
+    private String employeeInitials;
+    private String hubRole;
+    protected override void OnInitialized()
+    {
+        // Only allows user logged in as manager to view page
+        var currentUser = authService.GetLoggedInUser();
+
+        if (currentUser == null || currentUser.AccountID != 1)
+        {
+            navigationManager.NavigateTo("/Forbidden");
+            return;
+        }
+    }
+
+    private void insertEmployee(){
+
+    }
+
+}
+
+<div class="container">
+    <div class="row pt-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>First Name:</label>
+                <input type="text" class="form-control" @bind="firstName" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Last Name:</label>
+                <input type="text" class="form-control" @bind="lastName" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row py-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Employee ID:</label>
+                <input type="text" class="form-control" @bind="employeeID" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Employee Initials:</label>
+                <input type="text" class="form-control" @bind="employeeInitials" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row py-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Hub Role:</label>
+                <select class="form-control" @bind="hubRole">
+                    <option value="">Select Hub Role</option>
+                    <option value="Tutor">Tutor</option>
+                    <option value="Testing Assistant">Testing Assistant</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row pt-5">
+        <div class="col-md-12 text-center">
+            <button class="btn btn-primary btn-block w-75 btn-sign-in" @onclick="insertEmployee">Insert Employee</button>
+        </div>
+    </div>
+</div>
+
