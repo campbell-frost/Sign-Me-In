@@ -171,6 +171,12 @@
             Console.WriteLine($"Error during navigation: {ex.Message}");
         }
     }
+
+    private void DeveloperBypassSecurityQuestions()
+    {
+        navigationManager.NavigateTo($"/Account/AccountRecovery/{AccountID}/ResetPassword");
+    }
+}
 }
 
 <div class="content p-5">
@@ -222,5 +228,8 @@
             <button class="btn btn-primary" @onclick="GoBackToAccounts">Go Back</button>
             <button class="btn btn-primary" @onclick="GoToChangePassword">Reset Password</button>
         </div>
+    </div>
+    <div class="row mt-4">
+        <button class="btn btn-primary" @onclick="DeveloperBypassSecurityQuestions">Developer Bypass</button>
     </div>
 </div>
