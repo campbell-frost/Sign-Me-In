@@ -18,15 +18,15 @@
 
     protected override void OnInitialized()
     {
+        // Only allows user logged in as manager to view page
         var currentUser = authService.GetLoggedInUser();
 
-        if (currentUser.AccountID != 1) 
+        if (currentUser == null || currentUser.AccountID != 1)
         {
-            Console.WriteLine("User is unautherized");
-            
-            navigationManager.NavigateTo("/Forbidden"); // Redirect to another page
+            navigationManager.NavigateTo("/Forbidden");
             return;
         }
+        
         // Parse the start and end date strings into DateTime objects
         if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime
         parsedEndDate))

@@ -2,6 +2,8 @@
 @using Microsoft.EntityFrameworkCore;
 @inject Context dbContext
 @inject IJSRuntime JSRuntime
+@inject AuthenticationService authService
+@inject NavigationManager navigationManager
 
 @code {
     // A list to store the sessions retrieved from the database
@@ -22,6 +24,15 @@
     // Method called upon initialization
     protected override void OnInitialized()
     {
+        // Only allows user logged in as manager to view page
+        var currentUser = authService.GetLoggedInUser();
+
+        if (currentUser == null || currentUser.AccountID != 1)
+        {
+            navigationManager.NavigateTo("/Forbidden");
+            return;
+        }
+
         LoadHubSessions(); // Load sessions when page initializes
         CheckAndSignOutStudents(); //
     }

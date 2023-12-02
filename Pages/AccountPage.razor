@@ -2,7 +2,7 @@
 @inject Context dbContext
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager navigationManager
-
+@inject AuthenticationService authService
 @code {
     private bool selectAccount = false;
     private List<Account> Accounts;
@@ -11,6 +11,15 @@
 
     protected override void OnInitialized()
     {
+        // Only allows user logged in as manager to view page
+        var currentUser = authService.GetLoggedInUser();
+
+        if (currentUser == null || currentUser.AccountID != 1)
+        {
+            navigationManager.NavigateTo("/Forbidden");
+            return;
+        }
+
         LoadAccounts();
     }
 

@@ -65,14 +65,15 @@
 
     protected override void OnInitialized()
     {
+        // Only allows user logged in as manager to view page
         var currentUser = authService.GetLoggedInUser();
-        if (currentUser.AccountID != 1) 
+
+        if (currentUser == null || currentUser.AccountID != 1)
         {
-            Console.WriteLine("User is unautherized");
-            
-            navigationManager.NavigateTo("/Forbidden"); // Redirect to another page
+            navigationManager.NavigateTo("/Forbidden");
             return;
         }
+
         
         FetchData();
     }

@@ -22,13 +22,14 @@
     private string? selectedSessionType; // The session type selected from the dropdown
     private List<string?>? initials; // List of available initials for dropdown
 
-    protected override void OnInitialized(){
+    protected override void OnInitialized()
+    {
+        // Only allows user logged in as manager to view page
         var currentUser = authService.GetLoggedInUser();
-        if (currentUser.AccountID != 2) 
+
+        if (currentUser == null || currentUser.AccountID != 2)
         {
-            Console.WriteLine("User is unautherized");
-            
-            navigationManager.NavigateTo("/Forbidden"); // Redirect to another page
+            navigationManager.NavigateTo("/Forbidden");
             return;
         }
     }
@@ -196,7 +197,7 @@
 
                 @foreach (var student in foundStudents)
                 {
-                    if (student != null && !alreadySignedIn) 
+                    if (student != null && !alreadySignedIn)
                     {
                         <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
                     }
@@ -250,12 +251,12 @@
                     </div>
                     <hr />
                     <div class="row pt-3">
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label>Initials:</label>
-                    <select class="form-control" @bind="selectedInitials">
-                        <option value="">Select Initials</option>
-                        @foreach (var initial in initials)
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group">
+                                <label>Initials:</label>
+                                <select class="form-control" @bind="selectedInitials">
+                                    <option value="">Select Initials</option>
+                                    @foreach (var initial in initials)
                                     {
                                         <option value="@initial">@initial</option>
                                     }
