@@ -179,16 +179,16 @@
 }
 
 
-<div class="content p-5">
-    <div class="row">
-        @if (SecurityQuestions != null && SecurityQuestions.Any())
-        {
-            @for (var i = 0; i < SecurityQuestions.Count; i++)
+<div class="container pb-5 custom-container ">
+    <div class="row justify-content-center">
+        <div class="col-md-12 ">
+            @if (SecurityQuestions != null && SecurityQuestions.Any())
             {
-                var questionIndex = i; // Capture the loop variable
+                @for (var i = 0; i < SecurityQuestions.Count; i++)
+                {
+                    var questionIndex = i; // Capture the loop variable
 
-                <div class="col-md-4">
-                    <div class="mb-3">
+                    <div class="mb-3 ">
                         <div>
                             <h4><b>@($"Question {i + 1}")</b></h4>
                         </div>
@@ -206,14 +206,14 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
 
-        }
-        else
-        {
-            <p>No security questions available.</p>
-        }
+            }
+            else
+            {
+                <p>No security questions available.</p>
+            }
+        </div>
     </div>
     @if (showInvalidAlert)
     {
@@ -224,10 +224,12 @@
         </div>
     }
     <div class="row mt-4">
-        <div class="col-md-12 d-flex justify-content-between">
-            <button class="btn btn-primary" @onclick="GoBackToAccounts">Go Back</button>
-            <button class="btn btn-primary" @onclick="GoToChangePassword">Reset Password</button>
+        <div class="col-md-6 ">
+            <button class="btn btn-primary btn-block" @onclick="GoBackToAccounts">Go Back</button>
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-primary btn-block" @onclick="GoToChangePassword">Reset Password</button>
         </div>
     </div>
-    
+
 </div>
