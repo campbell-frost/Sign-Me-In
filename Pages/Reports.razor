@@ -5,14 +5,13 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
-            <label for="startDate">From:</label>
-
+        <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
+            <label for="startDate">From</label>
             <input type="date" id="startDate" name="startDate" @bind="startDate" @oninput="StartDateChanged"
                 class="form-control">
         </div>
-        <div class="col-md-5 d-flex justify-content-center flex-column align-content-center">
-            <label for="endDate">To:</label>
+        <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
+            <label for="endDate">To</label>
 
             <input type="date" id="endDate" name="endDate" @bind="endDate" @oninput="EndDateChanged"
                 class="form-control">
@@ -204,7 +203,7 @@
         // Round up the minutes
         if (seconds > 30)
         {
-            minutes++; 
+            minutes++;
         }
 
         string formattedTime = "";
