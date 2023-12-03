@@ -51,7 +51,7 @@
         </table>
 
     </div>
-        <button class="btn btn-primary mt-3" @onclick="ShowDetailedReport"> View more detailed report </button>
+    <button class="btn btn-primary mt-3" @onclick="ShowDetailedReport"> View more detailed report </button>
 </div>
 @code {
     private double SecondsTesting { get; set; }
@@ -60,7 +60,7 @@
     private double SecondsTutoring { get; set; }
     private int StudentsTutoring { get; set; }
     private int DistinctStudentsTutoring { get; set; }
-    private double TotalTime { get; set;}
+    private double TotalTime { get; set; }
     private DateTime? startDate { get; set; } = DateTime.Now.Date;
     private DateTime? endDate { get; set; } = DateTime.Now.Date;
 
@@ -75,7 +75,7 @@
             return;
         }
 
-        
+
         FetchData();
 
         Console.WriteLine("Total Time: " + TotalTime);
@@ -83,19 +83,19 @@
     }
     private void FetchData()
     {
-        List<HubSession> ? testing = null;
-        List<HubSession> ? tutoring = null;
+        List<HubSession>? testing = null;
+        List<HubSession>? tutoring = null;
 
         // Check if both start and end dates are selected
         if (startDate.HasValue && endDate.HasValue)
         {
             // Filter data between start and end dates
             testing = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut!= null)
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
             .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut!= null)
+            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
             .ToList();
         }
         else if (startDate.HasValue)
@@ -105,11 +105,11 @@
             var currentDate = DateTime.Now.Date;
             Console.WriteLine("Dates from " + startDate + " to " + currentDate);
             testing = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing" && s.TimeOut!= null)
+            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing" && s.TimeOut != null)
             .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring" && s.TimeOut!= null)
+            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring" && s.TimeOut != null)
             .ToList();
         }
         else if (endDate.HasValue)
@@ -118,17 +118,17 @@
             // End date is selected, but start date is not
             // Filter data from the beginning till the end date
             testing = dbContext.HubSessions
-            .Where(s => s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut!= null)
+            .Where(s => s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
             .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut!= null)
+            .Where(s => s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
             .ToList();
         }
         else
         {
             // Both start and end dates are empty, so don't show any data
-            SecondsTesting =0;
+            SecondsTesting = 0;
             SecondsTutoring = 0;
             TotalTime = 0;
             StudentsTesting = 0;
@@ -139,71 +139,60 @@
             return;
         }
 
+        // Calculate total Seconds for testing and tutoring
         double totalSecondsTesting = testing.Sum(s => (s.TimeOut - s.TimeIn)?.TotalSeconds ?? 0);
-
-        // Calculate total time in seconds for tutoring sessions
         double totalSecondsTutoring = tutoring.Sum(s => (s.TimeOut - s.TimeIn)?.TotalSeconds ?? 0);
-
-        // Calculate total time in seconds by adding testing and tutoring times
         double totalSeconds = totalSecondsTesting + totalSecondsTutoring;
 
-        // Assign total time in seconds directly to the UI properties (no need for SecondsTesting, SecondsTutoring, or TotalTime)
         StudentsTesting = testing.Count;
         StudentsTutoring = tutoring.Count;
 
+        // Gets the ammount of students
         DistinctStudentsTesting = testing.Select(s => s.StudentID).Distinct().Count();
         DistinctStudentsTutoring = tutoring.Select(s => s.StudentID).Distinct().Count();
 
-        // Update the StateHasChanged method here if needed
-
-        // Now, the total time is in seconds
+        // Assign local variables to global variables
         SecondsTesting = totalSecondsTesting;
         SecondsTutoring = totalSecondsTutoring;
         TotalTime = totalSeconds;
-        
-
-
 
         StudentsTesting = testing.Count;
         StudentsTutoring = tutoring.Count;
-
-        DistinctStudentsTesting = testing.Select(s => s.StudentID).Distinct().Count();
-        DistinctStudentsTutoring = tutoring.Select(s => s.StudentID).Distinct().Count();
 
         StateHasChanged();
     }
 
 
-  private void StartDateChanged(ChangeEventArgs e)
-{
-    if (e.Value != null)
+    private void StartDateChanged(ChangeEventArgs e)
     {
-        string dateString = e.Value.ToString()!;
-        if (!string.IsNullOrEmpty(dateString))
+        if (e.Value != null)
         {
-            startDate = DateTime.Parse(dateString);
-            FetchData();
+            string dateString = e.Value.ToString()!;
+            if (!string.IsNullOrEmpty(dateString))
+            {
+                startDate = DateTime.Parse(dateString);
+                FetchData();
+            }
         }
     }
-}
 
-private void EndDateChanged(ChangeEventArgs e)
-{
-    if (e.Value != null)
+    private void EndDateChanged(ChangeEventArgs e)
     {
-        string dateString = e.Value.ToString()!;
-        if (!string.IsNullOrEmpty(dateString))
+        if (e.Value != null)
         {
-            endDate = DateTime.Parse(dateString);
-            FetchData();
+            string dateString = e.Value.ToString()!;
+            if (!string.IsNullOrEmpty(dateString))
+            {
+                endDate = DateTime.Parse(dateString);
+                FetchData();
+            }
         }
     }
-}
 
     private void ShowDetailedReport()
     {
-          // Pass the selected dates as route parameters
-           navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
+        // Pass the selected dates as route parameters
+        navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
     }
 
     string FormatTotalTime(double totalTimeInSeconds)
@@ -211,6 +200,12 @@ private void EndDateChanged(ChangeEventArgs e)
         int hours = (int)(totalTimeInSeconds / 3600);
         int minutes = (int)((totalTimeInSeconds % 3600) / 60);
         int seconds = (int)(totalTimeInSeconds % 60);
+
+        // Round up the minutes
+        if (seconds > 30)
+        {
+            minutes++; 
+        }
 
         string formattedTime = "";
 
@@ -224,12 +219,13 @@ private void EndDateChanged(ChangeEventArgs e)
             formattedTime += $"{minutes} min ";
         }
 
-        if (seconds > 0 || (hours == 0 && minutes == 0))
+        if (seconds >= 0 && hours == 0 && minutes == 0)
         {
             formattedTime += $"{seconds} sec";
         }
 
         return formattedTime.Trim();
     }
+
 
 }
