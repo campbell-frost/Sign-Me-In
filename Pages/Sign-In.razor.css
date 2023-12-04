@@ -76,3 +76,8 @@
 .form-group.highlight-on-click {
     transition: background-color 0.3s ease-in-out; /* Add transition effect */
 }
+
+.read-only{
+    background-color: #E3E3E3;
+    
+}
