@@ -73,26 +73,16 @@
             <div class="row pb-3 ">
                 <div class="col-md-6">
                     <label for="AccountID">Account ID</label>
-                    <input type="text" id="AccountID" readonly class="form-control" value="@selectedAccount.AccountID" />
+                    <input type="text" readonly class="form-control shadow-none border-0" id="AccountID" 
+                        value="@selectedAccount.AccountID" />
                 </div>
                 <div class="col-md-6">
                     <label>Role</label>
-                    <input type="text" readonly class="form-control" value="@selectedAccount.UserName" />
+                    <input type="text" readonly class="shadow-none form-control border-0" value="@selectedAccount.UserName" />
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <label>Password</label>
-                    <div class="input-group">
-                        <input type="@TxtType" readonly class="form-control" value="@selectedAccount.PasswordHash" />
-                        <span class="input-group-append">
-                            <button class="btn btn-outline-none shadow-none" type="button" @onclick="ShowPassword">
-                                <i class="oi oi-eye"></i>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <label></label>
                     <button class="btn btn-primary w-100" @onclick="NavigateToPasswordReset">Change Password</button>
                 </div>
