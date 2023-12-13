@@ -154,7 +154,9 @@
                         <label>First Name:</label>
                         @if (foundEmployee != null)
                         {
-                            <input type="text" class="form-control" @bind="foundEmployee.FirstName" />
+                            <div class="input-group">
+                                <input type="text" class="form-control shadow-none" @bind="foundEmployee.FirstName" />
+                            </div>
                         }
                     </div>
                 </div>
@@ -163,7 +165,9 @@
                         <label>Last Name:</label>
                         @if (foundEmployee != null)
                         {
-                            <input type="text" class="form-control" @bind="foundEmployee.LastName" />
+                            <div class="input-group">
+                                <input type="text" class="form-control shadow-none" @bind="foundEmployee.LastName" />
+                            </div>
                         }
                     </div>
                 </div>
@@ -174,7 +178,9 @@
                         <label>Employee ID:</label>
                         @if (foundEmployee != null)
                         {
-                            <input type="text" class="form-control" @bind="foundEmployee.EmployeeID" />
+                            <div class="input-group">
+                                <input type="text" class="form-control shadow-none" @bind="foundEmployee.EmployeeID" />
+                            </div>
                         }
                     </div>
                 </div>
@@ -183,7 +189,9 @@
                         <label>Employee Initials:</label>
                         @if (foundEmployee != null)
                         {
-                            <input type="text" class="form-control" @bind="foundEmployee.Initials" />
+                            <div class="input-group">
+                                <input type="text" class="form-control shadow-none" @bind="foundEmployee.Initials" />
+                            </div>
                         }
                     </div>
                 </div>
@@ -201,9 +209,12 @@
         {
             <div class="form-group text-center py-3 mb-2">
                 <div class="alert alert-warning">
-                    No Employees found with the name '@searchTerm'.</label>
+                    <label>
+                        No Employees found with the name '@searchTerm'
+                    </label>
                 </div>
+            </div>
 
         }
     }
-    </div>
+</div>
