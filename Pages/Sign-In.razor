@@ -161,7 +161,7 @@
     <div class="content-container card @(searchPerformed && !isLogoVisible ? "content-move-up shadow-lg" : "")">
         <form @onsubmit="HandleSearch">
             <div class="pt-4">
-                <div class="form-group highlight-on-click">
+                <div class="form-group">
                     <div class="input-group mx-auto">
                         <input type="search" class="form-control shadow-none md-form" placeholder="Search for Student"
                             @bind="searchTerm" autofocus />
@@ -199,7 +199,7 @@
 
                 @foreach (var student in foundStudents)
                 {
-                    if (student != null && !alreadySignedIn)
+                    if (student != null && !alreadySignedIn )
                     {
                         <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
                     }
@@ -218,7 +218,7 @@
 
             else if (foundStudent != null && !isSignedIn)
             {
-                if (!alreadySignedIn)
+                if (!alreadySignedIn && foundStudent != null)
                 {
 
                     <div class="row pt-3">
