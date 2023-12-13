@@ -1,4 +1,4 @@
-@page "/Account/AccountRecovery/{AccountID}"
+@page "/Account/Recovery/{AccountID}"
 @inject Context dbContext
 @inject NavigationManager navigationManager
 @using Microsoft.EntityFrameworkCore
@@ -159,7 +159,7 @@
             if (ValidateSecurityQuestions())
             {
                 StateHasChanged(); // Ensure the component state is updated
-                navigationManager.NavigateTo($"/Account/AccountRecovery/{AccountID}/ResetPassword");
+                navigationManager.NavigateTo($"/Account/Recovery/{AccountID}/ResetPassword");
             }
             else
             {
