@@ -82,27 +82,32 @@
         updated = false;
     }
 
-    private void goToAddEmployee(){
+    private void goToAddEmployee()
+    {
         navigationManager.NavigateTo("/Employee/AddEmployee");
     }
 }
 
 
-<div class="container-md">
+<div class="container-md card shadow-lg">
 
     <form @onsubmit="Search">
-        <div class="form-group py-4">
-            <div class="input-group mx-auto">
-                <input type="search" class="form-control shadow-none" placeholder="Search for an Employee"
-                    @bind="searchTerm" autofocus />
-                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default shadow-none my-auto">
-                        <img src="search-icon.png" class="search-icon">
-                    </button>
-                </span>
+        <div class="py-4">
+            <div class="form-group">
+                <div class="input-group mx-auto">
+                    <input type="search" class="form-control shadow-none md-form" placeholder="Search for an Employee"
+                        @bind="searchTerm" autofocus />
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default shadow-none my-auto">
+                            <img src="search-icon.png" class="search-icon">
+                        </button>
+                    </span>
+                </div>
             </div>
         </div>
-        <button class="btn btn-primary" @onclick = "goToAddEmployee"> Create New Employee </button>
+
+
+        <button class="btn btn-primary btn-block mb-3" @onclick="goToAddEmployee"> Create New Employee </button>
     </form>
 
     @if (updated)
@@ -183,8 +188,7 @@
 
             <div class="row py-5">
                 <div class="col-md-12 mx-auto text-center">
-                    <button class="btn btn-primary btn-block w-100 btn-sign-in"
-                        @onclick="() => HandleUpdate(foundEmployee)">Update</button>
+                    <button class="btn btn-primary btn-block w-100" @onclick="() => HandleUpdate(foundEmployee)">Update</button>
                 </div>
 
             </div>

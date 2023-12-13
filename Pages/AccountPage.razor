@@ -68,25 +68,25 @@
 
     @if (selectAccount)
     {
-        <div>
-
-            <div class="row pb-3 ">
-                <div class="col-md-6">
-                    <label for="AccountID">Account ID</label>
-                    <input type="text" readonly class="form-control shadow-none border-0" id="AccountID" 
-                        value="@selectedAccount.AccountID" />
+            <div class="card px-5 pb-5 pt-3 shadow-lg">
+                <div class="row pb-3">
+                    <div class="col-md-6">
+                        <label for="AccountID">Account ID</label>
+                        <input type="text" readonly class="form-control shadow-none border-0" id="AccountID"
+                            value="@selectedAccount.AccountID" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Role</label>
+                        <input type="text" readonly class="shadow-none form-control border-0"
+                            value="@selectedAccount.UserName" />
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label>Role</label>
-                    <input type="text" readonly class="shadow-none form-control border-0" value="@selectedAccount.UserName" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <label></label>
+                        <button class="btn btn-primary w-100" @onclick="NavigateToPasswordReset">Change Password</button>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <label></label>
-                    <button class="btn btn-primary w-100" @onclick="NavigateToPasswordReset">Change Password</button>
-                </div>
-            </div>
-        </div>
     }
 </div>

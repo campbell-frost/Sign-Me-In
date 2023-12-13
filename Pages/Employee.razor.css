@@ -1,31 +1,56 @@
-.input-group, .form-control{
+.input-group .form-control {
     height: 3.3125rem;
-    flex-shrink: 0;
+    flex: 1;
     border: none;
-    background-color: #e3e3e3;
-    
 }
+
 .container-md{
     max-width: 43rem;
-    margin: 0 auto;
 }
 
 .input-group{
     border-radius: 4px;
 }
 
-.input-group-btn{
+.input-group-btn {
     display: flex;
     justify-content: center;
+    z-index: 1;
 }
 
-.search-icon{
+.search-icon {
     display: flex;
     justify-content: center;
     height: 24px;
     width: 24px;
 }
 
-.btn-sign-in{
+
+.form-control {
+    height: 3.3125rem;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 2px solid #6e6e6e;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    position: relative;
+}
+
+.image {
+    max-height: 100px;
+    align-items: center;
+}
+
+.card {
+    border: none;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.btn-block {
     height: 3.3125rem;
 }
