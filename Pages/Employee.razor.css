@@ -38,6 +38,7 @@
     border-left: none;
     border-right: none;
     position: relative;
+    border-radius: 0px;
 }
 
 .image {
