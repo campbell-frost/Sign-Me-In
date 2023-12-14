@@ -2,6 +2,9 @@
 @inject NavigationManager navigationManager
 @inject Context dbContext
 @inject AuthenticationService authService
+@using System.Text
+@inject IJSRuntime JSRuntime
+
 
 @code {
     [Parameter] public string startDate { get; set; }
@@ -128,12 +131,51 @@
             return $"{seconds} sec";
         }
     }
+    // Generates a CSV file from the hubSessions list
+    private string GenerateCSV()
+    {
+        StringBuilder csvContent = new StringBuilder();
+
+        // CSV header
+        csvContent.AppendLine("Date,Student ID,Student Name,Total Time,Session Type");
+
+        foreach (var session in hubSessions)
+        {
+            csvContent.AppendLine($"{session.Date.ToString("MM/dd/yyyy")} {session.TimeIn}," +
+            $"{session.StudentID},{GetStudentName(session.StudentID)}," +
+            $"{((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")}," +
+            $"{session.SessionType}");
+        }
+
+        return csvContent.ToString();
+    }
+
+    // Method to trigger the download
+    private async Task DownloadCSV()
+    {
+        var csvContent = GenerateCSV();
+
+        // Get the minimum and maximum dates from hubSessions
+        DateTime fromDate = hubSessions.Min(s => s.Date);
+        DateTime toDate = hubSessions.Max(s => s.Date);
+
+        var filename = $"HubSessions_from_{fromDate:MM-dd-yyyy}_to_{toDate:MM-dd-yyyy}.csv";
+
+        // Create a Blob
+        var bytes = Encoding.UTF8.GetBytes(csvContent);
+        var base64 = Convert.ToBase64String(bytes);
+        var uri = $"data:text/csv;base64,{base64}";
+
+        // Calls the downloadFile method located in App.razor
+        await JSRuntime.InvokeVoidAsync("downloadFile", filename, uri);
+    }
+
 }
+
 
 <div class="container">
     <div class="row pt-4">
         <div class="col-md-6">
-
             <form @onsubmit="HandleSearch">
                 <div class="form-group">
                     <div class="input-group mx-auto">
@@ -201,7 +243,7 @@
     <div class="row">
         <div class="col-md-12 d-flex justify-content-between">
             <button class="btn btn-primary" @onclick="gobacktoReports">Go Back</button>
-            <button class="btn btn-primary">Export</button>
+            <button class="btn btn-primary" @onclick="DownloadCSV">Export</button>
         </div>
     </div>
 

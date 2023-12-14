@@ -22,7 +22,19 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.server.js"></script>
+    <script src="_framework/blazor.web.js"></script>
+    <script>
+        // This script downloads a file (called in DetailedReport.razor)
+        window.downloadFile = (fileName, uri) => {
+            const link = document.createElement('a');
+            link.href = uri;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+    </script>
 </body>
 
 </html>
