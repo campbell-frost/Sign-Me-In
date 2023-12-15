@@ -10,13 +10,8 @@
     height: 3.3125rem;
 }
 
-.main-content{
-    padding-left: 6rem;
-    padding-right: 6rem;
-}
-
 .custom-container{
-    width: 800px;
+    width: 600px;
 }
 
 .card {
