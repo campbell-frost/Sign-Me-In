@@ -3,7 +3,7 @@
 @inject NavigationManager navigationManager
 @inject AuthenticationService authService
 
-<div class="container">
+<div class="container card shadow-lg">
     <div class="row">
         <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
             <label for="startDate">From</label>
@@ -18,7 +18,7 @@
         </div>
     </div>
     <div>
-        <table class="table mt-5">
+        <table class="table mt-3">
             <thead>
                 <tr class="table-header">
                     <th>Questions</th>
@@ -50,7 +50,12 @@
         </table>
 
     </div>
-    <button class="btn btn-primary mt-3" @onclick="ShowDetailedReport"> View more detailed report </button>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-primary btn-block my-3" @onclick="ShowDetailedReport"> View more detailed report </button>
+
+        </div>
+    </div>
 </div>
 @code {
     private double SecondsTesting { get; set; }
