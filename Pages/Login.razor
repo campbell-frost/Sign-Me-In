@@ -46,19 +46,20 @@
     private string username = "";
     private string password = "";
 
-    private async Task HandleLogin()
-    {
-        var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username && u.PasswordHash == password);
+   private async Task HandleLogin()
+{
+    var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username);
 
-        if (user != null)
+    if (user != null)
+    {
+        // Use BCrypt to verify the entered password against the stored hashed password
+        bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+
+        if (isPasswordCorrect)
         {
-            // Use BCrypt to verify the entered password against the stored hashed password
-            if (BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-            {
-                authService.SetLoggedInUser(user); // Set the logged-in user
-                navigation.NavigateTo("/HomePage");
-                Console.WriteLine($"User Account ID: {user.AccountID}");
-            }
+            authService.SetLoggedInUser(user); // Set the logged-in user
+            navigation.NavigateTo("/HomePage");
+            Console.WriteLine($"User Account ID: {user.AccountID}");
         }
         else
         {
@@ -67,4 +68,11 @@
             await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
         }
     }
+    else
+    {
+        username = "";
+        password = "";
+        await JSRuntime.InvokeVoidAsync("alert", "User not found.");
+    }
+}
 }
