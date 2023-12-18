@@ -46,33 +46,39 @@
     private string username = "";
     private string password = "";
 
-   private async Task HandleLogin()
-{
-    var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username);
-
-    if (user != null)
+    private async Task HandleLogin()
     {
-        // Use BCrypt to verify the entered password against the stored hashed password
-        bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username);
 
-        if (isPasswordCorrect)
+        if (user != null)
         {
-            authService.SetLoggedInUser(user); // Set the logged-in user
-            navigation.NavigateTo("/HomePage");
-            Console.WriteLine($"User Account ID: {user.AccountID}");
+            // Use BCrypt to verify the entered password against the stored hashed password
+            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+
+            if (isPasswordCorrect)
+            {
+                authService.SetLoggedInUser(user); // Set the logged-in user
+                if (user.AccountID == 2)
+                {
+                    navigation.NavigateTo("/Sign-In");
+                }
+                else if (user.AccountID == 1)
+                {
+                    navigation.NavigateTo("/Reports");
+                }
+            }
+            else
+            {
+                username = "";
+                password = "";
+                await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
+            }
         }
         else
         {
             username = "";
             password = "";
-            await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
+            await JSRuntime.InvokeVoidAsync("alert", "User not found.");
         }
     }
-    else
-    {
-        username = "";
-        password = "";
-        await JSRuntime.InvokeVoidAsync("alert", "User not found.");
-    }
-}
 }
