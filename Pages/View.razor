@@ -34,7 +34,7 @@
         }
 
         LoadHubSessions(); // Load sessions when page initializes
-        CheckAndSignOutStudents(); //
+        CheckAndSignOutStudents(); // Change where this method is called
     }
 
     // Loads the hub sessions based on the 'showOnlySignedIn' condition
@@ -129,7 +129,7 @@
         if (sessionToUpdate != null && !sessionToUpdate.TimeOut.HasValue)
         {
             var currentTime = DateTime.Now.TimeOfDay; // Fetch the current time
-            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds); // Truncate to remove milliseconds
+            var truncatedTime = new TimeSpan(currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
             sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
             dbContext.SaveChanges(); // Persist the changes
             LoadHubSessions(); // Refresh the sessions
@@ -139,7 +139,7 @@
     private async Task CheckAndSignOutStudents()
     {
         var currentTime = DateTime.Now;
-        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Set the target sign -out time to 8:30 pm
+        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Time = 8:30 pm
 
         if (currentTime >= signOutTime)
         {
@@ -206,8 +206,8 @@
 
 <PageTitle>View Students 😀</PageTitle>
 
-<div class="container-md">
-    <div class="d-flex justify-content-between pb-4">
+<div class="container-md card shadow-lg">
+    <div class="d-flex justify-content-between py-4">
         <div class="button-container">
             <button class="btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")"
                 @onclick="() => SetActiveButton(0)">Signed-In</button>
@@ -271,14 +271,18 @@
                             {
                                 <input type="text" @bind="hubSession.TimeIn" />
                             }
+                             @if (DateTime.TryParse(hubSession.TimeIn.ToString(), out DateTime timeIn))
+                            {
+                                @timeIn.ToString("hh:mm tt")
+                            }
                             else
                             {
-                                @hubSession.TimeIn
+                                <text>Invalid Time</text>
                             }
                         </td>
 
                         <td>
-                            @if (isEditing && !showOnlySignedIn)
+                           @if (isEditing && !showOnlySignedIn)
                             {
                                 <input type="text" @bind="hubSession.TimeOut" />
                             }
@@ -288,8 +292,14 @@
                             }
                             else
                             {
-                                @hubSession.TimeOut
-
+                                @if (DateTime.TryParse(hubSession.TimeOut.ToString(), out DateTime timeOut))
+                                {
+                                    @timeOut.ToString("hh:mm tt")
+                                }
+                                else
+                                {
+                                    <text>Invalid Time</text>
+                                }
                             }
                         </td>
                         <td>
