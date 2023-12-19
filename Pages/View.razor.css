@@ -23,3 +23,14 @@ th{
     padding-left: 20px;
     padding-right: 20px;
 }
+
+.form-control{
+    width: 80px;
+}
+
+.select{
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: .375rem .75rem;
+}

@@ -72,3 +72,12 @@
 .read-only{
     background-color: #E3E3E3; 
 }
+.select {
+    background-color: white;
+    border: none;
+    padding: .375rem .75rem;
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    font-size: 1rem;
+}

@@ -206,7 +206,7 @@
 
 <PageTitle>View Students 😀</PageTitle>
 
-<div class="container-md card shadow-lg">
+<div class="container-md card mb-3 shadow-lg">
     <div class="d-flex justify-content-between py-4">
         <div class="button-container">
             <button class="btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")"
@@ -219,151 +219,167 @@
                 @onclick="() => SetActiveButton(2)">Edit</button>
         </div>
     </div>
+    <div style="overflow-x: auto">
+        <table class="table">
+            <thead>
+                <tr class="table-header">
+                    <th>Date</th>
+                    <th>Count</th>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Course</th>
+                    <th>Instructor</th>
+                    <th>Time In</th>
+                    @if (!showOnlySignedIn)
+                    {
+                        <th class="text-nowrap">Time Out</th>
+                    }
+                    else
+                    {
+                        <th>Sign Out</th>
+                    }
+                    <th>Initial</th>
+                    <th>Session</th>
+                    @if (!showOnlySignedIn)
+                    {
+                        <th style="width: 30px;">Total Time</th>
+                    }
+                    @if (isEditing)
+                    {
+                        <th>Edit</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (hubSessions != null)
+                {
 
-    <table class="table">
-        <thead>
-            <tr class="table-header">
-                <th>Date</th>
-                <th>Count</th>
-                <th>Name</th>
-                <th>ID</th>
-                <th>Course</th>
-                <th>Instructor</th>
-                <th>Time In</th>
-                @if (!showOnlySignedIn)
-                {
-                    <th>Time Out</th>
-                }
-                else
-                {
-                    <th>Sign Out</th>
-                }
-                <th>Initial</th>
-                <th>Session</th>
-                @if (!showOnlySignedIn)
-                {
-                    <th>Total Time</th>
-                }
-                @if (isEditing)
-                {
-                    <th>Edit</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @if (hubSessions != null)
-            {
-
-                foreach (var hubSession in hubSessions)
-                {
-                    <tr>
-                        <td>@hubSession.Date.ToString("MM/dd/yyyy")</td>
-                        @if (hubSession.Student != null)
-                        {
-                            <td>@hubSession.SessionID</td>
-                            <td>@hubSession.Student.FirstName @hubSession.Student.LastName</td>
-                            <td>@hubSession.Student.StudentID</td>
-                            <td>@hubSession.Student?.Course?.CourseName</td>
-                            <td>@hubSession.Student?.Instructor?.FirstName @hubSession.Student?.Instructor?.LastName</td>
-                        }
-                        <td>
-                            @if (isEditing)
+                    foreach (var hubSession in hubSessions)
+                    {
+                        <tr>
+                            <td>@hubSession.Date.ToString("MM/dd/yyyy")</td>
+                            @if (hubSession.Student != null)
                             {
-                                <input type="text" @bind="hubSession.TimeIn" />
+                                <td>@hubSession.SessionID</td>
+                                <td class="text-nowrap">@hubSession.Student.FirstName @hubSession.Student.LastName</td>
+                                <td>@hubSession.Student.StudentID</td>
+                                <td>@hubSession.Student?.Course?.CourseName</td>
+                                <td class="text-nowrap">@hubSession.Student?.Instructor?.FirstName
+                                    @hubSession.Student?.Instructor?.LastName</td>
                             }
-                             @if (DateTime.TryParse(hubSession.TimeIn.ToString(), out DateTime timeIn))
-                            {
-                                @timeIn.ToString("hh:mm tt")
-                            }
-                            else
-                            {
-                                <text>Invalid Time</text>
-                            }
-                        </td>
-
-                        <td>
-                           @if (isEditing && !showOnlySignedIn)
-                            {
-                                <input type="text" @bind="hubSession.TimeOut" />
-                            }
-                            else if (!hubSession.TimeOut.HasValue)
-                            {
-                                <button class="btn btn-sm btn-primary" @onclick="() => SignOutStudent(hubSession)">Sign Out</button>
-                            }
-                            else
-                            {
-                                @if (DateTime.TryParse(hubSession.TimeOut.ToString(), out DateTime timeOut))
+                            <td class="text-nowrap">
+                                @if (isEditing)
                                 {
-                                    @timeOut.ToString("hh:mm tt")
+                                    <input type="text" class="form-control" @bind="hubSession.TimeIn" />
+                                }
+                                else if (DateTime.TryParse(hubSession.TimeIn.ToString(), out DateTime timeIn))
+                                {
+                                    @timeIn.ToString("hh:mm tt")
                                 }
                                 else
                                 {
                                     <text>Invalid Time</text>
                                 }
-                            }
-                        </td>
-                        <td>
-                            @if (isEditing)
-                            {
-                                <select @bind="hubSession.EmployeeID">
-                                    @foreach (var employee in dbContext.HubEmployees)
-                                    {
-                                        <option value="@employee.EmployeeID">@employee.Initials</option>
-                                    }
-                                </select>
-                            }
-                            else
-                            {
-                                @if (hubSession.HubEmployee != null)
+                            </td>
+
+                            <td class="text-nowrap">
+                                @if (isEditing && !showOnlySignedIn)
                                 {
-                                    @hubSession.HubEmployee.Initials
+                                    @if (!hubSession.TimeOut.HasValue)
+                                    {
+                                        <input type="text" class="form-control"  readonly />
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control" @bind="hubSession.TimeOut" />
+                                    }
+                                }
+                                else if (!hubSession.TimeOut.HasValue)
+                                {
+                                    <button class="btn btn-sm btn-primary" @onclick="() => SignOutStudent(hubSession)">Sign
+                                        Out</button>
+                                }
+                                else
+                                {
+                                    @if (DateTime.TryParse(hubSession.TimeOut.ToString(), out DateTime timeOut))
+                                    {
+                                        @timeOut.ToString("hh:mm tt")
+                                    }
+                                    else
+                                    {
+                                        <text>Invalid Time</text>
+                                    }
+                                }
+                                </td>
+                            <td>
+                                @if (isEditing)
+                                {
+                                    <select class="select" @bind="hubSession.EmployeeID">
+                                        @foreach (var employee in dbContext.HubEmployees)
+                                        {
+                                            <option value="@employee.EmployeeID">@employee.Initials</option>
+                                        }
+                                    </select>
+                                }
+                                else
+                                {
+                                    @if (hubSession.HubEmployee != null)
+                                    {
+                                        @hubSession.HubEmployee.Initials
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (isEditing)
+                                {
+                                    <select class="select" style="" @bind="hubSession.SessionType">
+                                        @foreach (var sType in dbContext.HubSessions.Select(h => h.SessionType).Distinct())
+                                        {
+                                            <option value="@sType">@sType</option>
+                                        }
+                                    </select>
+                                }
+                                else
+                                {
+                                    @hubSession.SessionType
+                                }
+                            </td>
+                            @if (!showOnlySignedIn)
+                            {
+                                if (hubSession.TimeOut > hubSession.TimeIn)
+                                {
+                                    var totalTime = hubSession.TimeOut - hubSession.TimeIn;
+                                    <td class="text-nowrap">@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
+                                }
+                                else if (hubSession.TimeOut == null)
+                                {
+                                    <td class="text-nowrap" style="color: orange;">In Progress</td>
+                                }
+                                else
+                                {
+                                    <td class="text-nowrap" style="color: red;">Invalid time input</td>
                                 }
                             }
-                        </td>
-                        <td>
+
                             @if (isEditing)
                             {
-                                <select @bind="hubSession.SessionType">
-                                    @foreach (var sType in dbContext.HubSessions.Select(h => h.SessionType).Distinct())
-                                    {
-                                        <option value="@sType">@sType</option>
-                                    }
-                                </select>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
+                                </td>
                             }
-                            else
-                            {
-                                @hubSession.SessionType
-                            }
-                        </td>
-                        @if (!showOnlySignedIn)
-                        {
-                            if (hubSession.TimeOut > hubSession.TimeIn)
-                            {
-                                var totalTime = hubSession.TimeOut - hubSession.TimeIn;
-                                <td>@(totalTime != null ? FormatTotalTime(totalTime.Value) : "")</td>
-                            }
-                            else if (hubSession.TimeOut == null)
-                            {
-                                <td style="color: orange;">In Progress</td>
-                            }
-                            else
-                            {
-                                <td style="color: red;">Invalid time input</td>
-                            }
-                        }
-
-                        @if (isEditing)
-                        {
-                            <td>
-                                <button class="btn btn-sm btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
-                            </td>
-                        }
-                    </tr>
+                        </tr>
+                    }
                 }
-            }
+                else
+                {
+                    <div class="alert alert-info">
+                        <h1>No students are signed in</h1>
+                    </div>
+                }
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
     <div class="pagination-container">
         <ul class="pagination">
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
@@ -380,7 +396,7 @@
             }
 
             <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <a class="page-link" @onclick="() => MovePages(1)" aria-label="Next">
+                <a class="page-link"  @onclick="() => MovePages(1)" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

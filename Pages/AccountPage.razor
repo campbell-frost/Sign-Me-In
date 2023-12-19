@@ -34,27 +34,6 @@
         .FirstOrDefault(s => s.AccountID == account.AccountID);
         selectAccount = true;
     }
-
-
-    @* private void ShowPassword()
-{
-if (this.TxtType == "password")
-{
-this.TxtType = "text";
-}
-else
-{
-this.TxtType = "password";
-}
-} *@
-
-    @* private void NavigateToPasswordReset()
-    {
-        if (selectedAccount != null)
-        {
-            navigationManager.NavigateTo($"/Account/Recovery/{selectedAccount.AccountID}");
-        }
-    } *@
 }
 <div class="main-content content container card shadow-lg custom-container">
     <div class="account-cards main-content ">
@@ -67,24 +46,4 @@ this.TxtType = "password";
             }
         }
     </div>
-
-    @* @if (selectAccount)
-    {
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <label for="AccountID">Account ID</label>
-                <input type="text" readonly class="form-control shadow-none border-0" id="AccountID"
-                    value="@selectedAccount.AccountID" />
-            </div>
-            <div class="col-md-6">
-                <label>Role</label>
-                <input type="text" readonly class="shadow-none form-control border-0" value="@selectedAccount.UserName" />
-            </div>
-        </div>
-        <div class="row my-3">
-            <div class="col-md-12">
-                <button class="btn btn-primary w-100" @onclick="NavigateToPasswordReset">Change Password</button>
-            </div>
-        </div>
-    } *@
 </div>

@@ -13,42 +13,6 @@
     private List<String> userAnswers;
     private bool showInvalidAlert = false;
 
-    private void getSecurityQuestions()
-    {
-        // Parse the string to an integer
-        if (int.TryParse(AccountID, out int accountId))
-        {
-            Console.WriteLine($"Fetching security questions for AccountID: {accountId}");
-
-            // Fetch security questions from the database for the specified AccountID
-            SecurityQuestions = dbContext.SecurityQuestions
-            .Where(q => q.AccountID == accountId)
-            .ToList();
-
-            if (SecurityQuestions.Count > 0)
-            {
-                Console.WriteLine($"Found {SecurityQuestions.Count} security questions.");
-
-                // Initialize userAnswers with the same number of elements as SecurityQuestions
-                userAnswers = new List<string>(SecurityQuestions.Count);
-                for (var i = 0; i < SecurityQuestions.Count; i++)
-                {
-                    userAnswers.Add(string.Empty); // You can initialize with default values if needed
-                }
-            }
-            else
-            {
-                Console.WriteLine("No security questions found.");
-            }
-        }
-        else
-        {
-            navigationManager.NavigateTo("/Account");
-        }
-    }
-
-
-
     protected override void OnInitialized()
     {
         // Only allows user logged in as manager to view page
@@ -71,6 +35,37 @@
             {
                 userAnswers.Add(string.Empty);
             }
+        }
+    }
+
+    private void getSecurityQuestions()
+    {
+        // Parse the string to an integer
+        if (int.TryParse(AccountID, out int accountId))
+        {
+            // Fetch security questions from the database for the specified AccountID
+            SecurityQuestions = dbContext.SecurityQuestions
+            .Where(q => q.AccountID == accountId)
+            .ToList();
+
+            if (SecurityQuestions.Count > 0)
+            {
+
+                // Initialize userAnswers with the same number of elements as SecurityQuestions
+                userAnswers = new List<string>(SecurityQuestions.Count);
+                for (var i = 0; i < SecurityQuestions.Count; i++)
+                {
+                    userAnswers.Add(string.Empty); // You can initialize with default values if needed
+                }
+            }
+            else
+            {
+                Console.WriteLine("No security questions found.");
+            }
+        }
+        else
+        {
+            navigationManager.NavigateTo("/Account");
         }
     }
 
@@ -98,7 +93,6 @@
             Console.WriteLine($"Exception in UpdateUserAnswer: {ex.Message}");
         }
     }
-
 
     private bool ValidateSecurityQuestions()
     {
@@ -176,10 +170,23 @@
     {
         navigationManager.NavigateTo($"/Account/Recovery/{AccountID}/ResetPassword");
     }
+
+    private string GetAccountUsername()
+    {
+        var account = dbContext.Accounts.FirstOrDefault(a => a.AccountID == int.Parse(AccountID));
+        return account?.UserName ?? "Username Not Found";
+    }
+
 }
 
 
-<div class="container pb-5 custom-container card shadow-lg ">
+<div class="container py-3 custom-container card shadow-lg mb-4">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>@GetAccountUsername()</h1>
+        </div>
+    </div>
+    <hr/>
     <div class="row justify-content-center">
         <div class="col-md-12 ">
             @if (SecurityQuestions != null && SecurityQuestions.Any())
