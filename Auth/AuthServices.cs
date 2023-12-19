@@ -1,24 +1,38 @@
 public class AuthenticationService
 {
-    private Account currentUser;
+    private readonly Context _dbContext;
 
-    public bool IsUserLoggedIn()
+    public AuthenticationService(Context dbContext)
     {
-        return currentUser != null;
+        _dbContext = dbContext;
     }
 
-    public void SetLoggedInUser(Account user)
+    public void Login(string username)
     {
-        currentUser = user;
-    }
+        var user = _dbContext.Accounts.FirstOrDefault(u => u.UserName == username);
 
-    public Account GetLoggedInUser()
-    {
-        return currentUser;
+        if (user != null)
+        {
+            user.IsLoggedIn = true;
+            _dbContext.SaveChanges();
+        }
     }
 
     public void Logout()
     {
-        currentUser = null;
+        var loggedInUsers = _dbContext.Accounts.Where(u => u.IsLoggedIn);
+
+        foreach (var user in loggedInUsers)
+        {
+            user.IsLoggedIn = false;
+        }
+
+        _dbContext.SaveChanges();
+    }
+
+    public bool IsUserLoggedIn(int accountId)
+    {
+        var user = _dbContext.Accounts.FirstOrDefault(u => u.AccountID == accountId);
+        return user != null && user.IsLoggedIn;
     }
 }

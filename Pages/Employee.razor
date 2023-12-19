@@ -15,13 +15,12 @@
 
     protected override void OnInitialized()
     {
-        // Only allows user logged in as manager to view page
-        var currentUser = authService.GetLoggedInUser();
+        var accountIdToCheck = 1;
+        var isLoggedIn = authService.IsUserLoggedIn(accountIdToCheck);
 
-        if (currentUser == null || currentUser.AccountID != 1)
+        if (!isLoggedIn)
         {
             navigationManager.NavigateTo("/Forbidden");
-            return;
         }
     }
 

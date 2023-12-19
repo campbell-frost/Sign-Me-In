@@ -46,18 +46,22 @@
     private string username = "";
     private string password = "";
 
+    protected override void OnInitialized()
+    {
+        authService.Logout();
+    }
     private async Task HandleLogin()
     {
         var user = dbContext.Accounts.FirstOrDefault(u => u.UserName == username);
 
         if (user != null)
         {
-            // Use BCrypt to verify the entered password against the stored hashed password
             bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 
             if (isPasswordCorrect)
             {
-                authService.SetLoggedInUser(user); // Set the logged-in user
+                authService.Login(user.UserName);
+                
                 if (user.AccountID == 2)
                 {
                     navigation.NavigateTo("/Sign-In");

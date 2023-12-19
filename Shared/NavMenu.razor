@@ -13,41 +13,38 @@
         </button>
         <div class="collapse navbar-collapse @NavBarCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                @if (authService.IsUserLoggedIn())
+                @if (authService.IsUserLoggedIn(2))
                 {
-                    var loggedInUser = authService.GetLoggedInUser();
-                    if (loggedInUser.AccountID == 2)
-                    {
-                        <li class="nav-item">
-                            <NavLink class="nav-link" style="margin-right: 15px;" href="Sign-In">
-                                <span class="oi oi-pencil px-2" aria-hidden="true"></span> Sign-In
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="View">
-                                <span class="oi oi-list px-2" aria-hidden="true"></span> View
-                            </NavLink>
-                        </li>
-                    }
-                    @if (loggedInUser.AccountID == 1)
-                    {
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="Reports">
-                                <span class="oi oi-file px-2" aria-hidden="true"></span> Reports
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="Employee">
-                                <span class="oi oi-people px-2" aria-hidden="true"></span> Employee
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="Account">
-                                <span class="oi oi-person px-2" aria-hidden="true"></span> Account
-                            </NavLink>
-                        </li>
-                    }
+                    <li class="nav-item">
+                        <NavLink class="nav-link" style="margin-right: 15px;" href="Sign-In">
+                            <span class="oi oi-pencil px-2" aria-hidden="true"></span> Sign-In
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="View">
+                            <span class="oi oi-list px-2" aria-hidden="true"></span> View
+                        </NavLink>
+                    </li>
                 }
+                @if (authService.IsUserLoggedIn(1))
+                {
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="Reports">
+                            <span class="oi oi-file px-2" aria-hidden="true"></span> Reports
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="Employee">
+                            <span class="oi oi-people px-2" aria-hidden="true"></span> Employee
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="Account">
+                            <span class="oi oi-person px-2" aria-hidden="true"></span> Account
+                        </NavLink>
+                    </li>
+                }
+                
             </ul>
             <ul class="navbar-nav ml-auto px-2">
                 <li class="nav-item">
