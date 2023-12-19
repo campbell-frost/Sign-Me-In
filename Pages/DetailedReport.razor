@@ -105,6 +105,9 @@
             // Recalculate the total number of items and pages
             totalItems = hubSessions.Count;
             totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            // Adjust the current page
+            currentPage = 1;
         }
     }
 
