@@ -34,7 +34,9 @@
         .FirstOrDefault(s => s.AccountID == account.AccountID);
         selectAccount = true;
     }
-    private void ShowPassword()
+
+    
+    @* private void ShowPassword()
     {
         if (this.TxtType == "password")
         {
@@ -44,7 +46,7 @@
         {
             this.TxtType = "password";
         }
-    }
+    } *@
 
     private void NavigateToPasswordReset()
     {
