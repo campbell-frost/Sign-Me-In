@@ -21,7 +21,7 @@
 
         if (!isLoggedIn)
         {
-            navigationManager.NavigateTo("/Forbidden"); 
+            navigationManager.NavigateTo("/Forbidden");
         }
     }
 
@@ -61,41 +61,48 @@
 
 @if (!inserted)
 {
-    <div class="container container-custom">
+    <div class="container container-custom card shadow-lg">
         <div class="row pt-3">
             <div class="col-md-6">
+                <label>First Name:</label>
                 <div class="form-group">
-                    <label>First Name:</label>
-                    <input type="text" class="form-control" @bind="firstName" />
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="firstName" />
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
+                <label>Last Name:</label>
                 <div class="form-group">
-                    <label>Last Name:</label>
-                    <input type="text" class="form-control" @bind="lastName" />
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="lastName" />
+                    </div>
                 </div>
             </div>
         </div>
-
         <div class="row py-3">
             <div class="col-md-6">
+                <label>Employee ID:</label>
                 <div class="form-group">
-                    <label>Employee ID:</label>
-                    <input type="text" class="form-control" @bind="employeeID" />
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="employeeID" />
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
+                <label>Employee Initials:</label>
                 <div class="form-group">
-                    <label>Employee Initials:</label>
-                    <input type="text" class="form-control" @bind="employeeInitials" />
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="employeeInitials" />
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row py-3">
             <div class="col-md-12 text-start">
-                <div class="form-group">
                     <label>Hub Role:</label>
-                    <select class="form-control" @bind="hubRole">
+                <div class="form-group">
+                    <select class="input-group dropdown shadow-none" @bind="hubRole">
                         <option value="">Select Hub Role</option>
                         <option value="Tutor">Tutor</option>
                         <option value="Testing Assistant">Testing Assistant</option>
@@ -119,7 +126,7 @@
     <div class="alert alert-success mt-3" role="alert">
         <label>@firstName @lastName inserted successfully.</label>
     </div>
-    <div class="row mt-3 justify-content-center">
+    <div class="row my-3 justify-content-center">
         <div class="col-md-12 d-flex justify-content-center">
             <button class="btn btn-primary" @onclick="goBackToEmployee">Done</button>
         </div>

@@ -3,60 +3,6 @@
 @inject NavigationManager navigationManager
 @inject AuthenticationService authService
 
-<div class="container card shadow-lg">
-    <div class="row">
-        <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
-            <label for="startDate">From</label>
-            <input type="date" id="startDate" name="startDate" @bind="startDate" @oninput="StartDateChanged"
-                class="form-control">
-        </div>
-        <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
-            <label for="endDate">To</label>
-
-            <input type="date" id="endDate" name="endDate" @bind="endDate" @oninput="EndDateChanged"
-                class="form-control">
-        </div>
-    </div>
-    <div>
-        <table class="table mt-3">
-            <thead>
-                <tr class="table-header">
-                    <th>Questions</th>
-                    <th>Testing</th>
-                    <th>Tutoring</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>How many hours was the math hub used?</td>
-                    <td>@FormatTotalTime(SecondsTesting)</td>
-                    <td>@FormatTotalTime(SecondsTutoring)</td>
-                    <td>@FormatTotalTime(TotalTime)</td>
-                </tr>
-                <tr>
-                    <td>How many students used the math hub?</td>
-                    <td>@StudentsTesting</td>
-                    <td>@StudentsTutoring</td>
-                    <td>@(StudentsTesting + StudentsTutoring)</td>
-                </tr>
-                <tr>
-                    <td>How many distinct students used the math hub?</td>
-                    <td>@DistinctStudentsTesting</td>
-                    <td>@DistinctStudentsTutoring</td>
-                    <td>@(DistinctStudentsTesting + DistinctStudentsTutoring)</td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <button class="btn btn-primary my-3" @onclick="ShowDetailedReport"> View more detailed report </button>
-
-        </div>
-    </div>
-</div>
 @code {
     private double SecondsTesting { get; set; }
     private int StudentsTesting { get; set; }
@@ -233,3 +179,58 @@
 
 
 }
+
+<div class="container card pt-3 shadow-lg">
+    <div class="row">
+        <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
+            <label for="startDate">From</label>
+            <input type="date" id="startDate" name="startDate" @bind="startDate" @oninput="StartDateChanged"
+                class="form-control">
+        </div>
+        <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
+            <label for="endDate">To</label>
+
+            <input type="date" id="endDate" name="endDate" @bind="endDate" @oninput="EndDateChanged"
+                class="form-control">
+        </div>
+    </div>
+    <div>
+        <table class="table mt-3">
+            <thead>
+                <tr class="table-header">
+                    <th>Questions</th>
+                    <th>Testing</th>
+                    <th>Tutoring</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>How many hours was the math hub used?</td>
+                    <td>@FormatTotalTime(SecondsTesting)</td>
+                    <td>@FormatTotalTime(SecondsTutoring)</td>
+                    <td>@FormatTotalTime(TotalTime)</td>
+                </tr>
+                <tr>
+                    <td>How many students used the math hub?</td>
+                    <td>@StudentsTesting</td>
+                    <td>@StudentsTutoring</td>
+                    <td>@(StudentsTesting + StudentsTutoring)</td>
+                </tr>
+                <tr>
+                    <td>How many distinct students used the math hub?</td>
+                    <td>@DistinctStudentsTesting</td>
+                    <td>@DistinctStudentsTutoring</td>
+                    <td>@(DistinctStudentsTesting + DistinctStudentsTutoring)</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-primary my-3" @onclick="ShowDetailedReport"> View more detailed report </button>
+
+        </div>
+    </div>
+</div>

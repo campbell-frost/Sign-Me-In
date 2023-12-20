@@ -4,6 +4,21 @@
     border: none;
 }
 
+.form-control {
+    height: 3.3125rem;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 2px solid #6e6e6e;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    position: relative;
+    border-radius: 0px;
+}
+
 .input-group{
     border-radius: 4px;
 }
@@ -22,20 +37,6 @@
 }
 
 
-.form-control {
-    height: 3.3125rem;
-}
-
-.input-group {
-    display: flex;
-    align-items: center;
-    border: 2px solid #6e6e6e;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    position: relative;
-    border-radius: 0px;
-}
 
 .image {
     max-height: 100px;
@@ -51,4 +52,25 @@
 
 .btn-block {
     height: 3.3125rem;
+}
+
+.input-group .form-control {
+    height: 3.3125rem;
+    flex: 1;
+    border: none;
+}
+
+.form-control {
+    height: 3.3125rem;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 2px solid #6e6e6e;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    position: relative;
+    border-radius: 0px;
 }
