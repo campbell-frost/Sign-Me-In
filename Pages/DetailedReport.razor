@@ -176,8 +176,8 @@
 
 
 <div class="container card shadow-lg mb-3">
-    <div class="row pt-4">
-        <div class="col-md-6">
+    <div class="row">
+        <div class="col-md-6 pt-4">
             <form @onsubmit="HandleSearch">
                 <div class="form-group">
                     <div class="input-group mx-auto">
@@ -192,15 +192,17 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 pt-4">
 
             <div class="alert alert-info">Selected Date Range: From "@startDate" to "@endDate"</div>
         </div>
     </div>
+    <div style="overflow-x: auto">
+
     <table class="table">
         <thead>
-            <tr class="table-header">
-                <th> Date</th>
+            <tr class="table-header text-nowrap">
+                <th>Date</th>
                 <th>Student ID</th>
                 <th>Student Name</th>
                 <th>Total Time</th>
@@ -211,9 +213,9 @@
             @foreach (var session in GetPaginatedSessions())
             {
                 <tr>
-                    <td>@session.Date.ToString("MM/dd/yyyy") @session.TimeIn</td>
+                    <td class="text-nowrap">@($"{session.Date:MM/dd/yyyy} at {DateTime.Today.Add(session.TimeIn).ToString("h:mm:ss tt")}")</td>
                     <td>@session.StudentID</td>
-                    <td>@(GetStudentName(session.StudentID))</td>
+                        <td class="text-nowrap">@(GetStudentName(session.StudentID))</td>
                     <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut -
                             session.TimeIn).Value) : "")</td>
                     <td>@session.SessionType</td>
@@ -221,6 +223,7 @@
             }
         </tbody>
     </table>
+    </div>
     <div class="row pagination-container pl-1">
         <ul class="col-md-11 pagination" style="padding-left: 15px;">
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">

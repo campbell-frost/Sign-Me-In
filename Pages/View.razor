@@ -273,7 +273,7 @@
                                 }
                                 else if (DateTime.TryParse(hubSession.TimeIn.ToString(), out DateTime timeIn))
                                 {
-                                    @timeIn.ToString("hh:mm tt")
+                                    @timeIn.ToString("h:mm tt")
                                 }
                                 else
                                 {
@@ -302,7 +302,7 @@
                                 {
                                     @if (DateTime.TryParse(hubSession.TimeOut.ToString(), out DateTime timeOut))
                                     {
-                                        @timeOut.ToString("hh:mm tt")
+                                        @timeOut.ToString("h:mm tt")
                                     }
                                     else
                                     {
