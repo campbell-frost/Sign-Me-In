@@ -61,7 +61,7 @@
 
 @if (!inserted)
 {
-    <div class="container container-custom card shadow-lg">
+    <div class="container container-custom card shadow-lg pb-3">
         <div class="row pt-3">
             <div class="col-md-6">
                 <label>First Name:</label>
@@ -100,18 +100,20 @@
         </div>
         <div class="row py-3">
             <div class="col-md-12 text-start">
-                    <label>Hub Role:</label>
-                <div class="form-group">
-                    <select class="input-group dropdown shadow-none" @bind="hubRole">
-                        <option value="">Select Hub Role</option>
-                        <option value="Tutor">Tutor</option>
-                        <option value="Testing Assistant">Testing Assistant</option>
-                    </select>
+                <label>Hub Role:</label>
+                <div class="input-group">
+                    <div class="form-group w-100">
+                        <select class="dropdown shadow-none custom" @bind="hubRole">
+                            <option value="">Select Hub Role</option>
+                            <option value="Tutor">Tutor</option>
+                            <option value="Testing Assistant">Testing Assistant</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="row pt-5">
+        <div class="row pt-3">
             <div class="col-md-6 text-center">
                 <button class="btn btn-primary btn-block" @onclick="goBackToEmployee">Back</button>
             </div>
