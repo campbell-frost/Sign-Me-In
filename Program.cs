@@ -18,8 +18,10 @@ builder.Services.AddDbContext<Context>(options =>
 // Register AuthenticationService
 builder.Services.AddScoped<AuthenticationService>();
 
-var app = builder.Build();
+// Register AutomaticSignOutService as a hosted service
+builder.Services.AddHostedService<AutomaticSignOutService>();
 
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
