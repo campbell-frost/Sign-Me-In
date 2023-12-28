@@ -14,44 +14,44 @@
 @inject AuthenticationService authService
 
 @code {
-    <!-- Flag to track whether an account is selected -->
+    //Flag to track whether an account is selected
     private bool selectAccount = false;
 
-    <!-- List to store accounts retrieved from the database -->
+    //List to store accounts retrieved from the database
     private List<Account>? Accounts;
 
-    <!-- Currently selected account -->
+    //Currently selected account
     private Account? selectedAccount;
 
-    <!-- Type of input field for account password -->
+    //Type of input field for account password 
     public string TxtType = "password";
 
-    <!-- Initialization method -->
+   // Initialization method 
     protected override void OnInitialized()
     {
-        <!-- ID of the account to check for login -->
+         //ID of the account to check for login
         var accountIdToCheck = 1;
 
-        <!-- Check if the user is logged in -->
+        //Check if the user is logged in 
         var isLoggedIn = authService.IsUserLoggedIn(accountIdToCheck);
 
-        <!-- Redirect to Forbidden page if not logged in -->
+       // Redirect to Forbidden page if not logged in
         if (!isLoggedIn)
         {
             navigationManager.NavigateTo("/Forbidden");
         }
 
-        <!-- Load accounts from the database -->
+        //Load accounts from the database
         LoadAccounts();
     }
 
-    <!-- Method to load accounts from the database -->
+    //Method to load accounts from the database
     private void LoadAccounts()
     {
         Accounts = dbContext.Accounts.ToList();
     }
 
-    <!-- Method to select an account -->
+    // Method to select an account 
     private void SelectAccount(Account account)
     {
         selectedAccount = dbContext.Accounts
