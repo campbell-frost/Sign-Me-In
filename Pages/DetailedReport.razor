@@ -9,7 +9,7 @@
 @code {
     [Parameter] public string startDate { get; set; }
     [Parameter] public string endDate { get; set; }
-
+     private bool showNoDataMessage = false; // Add a boolean property to track whether to show the no data message
     private List<HubSession> hubSessions = new List<HubSession>();
 
     // Variables for client-side pagination
@@ -154,12 +154,13 @@
 
     // Method to trigger the download
     private async Task DownloadCSV()
+{
+    if (hubSessions.Any())
     {
-        var csvContent = GenerateCSV();
-
-        // Get the minimum and maximum dates from hubSessions
         DateTime fromDate = hubSessions.Min(s => s.Date);
         DateTime toDate = hubSessions.Max(s => s.Date);
+
+        var csvContent = GenerateCSV();
 
         var filename = $"HubSessions_from_{fromDate:MM-dd-yyyy}_to_{toDate:MM-dd-yyyy}.csv";
 
@@ -171,7 +172,17 @@
         // Calls the downloadFile method located in App.razor
         await JSRuntime.InvokeVoidAsync("downloadFile", filename, uri);
     }
+    else
+    {
+        // Handle the case when hubSessions is empty
 
+        // Set the boolean property to true to indicate that there is no data
+            showNoDataMessage = true;
+
+            // Update the UI
+            StateHasChanged();
+    }
+}
 }
 
 
@@ -251,5 +262,10 @@
             <button class="btn btn-primary" @onclick="DownloadCSV">Export</button>
         </div>
     </div>
-
+@if (showNoDataMessage)
+    {
+        <div class="alert alert-warning mt-3" role="alert">
+            No hub session(s) available for CSV download.
+        </div>
+    }
 </div>
