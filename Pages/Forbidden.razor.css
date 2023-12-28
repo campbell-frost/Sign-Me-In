@@ -1,17 +1,19 @@
+/* Styling for custom container */
 .custom-container {
-    width: 80%; 
-    max-width: 470px; 
-    margin: 0 auto; 
+    width: 80%;
+    max-width: 470px;
+    margin: 0 auto;
 
     @media (max-width: 768px) {
-        width: 90%; 
+        width: 90%;
     }
 
     @media (max-width: 576px) {
-        width: 95%; 
+        width: 95%;
     }
 }
 
+/* Styling for background */
 .background {
     background-image: url('fdtc-background.png');
     background-size: cover;
@@ -22,6 +24,7 @@
     justify-content: center;
 }
 
+/* Styling for login container */
 .login-container {
     background-color: white; /* Background overlay color */
     border-radius: 4px;
@@ -34,6 +37,7 @@
     align-items: center;
 }
 
+/* Styling for login box */
 .login-box {
     background-color: #ffffff;
     border-radius: 4px;
@@ -43,6 +47,7 @@
     text-align: center;
 }
 
+/* Styling for flex container */
 .row-flex {
     display: flex;
     justify-content: space-between; /* Adjust as needed */
@@ -50,6 +55,7 @@
     margin-top: 20px; /* Adjust margin as needed */
 }
 
+/* Styling for flex item */
 .flex-item {
     flex: 1; /* Equal width for both items */
     margin-right: 10px; /* Adjust spacing between items */
