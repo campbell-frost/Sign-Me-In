@@ -1,21 +1,24 @@
-
-.input-group, .form-control{
-    height: 3.3125rem;
-    flex-shrink: 0;
-    border: none;
-    background-color: #e3e3e3;
-    
-}
-.btn{
-    height: 3.3125rem;
+/* Styling for input groups and form controls */
+.input-group, .form-control {
+    height: 3.3125rem; /* Set the height of input groups and form controls */
+    flex-shrink: 0; /* Ensure they do not shrink beyond the specified height */
+    border: none; /* Remove borders */
+    background-color: #e3e3e3; /* Set background color */
 }
 
-.custom-container{
-    width: 600px;
+/* Styling for buttons */
+.btn {
+    height: 3.3125rem; /* Set the height of buttons */
 }
 
+/* Custom container styling */
+.custom-container {
+    width: 600px; /* Set the width of the custom container */
+}
+
+/* Card styling */
 .card {
-    border: none;
-    padding-left: 20px;
-    padding-right: 20px;
+    border: none; /* Remove borders from cards */
+    padding-left: 20px; /* Add left padding to cards */
+    padding-right: 20px; /* Add right padding to cards */
 }
