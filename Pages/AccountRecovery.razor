@@ -1,18 +1,28 @@
+<!-- Razor component for the Account Recovery page -->
 @page "/Account/Recovery/{AccountID}"
+
+<!-- Injecting the database context -->
 @inject Context dbContext
+
+<!-- Injecting the NavigationManager for page navigation -->
 @inject NavigationManager navigationManager
+
+<!-- Importing necessary namespaces -->
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.Forms
+
+<!-- Injecting the AuthenticationService -->
 @inject AuthenticationService authService
 
 @code
 {
-    private List<SecurityQuestion>? SecurityQuestions;
+    private List<SecurityQuestion>? SecurityQuestions;  <!-- List to store security questions -->
     [Parameter]
-    public String AccountID { get; set; }
-    private List<String> userAnswers;
-    private bool showInvalidAlert = false;
+    public String AccountID { get; set; }  <!-- Parameter for the AccountID passed in the route -->
+    private List<String> userAnswers;  <!-- List to store user's answers to security questions -->
+    private bool showInvalidAlert = false;  <!-- Flag to show an alert for invalid answers -->
 
+    // Initialization method
     protected override void OnInitialized()
     {
         var accountIdToCheck = 1;
@@ -24,7 +34,7 @@
         }
 
         Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
-        getSecurityQuestions();
+        getSecurityQuestions();  <!-- Fetch security questions and initialize userAnswers -->
 
         // Initialize userAnswers if it's null
         if (userAnswers == null)
@@ -37,6 +47,7 @@
         }
     }
 
+    // Method to fetch security questions from the database
     private void getSecurityQuestions()
     {
         // Parse the string to an integer
@@ -49,7 +60,6 @@
 
             if (SecurityQuestions.Count > 0)
             {
-
                 // Initialize userAnswers with the same number of elements as SecurityQuestions
                 userAnswers = new List<string>(SecurityQuestions.Count);
                 for (var i = 0; i < SecurityQuestions.Count; i++)
@@ -68,11 +78,13 @@
         }
     }
 
+    // Method to navigate back to the Accounts page
     private void GoBackToAccounts()
     {
         navigationManager.NavigateTo("/Account");
     }
 
+    // Method to update user's answer to a security question
     private void UpdateUserAnswer(string value, int index)
     {
         Console.WriteLine($"UpdateUserAnswer - Index: {index}, userAnswers Count: {userAnswers.Count}");
@@ -93,6 +105,7 @@
         }
     }
 
+    // Method to validate security questions
     private bool ValidateSecurityQuestions()
     {
         if (SecurityQuestions == null || userAnswers == null || SecurityQuestions.Count != userAnswers.Count)
@@ -131,8 +144,7 @@
         return true;
     }
 
-
-
+    // Method to fetch the stored answer to a security question from the database
     private string GetStoredAnswerFromDatabase(int questionID)
     {
         var storedAnswer = dbContext.SecurityQuestions
@@ -145,6 +157,7 @@
         return storedAnswer;
     }
 
+    // Method to navigate to the Change Password page
     private void GoToChangePassword()
     {
         try
@@ -165,20 +178,21 @@
         }
     }
 
+    // Method for developer bypass to skip security questions
     private void DeveloperBypassSecurityQuestions()
     {
         navigationManager.NavigateTo($"/Account/Recovery/{AccountID}/ResetPassword");
     }
 
+    // Method to get the username for the account
     private string GetAccountUsername()
     {
         var account = dbContext.Accounts.FirstOrDefault(a => a.AccountID == int.Parse(AccountID));
         return account?.UserName ?? "Username Not Found";
     }
-
 }
 
-
+<!-- HTML content for the Account Recovery page -->
 <div class="container py-3 custom-container card shadow-lg mb-4">
     <div class="row">
         <div class="col-md-12 text-center">
@@ -219,7 +233,7 @@
                 }
 
             }
-            else
+             else
             {
                 <p>No security questions available.</p>
             }
