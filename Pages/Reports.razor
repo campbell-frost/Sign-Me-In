@@ -4,6 +4,7 @@
 @inject AuthenticationService authService
 
 @code {
+    // Declare properties for storing data
     private double SecondsTesting { get; set; }
     private int StudentsTesting { get; set; }
     private int DistinctStudentsTesting { get; set; }
@@ -14,19 +15,23 @@
     private DateTime? startDate { get; set; } = DateTime.Now.Date;
     private DateTime? endDate { get; set; } = DateTime.Now.Date;
 
-
+    // Initialize the component
     protected override void OnInitialized()
     {
         var accountIdToCheck = 1; 
         var isLoggedIn = authService.IsUserLoggedIn(accountIdToCheck);
 
+        // Redirect to Forbidden page if not logged in
         if (!isLoggedIn)
         {
-            navigationManager.NavigateTo("/Forbidden"); // Redirect to Forbidden page if not logged in
+            navigationManager.NavigateTo("/Forbidden");
         }
         
+        // Fetch data on component initialization
         FetchData();
     }
+
+    // Method to fetch data based on selected date range
     private void FetchData()
     {
         List<HubSession>? testing = null;
@@ -37,39 +42,37 @@
         {
             // Filter data between start and end dates
             testing = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
-            .ToList();
+                .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
+                .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
-            .ToList();
+                .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
+                .ToList();
         }
         else if (startDate.HasValue)
         {
             // Start date is selected, but end date is not
             // Filter data from start date to the current date
             var currentDate = DateTime.Now.Date;
-            Console.WriteLine("Dates from " + startDate + " to " + currentDate);
             testing = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing" && s.TimeOut != null)
-            .ToList();
+                .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing" && s.TimeOut != null)
+                .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring" && s.TimeOut != null)
-            .ToList();
+                .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring" && s.TimeOut != null)
+                .ToList();
         }
         else if (endDate.HasValue)
         {
-            Console.WriteLine("Dates from " + startDate + " to " + endDate);
             // End date is selected, but start date is not
             // Filter data from the beginning till the end date
             testing = dbContext.HubSessions
-            .Where(s => s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
-            .ToList();
+                .Where(s => s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
+                .ToList();
 
             tutoring = dbContext.HubSessions
-            .Where(s => s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
-            .ToList();
+                .Where(s => s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
+                .ToList();
         }
         else
         {
@@ -90,25 +93,19 @@
         double totalSecondsTutoring = tutoring.Sum(s => (s.TimeOut - s.TimeIn)?.TotalSeconds ?? 0);
         double totalSeconds = totalSecondsTesting + totalSecondsTutoring;
 
+        // Assign data to properties
         StudentsTesting = testing.Count;
         StudentsTutoring = tutoring.Count;
-
-        // Gets the ammount of students
         DistinctStudentsTesting = testing.Select(s => s.StudentID).Distinct().Count();
         DistinctStudentsTutoring = tutoring.Select(s => s.StudentID).Distinct().Count();
-
-        // Assign local variables to global variables
         SecondsTesting = totalSecondsTesting;
         SecondsTutoring = totalSecondsTutoring;
         TotalTime = totalSeconds;
 
-        StudentsTesting = testing.Count;
-        StudentsTutoring = tutoring.Count;
-
         StateHasChanged();
     }
 
-
+    // Method to handle changes in the start date
     private void StartDateChanged(ChangeEventArgs e)
     {
         if (e.Value != null)
@@ -122,6 +119,7 @@
         }
     }
 
+    // Method to handle changes in the end date
     private void EndDateChanged(ChangeEventArgs e)
     {
         if (e.Value != null)
@@ -135,12 +133,14 @@
         }
     }
 
+    // Method to navigate to detailed report page
     private void ShowDetailedReport()
     {
         // Pass the selected dates as route parameters
         navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
     }
 
+    // Method to format total time in a human-readable format
     string FormatTotalTime(double totalTimeInSeconds)
     {
         int hours = (int)(totalTimeInSeconds / 3600);
@@ -172,22 +172,18 @@
 
         return formattedTime.Trim();
     }
-
-
 }
 
+<!-- Render the UI -->
 <div class="container card pt-3 shadow-lg">
     <div class="row">
         <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
             <label for="startDate">From</label>
-            <input type="date" id="startDate" name="startDate" @bind="startDate" @oninput="StartDateChanged"
-                class="form-control">
+            <input type="date" id="startDate" name="startDate" @bind="startDate" @oninput="StartDateChanged" class="form-control">
         </div>
         <div class="col-lg-2 d-flex justify-content-center flex-column align-content-center">
             <label for="endDate">To</label>
-
-            <input type="date" id="endDate" name="endDate" @bind="endDate" @oninput="EndDateChanged"
-                class="form-control">
+            <input type="date" id="endDate" name="endDate" @bind="endDate" @oninput="EndDateChanged" class="form-control">
         </div>
     </div>
     <div>
@@ -221,12 +217,10 @@
                 </tr>
             </tbody>
         </table>
-
     </div>
     <div class="row">
         <div class="col-md-12">
             <button class="btn btn-primary my-3" @onclick="ShowDetailedReport"> View more detailed report </button>
-
         </div>
     </div>
 </div>
