@@ -1,52 +1,48 @@
-/* Styling for form controls inside an input group */
+/* Styling for fields */
 .input-group .form-control {
-    height: 3.3125rem; /* Set the height of form controls in the input group */
-    flex: 1; /* Allow form controls to flex and take up available space */
-    border: none; /* Remove borders for form controls in the input group */
+    height: 3.3125rem; 
+    flex: 1; 
+    border: none;
 }
 
-/* Styling for form controls */
 .form-control {
-    height: 3.3125rem; /* Set the height of form controls */
+    height: 3.3125rem; 
 }
 
-/* Styling for input groups */
+/* Style input fields as underlined */
 .input-group {
-    display: flex; /* Use flexbox layout for the input group */
-    align-items: center; /* Center-align items in the input group */
-    border: 2px solid #6e6e6e; /* Set border color for the input group */
-    border-top: none; /* Remove top border */
-    border-left: none; /* Remove left border */
-    border-right: none; /* Remove right border */
-    position: relative; /* Set position to relative */
-    border-radius: 0px; /* Set border-radius to 0px */
+    display: flex; 
+    align-items: center; 
+    border: 2px solid #6e6e6e; 
+    border-top: none; 
+    border-left: none; 
+    border-right: none; 
+    position: relative; 
+    border-radius: 0px; 
 }
 
-/* Styling for block-level buttons */
 .btn-block {
-    width: 100%; /* Set the width to 100% to span the entire container */
-    height: 3.85rem; /* Set the height of block-level buttons */
+    width: 100%; 
+    height: 3.85rem; 
 }
 
-/* Styling for cards */
 .card {
-    border: none; /* Remove borders from cards */
-    padding-left: 20px; /* Add left padding to cards */
-    padding-right: 20px; /* Add right padding to cards */
-    width: 800px; /* Set the width of cards */
+    border: none; 
+    padding-left: 20px; 
+    padding-right: 20px; 
+    width: 800px; 
 }
 
-/* Styling for dropdowns */
 .dropdown {
-    padding-top: 20px; /* Add top padding to dropdowns */
-    padding-bottom: 20px; /* Add bottom padding to dropdowns */
-    font-size: 25px; /* Set the font size of dropdowns */
-    border: none; /* Remove borders from dropdowns */
+    padding-top: 20px; 
+    padding-bottom: 20px; 
+    font-size: 25px; 
+    border: none; 
 }
 
 /* Custom styling for dropdowns */
 .custom {
-    background-color: white; /* Set background color for custom dropdowns */
-    width: 100%; /* Set the width to 100% for custom dropdowns */
-    font-size: 16px; /* Set the font size for custom dropdowns */
+    background-color: white; 
+    width: 100%; 
+    font-size: 16px; 
 }

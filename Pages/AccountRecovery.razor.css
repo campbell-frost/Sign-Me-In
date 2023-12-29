@@ -1,12 +1,10 @@
-/* Styling for the custom container */
 .custom-container {
-    width: 500px; /* Set the width of the custom container */
+    width: 500px; 
 }
 
-/* Styling for buttons with block display */
 .btn-block {
-    height: 3.3125rem; /* Set the height of buttons */
-    width: 100%; /* Set the width to 100% to span the entire container */
+    height: 3.3125rem; 
+    width: 100%; 
 }
 
 /* Styling for input groups */
@@ -20,16 +18,15 @@
     position: relative; /* Set position to relative */
 }
 
-/* Styling for form controls inside the input group */
+/* Styling for fields */
 .input-group .form-control {
-    height: 3.3125rem; /* Set the height of form controls in the input group */
-    flex: 1; /* Allow form controls to flex and take up available space */
-    border: none; /* Remove borders for form controls in the input group */
+    height: 3.3125rem; 
+    flex: 1;
+    border: none;
 }
 
-/* Styling for cards */
 .card {
-    border: none; /* Remove borders from cards */
-    padding-left: 20px; /* Add left padding to cards */
-    padding-right: 20px; /* Add right padding to cards */
+    border: none; 
+    padding-left: 20px; 
+    padding-right: 20px; 
 }
