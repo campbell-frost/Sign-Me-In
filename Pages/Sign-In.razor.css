@@ -67,6 +67,14 @@
     align-items: center;
 }
 
+@media (max-width: 767px) {
+    .image {
+        width: auto; /* Allow image width to adjust */
+        max-width: 100%; /* Limit image width to its container */
+        height: auto; /* Maintain aspect ratio */
+    }
+}
+
 .card {
     border: none;
     padding-left: 20px;

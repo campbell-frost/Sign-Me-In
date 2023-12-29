@@ -151,9 +151,10 @@
 
 <!-- HTML code for rendering the sign-in -->
 <PageTitle>Sign-In 😀</PageTitle>
-
-<div class="logo-container pt-5 pb-3 text-center @(searchPerformed && !isLogoVisible ? "logo-move-up" : "")">
-    <img src="/logo-transparent.png" class="image">
+<div class="container-lg">
+    <div class="logo-container pt-5 pb-3 text-center @(searchPerformed && !isLogoVisible ? "logo-move-up" : "")">
+        <img src="/logo-transparent.png" class="image">
+    </div>
 </div>
 
 <div class="container-md pt-5">
@@ -198,7 +199,7 @@
 
                 @foreach (var student in foundStudents)
                 {
-                    if (student != null && !alreadySignedIn )
+                    if (student != null && !alreadySignedIn)
                     {
                         <StudentCard Student="@student" OnSelectStudent="SelectStudent" />
                     }
@@ -206,9 +207,9 @@
             }
             else if (alreadySignedIn)
             {
-                <div class="alert alert-warning">The student is already signed in. Please sign them out from the View page first
+                <div class="alert alert-warning mt-4">The student is already signed in. Please sign them out from the View page first
                     before signing in again. </div>
-                <div class="text-center">
+                <div class="text-center mb-4">
                     <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
                 </div>
 
