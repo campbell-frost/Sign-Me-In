@@ -1,28 +1,18 @@
-<!-- Razor component for the Account Recovery page -->
 @page "/Account/Recovery/{AccountID}"
-
-<!-- Injecting the database context -->
 @inject Context dbContext
-
-<!-- Injecting the NavigationManager for page navigation -->
 @inject NavigationManager navigationManager
-
-<!-- Importing necessary namespaces -->
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.Forms
-
-<!-- Injecting the AuthenticationService -->
 @inject AuthenticationService authService
 
 @code
 {
-    private List<SecurityQuestion>? SecurityQuestions;  <!-- List to store security questions -->
+    private List<SecurityQuestion>? SecurityQuestions;  // List of security questions
     [Parameter]
-    public String AccountID { get; set; }  <!-- Parameter for the AccountID passed in the route -->
-    private List<String> userAnswers;  <!-- List to store user's answers to security questions -->
-    private bool showInvalidAlert = false;  <!-- Flag to show an alert for invalid answers -->
-
-    // Initialization method
+    public String AccountID { get; set; }  
+    private List<String> userAnswers;  // List of user answers
+    private bool showInvalidAlert = false;  
+    
     protected override void OnInitialized()
     {
         var accountIdToCheck = 1;

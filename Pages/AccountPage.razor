@@ -1,16 +1,7 @@
-<!-- Razor component for the Account page -->
 @page "/Account"
-
-<!-- Injecting the database context -->
 @inject Context dbContext
-
-<!-- Using the Entity Framework Core namespace -->
 @using Microsoft.EntityFrameworkCore;
-
-<!-- Injecting the NavigationManager for page navigation -->
 @inject NavigationManager navigationManager
-
-<!-- Injecting the AuthenticationService -->
 @inject AuthenticationService authService
 
 @code {
@@ -26,16 +17,13 @@
     //Type of input field for account password 
     public string TxtType = "password";
 
-   // Initialization method 
     protected override void OnInitialized()
     {
-         //ID of the account to check for login
         var accountIdToCheck = 1;
 
         //Check if the user is logged in 
         var isLoggedIn = authService.IsUserLoggedIn(accountIdToCheck);
 
-       // Redirect to Forbidden page if not logged in
         if (!isLoggedIn)
         {
             navigationManager.NavigateTo("/Forbidden");
@@ -60,14 +48,10 @@
     }
 }
 
-<!-- Main content container -->
 <div class="main-content content container card shadow-lg custom-container">
-    <!-- Account cards section -->
     <div class="account-cards main-content ">
-        <!-- Display account cards only if no account is selected and there are accounts available -->
         @if (!selectAccount && Accounts != null)
         {
-            <!-- Render an AccountCard component for each account in the list -->
             @foreach (var account in Accounts)
             {
                 <AccountCard Account="account" OnSelectAccount="() => SelectAccount(account)" />
