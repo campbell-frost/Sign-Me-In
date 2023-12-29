@@ -30,6 +30,7 @@
 
 .form-control {
     height: 3.3125rem;
+    border: none;
 }
 
 .card {
