@@ -1,11 +1,21 @@
+<!-- Razor component for adding an employee -->
 @page "/Employee/AddEmployee"
+
+<!-- Injecting the database context -->
 @inject Context dbContext
+
+<!-- Importing necessary namespaces -->
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
+
+<!-- Injecting the AuthenticationService -->
 @inject AuthenticationService authService
+
+<!-- Injecting the NavigationManager for page navigation -->
 @inject NavigationManager navigationManager
 
 @code {
+    // Properties to store employee details
     private String firstName;
     private String lastName;
     private int employeeID;
@@ -13,21 +23,30 @@
     private String hubRole;
     private int accountID;
 
+    // Flag to track if the employee has been successfully inserted
     private bool inserted = false;
+
+    // Initialization method
     protected override void OnInitialized()
     {
+        // Account ID to check for user login
         var accountIdToCheck = 1;
+
+        // Check if the user is logged in
         var isLoggedIn = authService.IsUserLoggedIn(accountIdToCheck);
 
+        // Redirect to Forbidden page if not logged in
         if (!isLoggedIn)
         {
             navigationManager.NavigateTo("/Forbidden");
         }
     }
 
+    // Method to insert a new employee
     private void insertEmployee()
     {
-        if (hubRole == "Testing Assistant" || hubRole == "Tutoring")
+        // Set accountID based on hubRole
+        if (hubRole == "Testing Assistant" || hubRole == "Tutor" || hubRole == "Both")
         {
             accountID = 2;
         }
@@ -36,32 +55,37 @@
             accountID = 1;
         }
 
+        // Create a new employee object
         var newEmployee = new HubEmployee
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                EmployeeID = employeeID,
-                Initials = employeeInitials,
-                Role = hubRole,
-                AccountID = accountID
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            EmployeeID = employeeID,
+            Initials = employeeInitials,
+            Role = hubRole,
+            AccountID = accountID
+        };
 
-            };
-
+        // Add the new employee to the database and save changes
         dbContext.HubEmployees.Add(newEmployee);
         dbContext.SaveChanges();
+
+        // Set inserted flag to true
         inserted = true;
     }
 
+    // Method to navigate back to the Employee page
     private void goBackToEmployee()
     {
         navigationManager.NavigateTo("/Employee");
     }
-
 }
 
+<!-- Display form for adding an employee if not already inserted -->
 @if (!inserted)
 {
-    <div class="container container-custom card shadow-lg">
+    <!-- Form for adding a new employee -->
+    <div class="container container-custom card shadow-lg pb-3">
         <div class="row pt-3">
             <div class="col-md-6">
                 <label>First Name:</label>
@@ -100,18 +124,21 @@
         </div>
         <div class="row py-3">
             <div class="col-md-12 text-start">
-                    <label>Hub Role:</label>
-                <div class="form-group">
-                    <select class="input-group dropdown shadow-none" @bind="hubRole">
-                        <option value="">Select Hub Role</option>
-                        <option value="Tutor">Tutor</option>
-                        <option value="Testing Assistant">Testing Assistant</option>
-                    </select>
+                <label>Hub Role:</label>
+                <div class="input-group">
+                    <div class="form-group w-100">
+                        <select class="dropdown shadow-none custom" @bind="hubRole">
+                            <option value="">Select Hub Role</option>
+                            <option value="Tutor">Tutor</option>
+                            <option value="Testing Assistant">Testing Assistant</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="row pt-5">
+        <!-- Buttons to go back or insert employee -->
+        <div class="row pt-3">
             <div class="col-md-6 text-center">
                 <button class="btn btn-primary btn-block" @onclick="goBackToEmployee">Back</button>
             </div>
@@ -121,6 +148,8 @@
         </div>
     </div>
 }
+
+<!-- Display success message if employee is inserted -->
 @if (inserted)
 {
     <div class="alert alert-success mt-3" role="alert">

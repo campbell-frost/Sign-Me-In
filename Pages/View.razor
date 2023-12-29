@@ -1,9 +1,17 @@
-﻿@page "/View"
-@using Microsoft.EntityFrameworkCore;
-@inject Context dbContext
-@inject IJSRuntime JSRuntime
+﻿<!-- Razor component for the "View" page -->
+
+<!-- Specify the route for this page -->
+@page "/View" 
+<!-- Import necessary namespaces -->
+@using Microsoft.EntityFrameworkCore; 
+<!-- Inject the DbContext for database operations -->
+@inject Context dbContext 
+<!-- Inject the JavaScript runtime for interop -->
+@inject IJSRuntime JSRuntime 
+ <!-- Inject the authentication service -->
 @inject AuthenticationService authService
-@inject NavigationManager navigationManager
+<!-- Inject the navigation manager -->
+@inject NavigationManager navigationManager 
 
 @code {
     // A list to store the sessions retrieved from the database
@@ -20,7 +28,6 @@
     int totalItems;
     int totalPages;
 
-
     // Method called upon initialization
     protected override void OnInitialized()
     {
@@ -33,7 +40,7 @@
         }
 
         LoadHubSessions(); // Load sessions when page initializes
-        CheckAndSignOutStudents(); // Change where this method is called
+        //CheckAndSignOutStudents(); // Change where this method is called
     }
 
     // Loads the hub sessions based on the 'showOnlySignedIn' condition
@@ -44,25 +51,25 @@
         if (showOnlySignedIn)
         {
             query = dbContext.HubSessions
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Course)
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Instructor)
-            .Include(h => h.HubEmployee)
-            .Where(h => !h.TimeOut.HasValue)
-            .OrderByDescending(h => h.SessionID);
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+                .Include(h => h.HubEmployee)
+                .Where(h => !h.TimeOut.HasValue)
+                .OrderByDescending(h => h.SessionID);
 
             query.Reverse();
         }
         else
         {
             query = dbContext.HubSessions
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Course)
-            .Include(h => h.Student)
-            .ThenInclude(s => s.Instructor)
-            .Include(h => h.HubEmployee)
-            .OrderByDescending(h => h.SessionID);
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Course)
+                .Include(h => h.Student)
+                .ThenInclude(s => s.Instructor)
+                .Include(h => h.HubEmployee)
+                .OrderByDescending(h => h.SessionID);
 
             query.Reverse();
         }
@@ -72,9 +79,9 @@
 
         // Calculate which items to display on the current page
         hubSessions = query
-        .Skip((currentPage - 1) * pageSize)
-        .Take(pageSize)
-        .ToList();
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
 
     }
 
@@ -117,7 +124,7 @@
             sessionToUpdate.SessionType = hubSession.SessionType;
             dbContext.SaveChanges();
         }
-        isEditing = false;// Exit editing mode
+        isEditing = false; // Exit editing mode
         LoadHubSessions(); // Refresh the sessions
     }
 
@@ -132,29 +139,6 @@
             sessionToUpdate.TimeOut = truncatedTime; // Update the sign-out time
             dbContext.SaveChanges(); // Persist the changes
             LoadHubSessions(); // Refresh the sessions
-        }
-    }
-
-    private async Task CheckAndSignOutStudents()
-    {
-        var currentTime = DateTime.Now;
-        var signOutTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 20, 30, 0); // Time = 8:30 pm
-
-        if (currentTime >= signOutTime)
-        {
-            // Get sessions that need to be signed out
-            var sessionsToSignOut = dbContext.HubSessions
-            .Where(h => !h.TimeOut.HasValue && h.TimeIn < signOutTime.TimeOfDay)
-            .ToList();
-
-            // Sign out each session
-            foreach (var session in sessionsToSignOut)
-            {
-                SignOutStudent(session);
-            }
-
-            // Refresh the sessions after signing out students
-            LoadHubSessions();
         }
     }
 
@@ -177,7 +161,7 @@
         return Enumerable.Range(startPage, endPage - startPage + 1);
     }
 
-
+    // Format total time in a human-readable format
     string FormatTotalTime(TimeSpan totalTime)
     {
         int hours = (int)totalTime.TotalHours;
@@ -203,10 +187,13 @@
     }
 }
 
+<!-- Page title -->
 <PageTitle>View Students 😀</PageTitle>
 
+<!-- Main container for the page content -->
 <div class="container-md card mb-3 shadow-lg">
     <div class="d-flex justify-content-between py-4">
+        <!-- Button container for filtering and editing options -->
         <div class="button-container">
             <button class="btn btn-primary @(activeButtonIndex == 0 ? "active" : "inactive")"
                 @onclick="() => SetActiveButton(0)">Signed-In</button>
@@ -219,6 +206,7 @@
         </div>
     </div>
     <div style="overflow-x: auto">
+        <!-- Table to display hub session information -->
         <table class="table">
             <thead>
                 <tr class="table-header">
@@ -252,8 +240,8 @@
             <tbody>
                 @if (hubSessions != null)
                 {
-
-                    foreach (var hubSession in hubSessions)
+                    <!-- Loop through hub sessions and display information -->
+                    @foreach (var hubSession in hubSessions)
                     {
                         <tr>
                             <td>@hubSession.Date.ToString("MM/dd/yyyy")</td>
@@ -286,7 +274,7 @@
                                 {
                                     @if (!hubSession.TimeOut.HasValue)
                                     {
-                                        <input type="text" class="form-control"  readonly />
+                                        <input type="text" class="form-control" readonly />
                                     }
                                     else
                                     {
@@ -309,7 +297,7 @@
                                         <text>Invalid Time</text>
                                     }
                                 }
-                                </td>
+                            </td>
                             <td>
                                 @if (isEditing)
                                 {
@@ -371,22 +359,25 @@
                 }
                 else
                 {
+                    <!-- Display a message when no students are signed in -->
                     <div class="alert alert-info">
                         <h1>No students are signed in</h1>
                     </div>
                 }
-
             </tbody>
         </table>
     </div>
+    <!-- Pagination controls -->
     <div class="pagination-container">
         <ul class="pagination">
+            <!-- Previous page button -->
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                 <a class="page-link" @onclick="() => MovePages(-1)" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
 
+            <!-- Page numbers -->
             @foreach (var pageNumber in GetPageRange())
             {
                 <li class="page-item @(pageNumber == currentPage ? "active" : "")">
@@ -394,8 +385,9 @@
                 </li>
             }
 
+            <!-- Next page button -->
             <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <a class="page-link"  @onclick="() => MovePages(1)" aria-label="Next">
+                <a class="page-link" @onclick="() => MovePages(1)" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

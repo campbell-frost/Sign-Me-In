@@ -1,77 +1,95 @@
-
-.form-control{
+/* Styling for form controls */
+.form-control {
     height: 3.3125rem;
 }
 
+/* Styling for form controls within input groups */
 .input-group .form-control {
     height: 3.3125rem;
-    flex: 1; 
-    border: none; 
+    flex: 1;
+    border: none;
 }
 
-.container-md{
+/* Container dimensions for medium size */
+.container-md {
     max-width: 43rem;
 }
 
+/* Styling for input groups */
 .input-group {
     display: flex;
-    align-items: center; 
-    border: 2px solid #6e6e6e; 
+    align-items: center;
+    border: 2px solid #6e6e6e;
     border-top: none;
     border-left: none;
-    border-right:none;
-    position:relative;
+    border-right: none;
+    position: relative;
 }
 
-.input-group-btn{
+/* Styling for input groups with buttons */
+.input-group-btn {
     display: flex;
     justify-content: center;
     z-index: 1;
 }
 
-.search-icon{
+/* Styling for search icon */
+.search-icon {
     display: flex;
     justify-content: center;
     height: 24px;
     width: 24px;
 }
-.container{
+
+/* Container dimensions */
+.container {
     width: 44rem;
 }
-.btn-sign-in{
+
+/* Styling for sign-in button */
+.btn-sign-in {
     height: 3.3125rem;
 }
 
+/* Container for content with transition */
 .content-container {
     transition: transform 0.5s;
 }
 
+/* Move up content in container */
 .content-move-up {
     transform: translateY(-240px);
 }
 
+/* Container for logo with transition */
 .logo-container {
     transition: transform 0.5s;
 }
 
+/* Move up logo in container */
 .logo-move-up {
     transform: translateY(-500px);
 }
 
-.image{
+/* Styling for images */
+.image {
     max-height: 100px;
     align-items: center;
 }
 
-.card{
+/* Styling for cards */
+.card {
     border: none;
     padding-left: 20px;
     padding-right: 20px;
 }
 
-.read-only{
-    background-color: #E3E3E3; 
+/* Styling for read-only elements */
+.read-only {
+    background-color: #E3E3E3;
 }
+
+/* Styling for select elements */
 .select {
     background-color: white;
     border: none;

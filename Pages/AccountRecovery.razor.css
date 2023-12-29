@@ -1,32 +1,35 @@
-
-.custom-container{
-    width: 500px;
+/* Styling for the custom container */
+.custom-container {
+    width: 500px; /* Set the width of the custom container */
 }
 
-.btn-block{
-    height: 3.3125rem;
-
-    width: 100%;
+/* Styling for buttons with block display */
+.btn-block {
+    height: 3.3125rem; /* Set the height of buttons */
+    width: 100%; /* Set the width to 100% to span the entire container */
 }
 
+/* Styling for input groups */
 .input-group {
-    display: flex;
-    align-items: center;
-    border: 2px solid #6e6e6e;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    position: relative;
+    display: flex; /* Use flexbox layout for the input group */
+    align-items: center; /* Center-align items in the input group */
+    border: 2px solid #6e6e6e; /* Set border color for the input group */
+    border-top: none; /* Remove top border */
+    border-left: none; /* Remove left border */
+    border-right: none; /* Remove right border */
+    position: relative; /* Set position to relative */
 }
 
+/* Styling for form controls inside the input group */
 .input-group .form-control {
-    height: 3.3125rem;
-    flex: 1;
-    border: none;
+    height: 3.3125rem; /* Set the height of form controls in the input group */
+    flex: 1; /* Allow form controls to flex and take up available space */
+    border: none; /* Remove borders for form controls in the input group */
 }
 
+/* Styling for cards */
 .card {
-    border: none;
-    padding-left: 20px;
-    padding-right: 20px;
+    border: none; /* Remove borders from cards */
+    padding-left: 20px; /* Add left padding to cards */
+    padding-right: 20px; /* Add right padding to cards */
 }

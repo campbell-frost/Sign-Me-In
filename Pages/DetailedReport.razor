@@ -1,3 +1,4 @@
+<!-- Razor page route and injections -->
 @page "/Reports/Detailed/{startDate}/{endDate}"
 @inject NavigationManager navigationManager
 @inject Context dbContext
@@ -5,11 +6,14 @@
 @using System.Text
 @inject IJSRuntime JSRuntime
 
-
 @code {
+    // Parameters for the start and end dates
     [Parameter] public string startDate { get; set; }
     [Parameter] public string endDate { get; set; }
 
+    // Boolean property to track whether to show the no data message
+    private bool showNoDataMessage = false;
+    // List to store hub session data
     private List<HubSession> hubSessions = new List<HubSession>();
 
     // Variables for client-side pagination
@@ -19,6 +23,7 @@
     int totalPages;
     string searchTerm = "";
 
+    // Initialization method
     protected override void OnInitialized()
     {
         var accountIdToCheck = 1;
@@ -26,25 +31,25 @@
 
         if (!isLoggedIn)
         {
+            // Redirect to forbidden page if the user is not logged in
             navigationManager.NavigateTo("/Forbidden");
         }
-        
+
         // Parse the start and end date strings into DateTime objects
-        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime
-        parsedEndDate))
+        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime parsedEndDate))
         {
             // Query the database to retrieve hub session data for the selected date range
             hubSessions = dbContext.HubSessions
-            .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
-            .ToList();
+                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+                .ToList();
 
             // Calculate the total number of items and pages
             totalItems = hubSessions.Count;
             totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
         }
-
     }
 
+    // Method to get paginated hub sessions
     private IEnumerable<HubSession> GetPaginatedSessions()
     {
         // Calculate the range of items to display for the current page
@@ -55,22 +60,26 @@
         return hubSessions.Skip(startIndex).Take(endIndex - startIndex);
     }
 
+    // Method to get student name based on student ID
     private string GetStudentName(int studentID)
     {
         var student = dbContext.Students.FirstOrDefault(s => s.StudentID == studentID);
         return student != null ? $"{student.FirstName} {student.LastName}" : "N/A";
     }
 
+    // Method to change the current page
     void ChangePage(int page)
     {
         currentPage = page;
     }
 
+    // Method to move pages based on offset
     void MovePages(int offset)
     {
         currentPage += offset;
     }
 
+    // Method to get the range of pages for pagination
     IEnumerable<int> GetPageRange()
     {
         int startPage = Math.Max(1, currentPage - 4);
@@ -78,28 +87,29 @@
         return Enumerable.Range(startPage, endPage - startPage + 1);
     }
 
+    // Method to navigate back to the Reports page
     private void gobacktoReports()
     {
         navigationManager.NavigateTo("/Reports");
     }
 
+    // Method to handle search functionality
     private void HandleSearch()
     {
         // Clear the current list of hubSessions
         hubSessions.Clear();
 
         // Query the database to retrieve hub session data for the selected date range
-        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime
-        parsedEndDate))
+        if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime parsedEndDate))
         {
             hubSessions = dbContext.HubSessions
-            .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
-            .ToList();
+                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+                .ToList();
 
             // Filter hubSessions to include only sessions where the student's name matches the search term
             hubSessions = hubSessions
-            .Where(session => GetStudentName(session.StudentID).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
-            .ToList();
+                .Where(session => GetStudentName(session.StudentID).IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
 
             // Recalculate the total number of items and pages
             totalItems = hubSessions.Count;
@@ -110,7 +120,8 @@
         }
     }
 
-    string FormatTotalTime(TimeSpan totalTime)
+    // Method to format total time into a readable string
+    private string FormatTotalTime(TimeSpan totalTime)
     {
         int hours = totalTime.Hours;
         int minutes = totalTime.Minutes;
@@ -133,7 +144,8 @@
             return $"{seconds} sec";
         }
     }
-    // Generates a CSV file from the hubSessions list
+
+    // Method to generate a CSV file from the hubSessions list
     private string GenerateCSV()
     {
         StringBuilder csvContent = new StringBuilder();
@@ -144,45 +156,57 @@
         foreach (var session in hubSessions)
         {
             csvContent.AppendLine($"{session.Date.ToString("MM/dd/yyyy")} {session.TimeIn}," +
-            $"{session.StudentID},{GetStudentName(session.StudentID)}," +
-            $"{((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")}," +
-            $"{session.SessionType}");
+                $"{session.StudentID},{GetStudentName(session.StudentID)}," +
+                $"{((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut - session.TimeIn).Value) : "")}," +
+                $"{session.SessionType}");
         }
 
         return csvContent.ToString();
     }
 
-    // Method to trigger the download
+    // Method to trigger the download of the CSV file
     private async Task DownloadCSV()
     {
-        var csvContent = GenerateCSV();
+        if (hubSessions.Any())
+        {
+            DateTime fromDate = hubSessions.Min(s => s.Date);
+            DateTime toDate = hubSessions.Max(s => s.Date);
 
-        // Get the minimum and maximum dates from hubSessions
-        DateTime fromDate = hubSessions.Min(s => s.Date);
-        DateTime toDate = hubSessions.Max(s => s.Date);
+            var csvContent = GenerateCSV();
 
-        var filename = $"HubSessions_from_{fromDate:MM-dd-yyyy}_to_{toDate:MM-dd-yyyy}.csv";
+            var filename = $"HubSessions_from_{fromDate:MM-dd-yyyy}_to_{toDate:MM-dd-yyyy}.csv";
 
-        // Create a Blob
-        var bytes = Encoding.UTF8.GetBytes(csvContent);
-        var base64 = Convert.ToBase64String(bytes);
-        var uri = $"data:text/csv;base64,{base64}";
+            // Create a Blob
+            var bytes = Encoding.UTF8.GetBytes(csvContent);
+            var base64 = Convert.ToBase64String(bytes);
+            var uri = $"data:text/csv;base64,{base64}";
 
-        // Calls the downloadFile method located in App.razor
-        await JSRuntime.InvokeVoidAsync("downloadFile", filename, uri);
+            // Calls the downloadFile method located in App.razor
+            await JSRuntime.InvokeVoidAsync("downloadFile", filename, uri);
+        }
+        else
+        {
+            // Handle the case when hubSessions is empty
+
+            // Set the boolean property to true to indicate that there is no data
+            showNoDataMessage = true;
+
+            // Update the UI
+            StateHasChanged();
+        }
     }
-
 }
 
-
+<!-- HTML structure -->
 <div class="container card shadow-lg mb-3">
     <div class="row">
         <div class="col-md-6 pt-4">
+            <!-- Search form -->
             <form @onsubmit="HandleSearch">
                 <div class="form-group">
                     <div class="input-group mx-auto">
                         <input type="search" class="form-control shadow-none" placeholder="Search for Student"
-                            @bind="searchTerm" autofocus />
+                               @bind="searchTerm" autofocus />
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-default shadow-none my-auto">
                                 <img src="search-icon.png" class="search-icon">
@@ -193,38 +217,40 @@
             </form>
         </div>
         <div class="col-md-6 pt-4">
-
+            <!-- Selected Date Range information -->
             <div class="alert alert-info">Selected Date Range: From "@startDate" to "@endDate"</div>
         </div>
     </div>
     <div style="overflow-x: auto">
-
-    <table class="table">
-        <thead>
-            <tr class="table-header text-nowrap">
-                <th>Date</th>
-                <th>Student ID</th>
-                <th>Student Name</th>
-                <th>Total Time</th>
-                <th>Session Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var session in GetPaginatedSessions())
-            {
-                <tr>
-                    <td class="text-nowrap">@($"{session.Date:MM/dd/yyyy} at {DateTime.Today.Add(session.TimeIn).ToString("h:mm:ss tt")}")</td>
-                    <td>@session.StudentID</td>
-                        <td class="text-nowrap">@(GetStudentName(session.StudentID))</td>
-                    <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut -
-                            session.TimeIn).Value) : "")</td>
-                    <td>@session.SessionType</td>
+        <!-- Hub Sessions table -->
+        <table class="table">
+            <thead>
+                <tr class="table-header text-nowrap">
+                    <th>Date</th>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Total Time</th>
+                    <th>Session Type</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <!-- Display paginated hub sessions -->
+                @foreach (var session in GetPaginatedSessions())
+                {
+                    <tr>
+                        <td class="text-nowrap">@($"{session.Date:MM/dd/yyyy} at {DateTime.Today.Add(session.TimeIn).ToString("h:mm:ss tt")}")</td>
+                        <td>@session.StudentID</td>
+                        <td class="text-nowrap">@(GetStudentName(session.StudentID))</td>
+                        <td>@((session.TimeOut - session.TimeIn) != null ? FormatTotalTime((session.TimeOut -
+                            session.TimeIn).Value) : "")</td>
+                        <td>@session.SessionType</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
     <div class="row pagination-container pl-1">
+        <!-- Pagination controls -->
         <ul class="col-md-11 pagination" style="padding-left: 15px;">
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                 <a class="page-link" @onclick="() => MovePages(-1)" aria-label="Previous">
@@ -247,9 +273,16 @@
     </div>
     <div class="row">
         <div class="col-md-12 d-flex justify-content-between mb-3">
+            <!-- Go Back and Export buttons -->
             <button class="btn btn-primary" @onclick="gobacktoReports">Go Back</button>
             <button class="btn btn-primary" @onclick="DownloadCSV">Export</button>
         </div>
     </div>
-
+    <!-- Display a warning message if there is no data to download -->
+    @if (showNoDataMessage)
+    {
+        <div class="alert alert-warning mt-3" role="alert">
+            No hub session(s) available for CSV download.
+        </div>
+    }
 </div>
