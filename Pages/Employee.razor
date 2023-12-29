@@ -30,11 +30,15 @@
         foundEmployees = null; // Clear previous search results
         foundEmployee = null; // Clear the previously found Employee
 
+       // Split the search term by spaces
+        var searchTerms = searchTerm.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
         // Query the database to retrieve all employees
         foundEmployees = await dbContext.HubEmployees
-        .Where(e => (e.FirstName != null && e.FirstName.Contains(searchTerm)) || (e.LastName != null &&
-        e.LastName.Contains(searchTerm)))
-        .ToListAsync();
+            .Where(e => searchTerms.All(term =>
+                (e.FirstName != null && e.FirstName.Contains(term)) ||
+                (e.LastName != null && e.LastName.Contains(term))))
+            .ToListAsync();
 
         isLoading = false;
         searchPerformed = true;
