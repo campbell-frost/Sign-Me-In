@@ -51,16 +51,15 @@
 
     }
 
-    private void SelectEmployee(HubEmployee employee)
+   private void SelectEmployee(HubEmployee employee)
     {
         // Check if the selected employee is already signed in without a sign-out
         var existingSession = dbContext.HubSessions.FirstOrDefault(e => e.EmployeeID == employee.EmployeeID);
 
-
         foundEmployee = employee;
-        foundEmployees = null; // Clear the list of found employees
-
+        foundEmployees = null; // Clear the list of found employees 
     }
+
 
     private async Task HandleUpdate(HubEmployee employee)
     {
@@ -214,13 +213,29 @@
         else if (searchPerformed == true)
         {
             <div class="form-group text-center py-3 mb-2">
-                <div class="alert alert-warning">
-                    <label>
-                        No Employees found with the name '@searchTerm'
-                    </label>
-                </div>
-            </div>
+                @if (foundEmployees?.Count > 1)
+                {
+                    <div class="alert alert-info">
+                        @foundEmployees.Count @(" Employees found with the name '")@searchTerm@("'. Select one to continue.")
+                    </div>
 
+                    @foreach (var employee in foundEmployees)
+                    {
+                        if (employee != null) 
+                        {
+                            <EmployeeCard Employee="@employee" OnSelectEmployee="SelectEmployee" />
+                        }
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <label>
+                            No Employees found with the name '@searchTerm'
+                        </label>
+                    </div>
+                }
+            </div>
         }
     }
 </div>
