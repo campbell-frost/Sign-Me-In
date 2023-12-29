@@ -1,4 +1,3 @@
-/* Styling for inactive button */
 .btn.inactive {
     background-color: white;
     color: #0078C9;
@@ -6,12 +5,10 @@
     border-width: 2px;
 }
 
-/* Styling for active button */
 .btn-active {
     border: none;
 }
 
-/* Styling for table header */
 .table-header {
     background-color: #0078C9;
     color: white;
@@ -19,24 +16,20 @@
     outline: white 2px;
 }
 
-/* Styling for table header cells */
 th {
     font-weight: bolder;
 }
 
-/* Styling for cards */
 .card {
     border: none;
     padding-left: 20px;
     padding-right: 20px;
 }
 
-/* Styling for form controls */
 .form-control {
     width: 80px;
 }
 
-/* Styling for select elements */
 .select {
     background-color: white;
     border: 1px solid #ced4da;

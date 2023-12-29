@@ -1,6 +1,4 @@
-/* Styling for input group and form control */
 
-/* Input group style */
 .input-group {
     display: flex;
     align-items: center;
@@ -12,12 +10,10 @@
     border-radius: 0px;
 }
 
-/* Border radius for input group */
 .input-group {
     border-radius: 0px;
 }
 
-/* Styling for input group button */
 .input-group-btn {
     display: flex;
     border: none;
@@ -25,7 +21,6 @@
     z-index: 1;
 }
 
-/* Styling for search icon */
 .search-icon {
     display: flex;
     justify-content: center;
@@ -33,12 +28,10 @@
     width: 24px;
 }
 
-/* Styling for form control */
 .form-control {
     height: 3.3125rem;
 }
 
-/* Styling for card */
 .card {
     border: none;
     padding-left: 20px;
@@ -46,12 +39,10 @@
     width: 800px;
 }
 
-/* Styling for button block */
 .btn-block {
     height: 3.3125rem;
 }
 
-/* Responsive styling for images */
 .image {
     max-height: 100px;
     align-items: center;

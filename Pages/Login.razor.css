@@ -1,4 +1,3 @@
-/* Styling for the Background */
 
 .background {
     background-image: url('fdtc-background.png');
@@ -9,8 +8,6 @@
     align-items: center;
     justify-content: center;
 }
-
-/* Styling for the Login Container */
 
 .login-container {
     background-color: white; /* Background overlay color */
@@ -24,8 +21,6 @@
     align-items: center;
 }
 
-/* Styling for the Login Box */
-
 .login-box {
     background-color: #ffffff;
     border-radius: 4px;
@@ -34,20 +29,14 @@
     text-align: center;
 }
 
-/* Styling for the Login Logo */
-
 .login-logo {
     width: 200px;
     margin-bottom: 20px;
 }
 
-/* Styling for Form Groups */
-
 .form-group {
     margin: 10px 0;
 }
-
-/* Styling for Form Controls (Input Fields) */
 
 .form-control {
     border: none;

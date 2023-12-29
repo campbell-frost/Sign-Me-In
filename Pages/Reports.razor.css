@@ -1,4 +1,3 @@
-/* Styling for table header */
 .table-header {
     background-color: #0078C9;
     color: white;
@@ -6,12 +5,10 @@
     outline: white 2px;
 }
 
-/* Styling for block-level button */
 .btn-block {
     height: 3.3125rem;
 }
 
-/* Styling for card */
 .card {
     border: none;
     padding-left: 20px;
