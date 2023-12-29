@@ -1,6 +1,3 @@
-.custom-container {
-    width: 500px; 
-}
 
 .btn-block {
     height: 3.3125rem; 
@@ -9,13 +6,13 @@
 
 /* Styling for input groups */
 .input-group {
-    display: flex; /* Use flexbox layout for the input group */
-    align-items: center; /* Center-align items in the input group */
-    border: 2px solid #6e6e6e; /* Set border color for the input group */
-    border-top: none; /* Remove top border */
-    border-left: none; /* Remove left border */
-    border-right: none; /* Remove right border */
-    position: relative; /* Set position to relative */
+    display: flex; 
+    align-items: center; 
+    border: 2px solid #6e6e6e; 
+    border-top: none; 
+    border-left: none; 
+    border-right: none; 
+    position: relative; 
 }
 
 /* Styling for fields */

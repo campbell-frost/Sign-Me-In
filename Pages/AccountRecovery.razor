@@ -7,12 +7,12 @@
 
 @code
 {
-    private List<SecurityQuestion>? SecurityQuestions;  // List of security questions
+    private List<SecurityQuestion>? SecurityQuestions; // List of security questions
     [Parameter]
-    public String AccountID { get; set; }  
-    private List<String> userAnswers;  // List of user answers
-    private bool showInvalidAlert = false;  
-    
+    public String AccountID { get; set; }
+    private List<String> userAnswers; // List of user answers
+    private bool showInvalidAlert = false;
+
     protected override void OnInitialized()
     {
         var accountIdToCheck = 1;
@@ -24,7 +24,8 @@
         }
 
         Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
-        getSecurityQuestions();  <!-- Fetch security questions and initialize userAnswers -->
+        getSecurityQuestions();
+        <!-- Fetch security questions and initialize userAnswers -->
 
         // Initialize userAnswers if it's null
         if (userAnswers == null)
@@ -183,73 +184,74 @@
 }
 
 <!-- HTML content for the Account Recovery page -->
-<div class="container py-3 custom-container card shadow-lg mb-4">
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <h1>@GetAccountUsername()</h1>
+<div class="container-lg mb-4 py-3 d-flex justify-content-center">
+    <div class="col-md-7 card shadow-lg">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1>@GetAccountUsername()</h1>
+            </div>
         </div>
-    </div>
-    <hr/>
-    <div class="row justify-content-center">
-        <div class="col-md-12 ">
-            @if (SecurityQuestions != null && SecurityQuestions.Any())
-            {
-                @for (var i = 0; i < SecurityQuestions.Count; i++)
+        <hr />
+        <div class="row justify-content-center">
+            <div class="col-md-12 ">
+                @if (SecurityQuestions != null && SecurityQuestions.Any())
                 {
-                    var questionIndex = i; // Capture the loop variable
+                    @for (var i = 0; i < SecurityQuestions.Count; i++)
+                    {
+                        var questionIndex = i; // Capture the loop variable
 
-                    <div class="mb-3 ">
-                        <div>
-                            <h4><b>@($"Question {i + 1}")</b></h4>
-                        </div>
-                        <div>
-                            <h5>@SecurityQuestions[i].Question</h5>
-                            <div class="form-group">
+                        <div class="mb-3 ">
+                            <div>
+                                <h4><b>@($"Question {i + 1}")</b></h4>
+                            </div>
+                            <div>
+                                <h5>@SecurityQuestions[i].Question</h5>
+                                <div class="form-group">
 
-                                <div class="input-group">
-                                    @if (userAnswers != null && questionIndex < userAnswers.Count)
-                                    {
-                                        <input type="text" placeholder="Input Answer" class="form-control shadow-none md-form"
-                                            @bind="userAnswers[questionIndex]" />
-                                    }
-                                    else
-                                    {
-                                        <p>Invalid user answer index.</p>
-                                    }
+                                    <div class="input-group">
+                                        @if (userAnswers != null && questionIndex < userAnswers.Count)
+                                        {
+                                            <input type="text" placeholder="Input Answer" class="form-control shadow-none md-form"
+                                                @bind="userAnswers[questionIndex]" />
+                                        }
+                                        else
+                                        {
+                                            <p>Invalid user answer index.</p>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
 
-            }
-             else
-            {
-                <p>No security questions available.</p>
-            }
-        </div>
-    </div>
-    @if (showInvalidAlert)
-    {
-        <div class="row px-3 mt-3">
-            <div class="alert alert-danger mt-3" role="alert">
-                Security question answers are incorrect. Please check your answers.
+                }
+                else
+                {
+                    <p>No security questions available.</p>
+                }
             </div>
         </div>
-    }
-    <div class="row mt-4">
-        <div class="col-md-6 ">
-            <button class="btn btn-primary btn-block" @onclick="GoBackToAccounts">Go Back</button>
+        @if (showInvalidAlert)
+        {
+            <div class="row px-3 mt-3">
+                <div class="alert alert-danger mt-3" role="alert">
+                    Security question answers are incorrect. Please check your answers.
+                </div>
+            </div>
+        }
+        <div class="row mt-4">
+            <div class="col-md-6 ">
+                <button class="btn btn-primary btn-block" @onclick="GoBackToAccounts">Go Back</button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-primary btn-block" @onclick="GoToChangePassword">Reset Password</button>
+            </div>
         </div>
-        <div class="col-md-6">
-            <button class="btn btn-primary btn-block" @onclick="GoToChangePassword">Reset Password</button>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <button class="btn btn-primary btn-block" @onclick="DeveloperBypassSecurityQuestions">Developer
+                    Bypass</button>
+            </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <button class="btn btn-primary btn-block" @onclick="DeveloperBypassSecurityQuestions">Developer
-                Bypass</button>
-        </div>
-    </div>
-
 </div>
