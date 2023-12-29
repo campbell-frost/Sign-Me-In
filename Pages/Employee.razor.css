@@ -14,12 +14,13 @@
 
 /* Border radius for input group */
 .input-group {
-    border-radius: 4px;
+    border-radius: 0px;
 }
 
 /* Styling for input group button */
 .input-group-btn {
     display: flex;
+    border: none;
     justify-content: center;
     z-index: 1;
 }

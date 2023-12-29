@@ -1,17 +1,8 @@
-<!-- Razor component for adding an employee -->
 @page "/Employee/AddEmployee"
-
-<!-- Injecting the database context -->
 @inject Context dbContext
-
-<!-- Importing necessary namespaces -->
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
-
-<!-- Injecting the AuthenticationService -->
 @inject AuthenticationService authService
-
-<!-- Injecting the NavigationManager for page navigation -->
 @inject NavigationManager navigationManager
 
 @code {
@@ -25,8 +16,9 @@
 
     // Flag to track if the employee has been successfully inserted
     private bool inserted = false;
+    // Flag to track if any form fields are empty
+    private bool isFormIncomplete = false;
 
-    // Initialization method
     protected override void OnInitialized()
     {
         // Account ID to check for user login
@@ -42,36 +34,57 @@
         }
     }
 
+    // Method to validate form fields
+    private bool ValidateForm()
+    {
+        if (string.IsNullOrEmpty(firstName) ||
+        string.IsNullOrEmpty(lastName) ||
+        employeeID == 0 ||
+        string.IsNullOrEmpty(employeeInitials) ||
+        string.IsNullOrEmpty(hubRole))
+        {
+            isFormIncomplete = true;
+            return false;
+        }
+
+        isFormIncomplete = false;
+        return true;
+    }
+
     // Method to insert a new employee
     private void insertEmployee()
     {
-        // Set accountID based on hubRole
-        if (hubRole == "Testing Assistant" || hubRole == "Tutor" || hubRole == "Both")
+        if (ValidateForm())
         {
-            accountID = 2;
+
+            // Set accountID based on hubRole
+            if (hubRole == "Testing Assistant" || hubRole == "Tutor" || hubRole == "Both")
+            {
+                accountID = 2;
+            }
+            else
+            {
+                accountID = 1;
+            }
+
+            // Create a new employee object
+            var newEmployee = new HubEmployee
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    EmployeeID = employeeID,
+                    Initials = employeeInitials,
+                    Role = hubRole,
+                    AccountID = accountID
+                };
+
+            // Add the new employee to the database and save changes
+            dbContext.HubEmployees.Add(newEmployee);
+            dbContext.SaveChanges();
+
+            // Set inserted flag to true
+            inserted = true;
         }
-        else
-        {
-            accountID = 1;
-        }
-
-        // Create a new employee object
-        var newEmployee = new HubEmployee
-        {
-            FirstName = firstName,
-            LastName = lastName,
-            EmployeeID = employeeID,
-            Initials = employeeInitials,
-            Role = hubRole,
-            AccountID = accountID
-        };
-
-        // Add the new employee to the database and save changes
-        dbContext.HubEmployees.Add(newEmployee);
-        dbContext.SaveChanges();
-
-        // Set inserted flag to true
-        inserted = true;
     }
 
     // Method to navigate back to the Employee page
@@ -137,6 +150,12 @@
                 </div>
             </div>
         </div>
+        @if (isFormIncomplete)
+        {
+            <div class="alert alert-warning text-center mt-3">
+                <h3>Please fill out all of the forms</h3>
+            </div>
+        }
         <!-- Buttons to go back or insert employee -->
         <div class="row pt-3">
             <div class="col-md-6 text-center">
