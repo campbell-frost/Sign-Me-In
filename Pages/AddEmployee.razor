@@ -46,7 +46,7 @@
     private void insertEmployee()
     {
         // Set accountID based on hubRole
-        if (hubRole == "Testing Assistant" || hubRole == "Tutoring")
+        if (hubRole == "Testing Assistant" || hubRole == "Tutor" || hubRole == "Both")
         {
             accountID = 2;
         }
@@ -86,9 +86,57 @@
 {
     <!-- Form for adding a new employee -->
     <div class="container container-custom card shadow-lg pb-3">
-        <!-- Employee details input fields -->
-        <!-- ... (omitted for brevity) ... -->
-
+        <div class="row pt-3">
+            <div class="col-md-6">
+                <label>First Name:</label>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="firstName" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Last Name:</label>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="lastName" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-3">
+            <div class="col-md-6">
+                <label>Employee ID:</label>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="employeeID" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Employee Initials:</label>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control shadow-none" @bind="employeeInitials" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-3">
+            <div class="col-md-12 text-start">
+                <label>Hub Role:</label>
+                <div class="input-group">
+                    <div class="form-group w-100">
+                        <select class="dropdown shadow-none custom" @bind="hubRole">
+                            <option value="">Select Hub Role</option>
+                            <option value="Tutor">Tutor</option>
+                            <option value="Testing Assistant">Testing Assistant</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Buttons to go back or insert employee -->
         <div class="row pt-3">
             <div class="col-md-6 text-center">
