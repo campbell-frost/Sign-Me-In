@@ -1,0 +1,42 @@
+@page "/Employee/DeleteEmployee/"
+@inject Context dbContext
+
+<div class="container-md d-flex justify-content-center align-items-center">
+    <div class="card shadow-lg col-md-7">
+        @if (Employees != null && Employees.Any())
+        {
+            @foreach (var employee in Employees)
+            {
+                <DeleteEmployeeCard Employee="@employee" OnDeleteEmployee="HandleDeleteEmployee" />
+            }
+        }
+        else
+        {
+            <p>No employees found.</p>
+        }
+    </div>
+</div>
+
+@code {
+    private List<HubEmployee>? Employees;
+
+    protected override void OnInitialized()
+    {
+        ListEmployees();
+    }
+
+    private void ListEmployees()
+    {
+        Employees = dbContext.HubEmployees.ToList();
+    }
+
+    private async Task HandleDeleteEmployee(HubEmployee employee)
+    {
+        if (employee != null)
+        {
+            dbContext.HubEmployees.Remove(employee);
+            await dbContext.SaveChangesAsync();
+            ListEmployees(); // Refresh the list after deletion
+        }
+    }
+}
