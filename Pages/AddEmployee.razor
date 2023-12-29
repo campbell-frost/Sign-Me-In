@@ -93,8 +93,6 @@
         navigationManager.NavigateTo("/Employee");
     }
 }
-
-<!-- Display form for adding an employee if not already inserted -->
 @if (!inserted)
 {
     <!-- Form for adding a new employee -->
@@ -156,7 +154,6 @@
                 <h3>Please fill out all of the forms</h3>
             </div>
         }
-        <!-- Buttons to go back or insert employee -->
         <div class="row pt-3">
             <div class="col-md-6 text-center">
                 <button class="btn btn-primary btn-block" @onclick="goBackToEmployee">Back</button>
@@ -168,7 +165,6 @@
     </div>
 }
 
-<!-- Display success message if employee is inserted -->
 @if (inserted)
 {
     <div class="alert alert-success mt-3" role="alert">
