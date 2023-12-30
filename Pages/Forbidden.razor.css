@@ -1,16 +1,3 @@
-.custom-container {
-    width: 80%;
-    max-width: 470px;
-    margin: 0 auto;
-
-    @media (max-width: 768px) {
-        width: 90%;
-    }
-
-    @media (max-width: 576px) {
-        width: 95%;
-    }
-}
 
 .background {
     background-image: url('fdtc-background.png');
@@ -23,10 +10,9 @@
 }
 
 .login-container {
-    background-color: white; /* Background overlay color */
+    background-color: white; 
     border-radius: 4px;
     padding: 20px;
-    width: 21.8125rem;
     height: 17.8125rem;
     display: flex;
     flex-direction: column;
@@ -38,19 +24,24 @@
     background-color: #ffffff;
     border-radius: 4px;
     padding: 20px;
-    width: 340px;
-    height: 17.8125rem;
     text-align: center;
 }
 
-.row-flex {
-    display: flex;
-    justify-content: space-between; 
-    align-items: center; 
-    margin-top: 20px; 
+.login-logo {
+    width: 200px;
+    margin-bottom: 20px;
 }
 
-.flex-item {
-    flex: 1; /* Equal width for both items */
-    margin-right: 10px; 
+.form-group {
+    margin: 10px 0;
+}
+
+.form-control {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+}
+
+.alert{
+    padding: 0px;
 }
