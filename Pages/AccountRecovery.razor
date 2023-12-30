@@ -22,8 +22,6 @@
         {
             navigationManager.NavigateTo("/Forbidden"); // Redirect to Forbidden page if not logged in
         }
-
-        Console.WriteLine($"OnInitialized - AccountID: {AccountID}");
         getSecurityQuestions();
         <!-- Fetch security questions and initialize userAnswers -->
 
@@ -78,7 +76,6 @@
     // Method to update user's answer to a security question
     private void UpdateUserAnswer(string value, int index)
     {
-        Console.WriteLine($"UpdateUserAnswer - Index: {index}, userAnswers Count: {userAnswers.Count}");
         try
         {
             if (index >= 0 && index < userAnswers.Count)
@@ -118,9 +115,6 @@
 
             var storedAnswer = GetStoredAnswerFromDatabase(question.QuestionID);
 
-            Console.WriteLine($"User Answer for Question {i + 1}: {userAnswer}");
-            Console.WriteLine($"Stored Answer for Question {i + 1}: {storedAnswer}");
-
             if (storedAnswer != null && userAnswer == storedAnswer)
             {
                 continue;
@@ -142,8 +136,6 @@
         .Where(q => q.QuestionID == questionID)
         .Select(q => q.AnswerHash)
         .FirstOrDefault();
-
-        Console.WriteLine($"Stored Answer for Question ID {questionID}: {storedAnswer}");
 
         return storedAnswer;
     }

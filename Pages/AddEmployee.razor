@@ -9,7 +9,7 @@
     // Properties to store employee details
     private String firstName;
     private String lastName;
-    private int employeeID;
+    private int ? employeeID;
     private String employeeInitials;
     private String hubRole;
     private int accountID;
@@ -39,7 +39,7 @@
     {
         if (string.IsNullOrEmpty(firstName) ||
         string.IsNullOrEmpty(lastName) ||
-        employeeID == 0 ||
+        !employeeID.HasValue ||
         string.IsNullOrEmpty(employeeInitials) ||
         string.IsNullOrEmpty(hubRole))
         {
@@ -72,7 +72,7 @@
                 {
                     FirstName = firstName,
                     LastName = lastName,
-                    EmployeeID = employeeID,
+                    EmployeeID = employeeID ?? 0,
                     Initials = employeeInitials,
                     Role = hubRole,
                     AccountID = accountID
