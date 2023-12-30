@@ -205,14 +205,16 @@
                     }
                 }
             }
-            else if (alreadySignedIn)
+            else if (alreadySignedIn) 
+            // Figure out how to redo logic in this code block.  
+            // Either have a sign out button or reset alreadySignedIn
             {
                 <div class="alert alert-warning mt-4">The student is already signed in. Please sign them out from the View page first
                     before signing in again. </div>
                 <div class="text-center mb-4">
                     <button class="btn btn-primary" @onclick="ResetSignIn">Sign in another student</button>
                 </div>
-
+                
             }
 
 
