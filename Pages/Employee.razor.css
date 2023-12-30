@@ -48,3 +48,7 @@
     max-height: 100px;
     align-items: center;
 }
+
+.alert{
+    margin-bottom: 0;
+}
