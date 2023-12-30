@@ -10,10 +10,9 @@
 }
 
 .login-container {
-    background-color: white; /* Background overlay color */
+    background-color: white; 
     border-radius: 4px;
     padding: 20px;
-    width: 21.8125rem;
     height: 17.8125rem;
     display: flex;
     flex-direction: column;
@@ -25,7 +24,6 @@
     background-color: #ffffff;
     border-radius: 4px;
     padding: 20px;
-    width: 340px;
     text-align: center;
 }
 
