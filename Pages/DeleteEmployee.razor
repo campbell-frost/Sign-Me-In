@@ -1,5 +1,6 @@
 @page "/Employee/DeleteEmployee/"
 @inject Context dbContext
+@inject IJSRuntime JSRuntime
 
 <div class="container-md d-flex justify-content-center align-items-center">
     <div class="card shadow-lg col-md-7">
@@ -19,7 +20,7 @@
 
 @code {
     private List<HubEmployee>? Employees;
-
+    private bool isDeleting = false;
     protected override void OnInitialized()
     {
         ListEmployees();
@@ -34,9 +35,28 @@
     {
         if (employee != null)
         {
-            dbContext.HubEmployees.Remove(employee);
-            await dbContext.SaveChangesAsync();
-            ListEmployees(); // Refresh the list after deletion
+            var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {employee.FirstName} {employee.LastName}?");
+            
+            if (confirmed)
+            {
+                isDeleting = true;
+                StateHasChanged(); // Trigger a re-render to show the loading spinner
+
+                dbContext.HubEmployees.Remove(employee);
+
+                try
+                {
+                    await dbContext.SaveChangesAsync();
+                    ListEmployees(); // Refresh the list after deletion
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+
+                isDeleting = false;
+                StateHasChanged(); // Remove the loading spinner
+            }
         }
     }
 }
