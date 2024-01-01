@@ -13,6 +13,7 @@
     int activeButtonIndex = 0;
     bool isEditing = false;
     private bool showOnlySignedIn = true;
+    private bool isDataFound;
 
     // Variables for pagination
     int currentPage = 1;
@@ -73,6 +74,8 @@
             .Skip((currentPage - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        isDataFound = hubSessions.Any(); // Check if data is found
 
     }
 
@@ -194,6 +197,9 @@
         </div>
     </div>
     <div style="overflow-x: auto">
+        @if(isDataFound)
+        {
+
         <table class="table">
             <thead>
                 <tr class="table-header">
@@ -351,6 +357,13 @@
                 }
             </tbody>
         </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <p>No Data Found</p>
+            </div>
+        }
     </div>
     <div class="pagination-container">
         <ul class="pagination">
