@@ -94,7 +94,7 @@
 
 
 <div class="container-lg d-flex justify-content-center">
-    <div class="col-md-7 card shadow-lg">
+    <div class="col-md-7 card shadow-lg mb-4">
 
         <form @onsubmit="Search">
             <div class="py-4">
@@ -219,7 +219,7 @@
 
                 </div>
             }
-            else if (searchPerformed == true)
+            else if (searchPerformed == true && !string.IsNullOrWhiteSpace(searchTerm))
             {
                 <div class="form-group text-center mb-2">
                     @if (foundEmployees?.Count > 1)
