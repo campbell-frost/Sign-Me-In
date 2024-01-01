@@ -26,29 +26,31 @@
 
     private async Task Search()
     {
-        isLoading = true;
-        foundEmployees = null; // Clear previous search results
-        foundEmployee = null; // Clear the previously found Employee
-
-        // Split the search term by spaces
-        var searchTerms = searchTerm.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        // Query the database to retrieve all employees
-        foundEmployees = await dbContext.HubEmployees
-        .Where(e => searchTerms.All(term =>
-        (e.FirstName != null && e.FirstName.Contains(term)) ||
-        (e.LastName != null && e.LastName.Contains(term))))
-        .ToListAsync();
-
-        isLoading = false;
-        searchPerformed = true;
-
-        if (foundEmployees.Count == 1)
+        if (!string.IsNullOrWhiteSpace(searchTerm)) // Check if searchTerm is not null or empty
         {
-            // If only one employee is found, assign it to foundEmployee
-            foundEmployee = foundEmployees.First();
-        }
+            isLoading = true;
+            foundEmployees = null; // Clear previous search results
+            foundEmployee = null; // Clear the previously found Employee
 
+            // Split the search term by spaces
+            var searchTerms = searchTerm.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            // Query the database to retrieve employees that match the search term
+            foundEmployees = await dbContext.HubEmployees
+            .Where(e => searchTerms.All(term =>
+            (e.FirstName != null && e.FirstName.Contains(term)) ||
+            (e.LastName != null && e.LastName.Contains(term))))
+            .ToListAsync();
+
+            isLoading = false;
+            searchPerformed = true;
+
+            if (foundEmployees.Count == 1)
+            {
+                // If only one employee is found, assign it to foundEmployee
+                foundEmployee = foundEmployees.First();
+            }
+        }
     }
 
     private void SelectEmployee(HubEmployee employee)
@@ -146,7 +148,7 @@
         {
             @if (foundEmployees?.Count > 1 && foundEmployee == null)
             {
-                <div class="alert alert-info">
+                <div class="alert alert-info mb-4">
                     @foundEmployees.Count @(" Employees found with the same name. Select one to continue.")
                 </div>
 
@@ -219,7 +221,7 @@
 
                 </div>
             }
-            else if (searchPerformed == true && !string.IsNullOrWhiteSpace(searchTerm))
+            else if (searchPerformed == true && !string.IsNullOrWhiteSpace(searchTerm) || searchTerm == null)
             {
                 <div class="form-group text-center mb-2">
                     @if (foundEmployees?.Count > 1)
