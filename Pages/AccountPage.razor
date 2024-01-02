@@ -14,14 +14,14 @@
     //Currently selected account
     private Account? selectedAccount;
 
-    //Type of input field for account password 
+    //Type of input field for account password
     public string TxtType = "password";
 
     protected override void OnInitialized()
     {
         var accountIdToCheck = 1;
 
-        //Check if the user is logged in 
+        //Check if the user is logged in
         var isLoggedIn = authService.IsUserLoggedIn(accountIdToCheck);
 
         if (!isLoggedIn)
@@ -39,7 +39,7 @@
         Accounts = dbContext.Accounts.ToList();
     }
 
-    // Method to select an account 
+    // Method to select an account
     private void SelectAccount(Account account)
     {
         selectedAccount = dbContext.Accounts
@@ -47,9 +47,8 @@
         selectAccount = true;
     }
 }
-
-<div class="container-lg d-flex justify-content-center">
-    <div class="col-md-7 card shadow-lg">
+<div class="container-md d-flex justify-content-center align-items-center">
+    <div class="card shadow-lg col-md-7">
         @if (!selectAccount && Accounts != null)
         {
             @foreach (var account in Accounts)
@@ -57,5 +56,10 @@
                 <AccountCard Account="account" OnSelectAccount="() => SelectAccount(account)" />
             }
         }
+        else
+        {
+            <p>No Accounts Found</p>
+        }
+        
     </div>
 </div>

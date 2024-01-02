@@ -50,10 +50,10 @@
         }
         else
         {
-            // Reset username and password, and display an alert for user not found
+            // Reset username and password, and display an alert for incorrect credentials
             username = "";
             password = "";
-            await JSRuntime.InvokeVoidAsync("alert", "User not found.");
+            await JSRuntime.InvokeVoidAsync("alert", "Invalid username or password.");
         }
     }
 }
