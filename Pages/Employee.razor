@@ -37,9 +37,7 @@
 
             // Query the database to retrieve employees that match the search term
             foundEmployees = await dbContext.HubEmployees
-            .Where(e => searchTerms.All(term =>
-            (e.FirstName != null && e.FirstName.Contains(term)) ||
-            (e.LastName != null && e.LastName.Contains(term))))
+            .Where(e => e.FirstName == searchTerm || e.LastName == searchTerm)
             .ToListAsync();
 
             isLoading = false;
