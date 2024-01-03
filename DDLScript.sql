@@ -17,7 +17,7 @@ VALUES
     (2, 'Araujo', 'Ken'),
     (3, 'Rao', 'Padmaja'),
     (4, 'Panza', 'Nicole'),
-    (3, 'Dungan', 'Ivan');
+    (5, 'Dungan', 'Ivan');
 SET IDENTITY_INSERT [dbo].[Instructors] OFF
 
 SET IDENTITY_INSERT [dbo].[Students] ON
@@ -66,8 +66,21 @@ SET IDENTITY_INSERT [dbo].[HubEmployees] ON
 
 INSERT INTO [dbo].[HubEmployees] ([EmployeeID], [FirstName], [LastName], [Initials], [Role], [AccountID])
 VALUES
-  (1, 'Megan', 'Webster', 'MW', 'Tutor', 2),
-	(2, 'Campbell', 'Frost', 'CF', 'Tester', 2),
+	(1, 'Campbell', 'Frost', 'CF', 'Tester', 2),
   (2, 'Bhakti', 'Patel', 'BP', 'Tester', 2);
 
 SET IDENTITY_INSERT [dbo].[HubEmployees] OFF
+
+
+SET IDENTITY_INSERT [dbo].[SecurityQuestions] ON
+
+INSERT INTO [dbo].[SecurityQuestions] ([QuestionID], [Question], [AccountID], [AnswerHash])
+VALUES
+  (1, 'What episode is diversity day?', 1, '1'),
+  (2, 'Who started the fire in the office?', 1, 'Ryan'),
+  (3, 'Who bought Michael''s best boss mug?', 1, 'Michael'),
+  (4, 'Who is obsessed with bears, beats and Battlestar Galactica', 2, 'Dwight'),
+  (5, 'In a memorable office prank, what item did Jim Halpert put into Dwight Schrute''s Jell-o?', 2, 'Stapler'),
+  (6, 'Who does Michael have great a disdain for and constantly refers to as ''the worst''', 2, 'Toby');
+  
+SET IDENTITY_INSERT [dbo].[SecurityQuestions] OFF
