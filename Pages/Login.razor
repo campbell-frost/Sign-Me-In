@@ -25,7 +25,7 @@
         {
             // Verify the entered password against the stored password hash
             bool isPasswordCorrect = true;
-            //BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+            BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 
             if (isPasswordCorrect)
             {
