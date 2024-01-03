@@ -16,6 +16,7 @@
     private bool isSignedIn = false; // Indicates if a student has successfully signed in
     private bool showSelectionError; // Indicates that initials or session type are empty
     private bool alreadySignedIn = false; // Indicates if the student is already signed in without being signed out
+     private bool isSearchTermInvalid = false; // variable to track validation status
 
     // --- DROPDOWN MENU VARIABLES ---
     private string? selectedInitials; // The initials selected from the dropdown
@@ -38,6 +39,16 @@
         isLoading = true;
         foundStudents = null; // Clear previous search results
         foundStudent = null; // Clear the previously found student
+
+        // Reset validation status
+        isSearchTermInvalid = false;
+        
+        // Handle empty search term
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            isSearchTermInvalid = true;
+            return;
+        }
 
         // Query the database to find students by first or last name
         foundStudents = await dbContext.Students
@@ -175,6 +186,10 @@
             </div>
         </form>
 
+        @if (isSearchTermInvalid)
+        {
+            <div class="alert alert-info">Please enter a valid search term.</div>
+        }
 
         @if (isSignedIn)
         {
@@ -183,7 +198,7 @@
             </div>
         }
 
-        @if (isLoading)
+        @if (isLoading && !isSearchTermInvalid)
         {
             <div class="form-group text-center pt-5">
                 <img src="loading.gif">
