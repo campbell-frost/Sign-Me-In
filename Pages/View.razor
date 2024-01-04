@@ -80,6 +80,7 @@
             totalViewAllPages = (int)Math.Ceiling((double)totalItems / pageSize);
             totalPages = totalViewAllPages;
         }
+        
         // Calculate which items to display on the current page
         hubSessions = query
         .Skip((currentPage - 1) * pageSize)
