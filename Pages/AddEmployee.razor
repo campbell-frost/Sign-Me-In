@@ -67,6 +67,10 @@
                 accountID = 1;
             }
 
+            // Enable IDENTITY_INSERT
+            dbContext.Database.OpenConnection();
+            dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HubEmployees ON");
+
             // Create a new employee object
             var newEmployee = new HubEmployee
                 {
