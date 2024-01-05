@@ -88,6 +88,10 @@
 
             // Set inserted flag to true
             inserted = true;
+
+            // Disable IDENTITY_INSERT and close the connection
+            dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HubEmployees OFF");
+            dbContext.Database.CloseConnection();
         }
     }
 
