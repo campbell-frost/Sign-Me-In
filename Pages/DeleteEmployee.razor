@@ -1,6 +1,7 @@
 @page "/Employee/DeleteEmployee/"
 @inject Context dbContext
 @inject IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
 
 <div class="container-md d-flex justify-content-center align-items-center">
     <div class="card shadow-lg col-md-7">
@@ -15,7 +16,9 @@
         {
             <p>No employees found.</p>
         }
-        <div class="mb-3"></div>
+        <div class="container-md d-flex justify-content-center align-items-center" style="margin-top: 50px;">
+            <button class="btn btn-primary btn-block w-40 mb-3" @onclick="goBack">Go Back</button>
+        </div>
     </div>
 </div>
 
@@ -32,6 +35,9 @@
         Employees = dbContext.HubEmployees.ToList();
     }
 
+    private void goBack(){
+        navigationManager.NavigateTo("/Employee");
+    }
     private async Task HandleDeleteEmployee(HubEmployee employee)
     {
         if (employee != null)
