@@ -19,6 +19,13 @@
     // Flag to track if any form fields are empty
     private bool isFormIncomplete = false;
 
+    //For input validation
+    private string firstNameError;
+    private string lastNameError;
+    private string employeeIDError;
+    private string employeeInitialsError;
+    private string hubRoleError;
+
     protected override void OnInitialized()
     {
         // Account ID to check for user login
@@ -37,19 +44,54 @@
     // Method to validate form fields
     private bool ValidateForm()
     {
-        if (string.IsNullOrEmpty(firstName) ||
-        string.IsNullOrEmpty(lastName) ||
-        !employeeID.HasValue ||
-        string.IsNullOrEmpty(employeeInitials) ||
-        string.IsNullOrEmpty(hubRole))
+        // Reset error messages
+        firstNameError = string.Empty;
+        lastNameError = string.Empty;
+        employeeIDError = string.Empty;
+        employeeInitialsError = string.Empty;
+        hubRoleError = string.Empty;
+
+        bool isValid = true;
+
+        // Validation for First Name
+        if (string.IsNullOrEmpty(firstName))
         {
-            isFormIncomplete = true;
-            return false;
+            firstNameError = "First Name is required.";
+            isValid = false;
         }
 
-        isFormIncomplete = false;
-        return true;
+        // Validation for Last Name
+        if (string.IsNullOrEmpty(lastName))
+        {
+            lastNameError = "Last Name is required.";
+            isValid = false;
+        }
+
+        // Validation for Employee ID
+        if (!employeeID.HasValue)
+        {
+            employeeIDError = "Employee ID is required.";
+            isValid = false;
+        }
+
+        // Validation for Last Name
+        if (string.IsNullOrEmpty(employeeInitials))
+        {
+            employeeInitialsError = "Employee Initials is required.";
+            isValid = false;
+        }
+
+        // Validation for Hub Role
+        if (string.IsNullOrEmpty(hubRole))
+        {
+            hubRoleError = "Hub Role is required.";
+            isValid = false;
+        }
+
+        isFormIncomplete = !isValid;
+        return isValid;
     }
+
 
     // Method to insert a new employee
     private void insertEmployee()
@@ -160,8 +202,31 @@
         {
             <div class="alert alert-warning text-center">
                 <h5>Please fill out all of the forms</h5>
+                <ul>
+                    @if (!string.IsNullOrEmpty(firstNameError))
+                    {
+                        <li>@firstNameError</li>
+                    }
+                    @if (!string.IsNullOrEmpty(lastNameError))
+                    {
+                        <li>@lastNameError</li>
+                    }
+                    @if (!string.IsNullOrEmpty(employeeIDError))
+                    {
+                        <li>@employeeIDError</li>
+                    }
+                     @if (!string.IsNullOrEmpty(employeeInitialsError))
+                    {
+                        <li>@employeeInitialsError</li>
+                    }
+                    @if (!string.IsNullOrEmpty(hubRoleError))
+                    {
+                        <li>@hubRoleError</li>
+                    }
+                </ul>
             </div>
         }
+
         <div class="row pt-3">
             <div class="col-md-6 text-center">
                 <button class="btn btn-primary btn-block" @onclick="goBackToEmployee">Back</button>
