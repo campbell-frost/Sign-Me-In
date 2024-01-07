@@ -4,6 +4,8 @@
 @using Microsoft.EntityFrameworkCore
 @inject AuthenticationService authService
 @inject NavigationManager navigationManager
+@using System.Text.RegularExpressions
+
 
 @code {
     // Properties to store employee details
@@ -59,28 +61,40 @@
             firstNameError = "First Name is required.";
             isValid = false;
         }
-
+        else if (!Regex.IsMatch(firstName, "^[A-Za-z]+$"))
+        {
+            firstNameError = "First Name should contain only letters.";
+            isValid = false;
+        }
         // Validation for Last Name
         if (string.IsNullOrEmpty(lastName))
         {
             lastNameError = "Last Name is required.";
             isValid = false;
         }
-
+        else if (!Regex.IsMatch(lastName, "^[A-Za-z]+$"))
+        {
+            lastNameError = "Last Name should contain only letters.";
+            isValid = false;
+        }
         // Validation for Employee ID
         if (!employeeID.HasValue)
         {
             employeeIDError = "Employee ID is required.";
             isValid = false;
         }
-
+        
         // Validation for Last Name
         if (string.IsNullOrEmpty(employeeInitials))
         {
             employeeInitialsError = "Employee Initials is required.";
             isValid = false;
         }
-
+        else if (!Regex.IsMatch(employeeInitials, "^[A-Za-z]+$"))
+        {
+            employeeInitialsError = "Employee Initials should contain only letters.";
+            isValid = false;
+        }
         // Validation for Hub Role
         if (string.IsNullOrEmpty(hubRole))
         {
