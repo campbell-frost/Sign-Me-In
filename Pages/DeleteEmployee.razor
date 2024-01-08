@@ -4,7 +4,9 @@
 @inject NavigationManager navigationManager
 
 <div class="container-md d-flex justify-content-center align-items-center">
-    <div class="card shadow-lg col-md-7">
+    <div class="col-md-7">
+
+    <div class="card shadow-lg">
         @if (Employees != null && Employees.Any())
         {
             @foreach (var employee in Employees)
@@ -16,9 +18,10 @@
         {
             <p>No employees found.</p>
         }
-        <div class="container-md d-flex justify-content-center align-items-center" style="margin-top: 50px;">
-            <button class="btn btn-primary btn-block w-40 mb-3" @onclick="goBack">Go Back</button>
+        <div class="container-md mt-3">
+            <button class="btn btn-primary btn-block mb-3 ml-3" @onclick="goBack" style="margin-left: 5px;">Go Back</button>
         </div>
+    </div>
     </div>
 </div>
 
