@@ -37,16 +37,21 @@
         List<HubSession>? testing = null;
         List<HubSession>? tutoring = null;
 
+        // Debugging information
+    Console.WriteLine($"Start Date: {startDate}");
+    Console.WriteLine($"End Date: {endDate}");
+    Console.WriteLine($"Current Date: {DateTime.Now.Date}");
+
         // Check if both start and end dates are selected
         if (startDate.HasValue && endDate.HasValue)
         {
             // Filter data between start and end dates
             testing = dbContext.HubSessions
-                .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
+                .Where(s => s.Date >= startDate && s.Date < endDate.Value.AddDays(1) && s.SessionType == "Testing" && s.TimeOut != null)
                 .ToList();
 
             tutoring = dbContext.HubSessions
-                .Where(s => s.Date >= startDate && s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
+                .Where(s => s.Date >= startDate && s.Date < endDate.Value.AddDays(1) && s.SessionType == "Tutoring" && s.TimeOut != null)
                 .ToList();
         }
         else if (startDate.HasValue)
@@ -54,12 +59,13 @@
             // Start date is selected, but end date is not
             // Filter data from start date to the current date
             var currentDate = DateTime.Now.Date;
+
             testing = dbContext.HubSessions
-                .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Testing" && s.TimeOut != null)
+                .Where(s => s.Date >= startDate && s.Date < currentDate.AddDays(1) && s.SessionType == "Testing" && s.TimeOut != null)
                 .ToList();
 
             tutoring = dbContext.HubSessions
-                .Where(s => s.Date >= startDate && s.Date <= currentDate && s.SessionType == "Tutoring" && s.TimeOut != null)
+                .Where(s => s.Date >= startDate && s.Date < currentDate.AddDays(1) && s.SessionType == "Tutoring" && s.TimeOut != null)
                 .ToList();
         }
         else if (endDate.HasValue)
@@ -67,11 +73,11 @@
             // End date is selected, but start date is not
             // Filter data from the beginning till the end date
             testing = dbContext.HubSessions
-                .Where(s => s.Date <= endDate && s.SessionType == "Testing" && s.TimeOut != null)
+                .Where(s => s.Date < endDate.Value.AddDays(1) && s.SessionType == "Testing" && s.TimeOut != null)
                 .ToList();
 
             tutoring = dbContext.HubSessions
-                .Where(s => s.Date <= endDate && s.SessionType == "Tutoring" && s.TimeOut != null)
+                .Where(s => s.Date < endDate.Value.AddDays(1) && s.SessionType == "Tutoring" && s.TimeOut != null)
                 .ToList();
         }
         else
@@ -137,7 +143,7 @@
     private void ShowDetailedReport()
     {
         // Pass the selected dates as route parameters
-        navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}");
+        navigationManager.NavigateTo($"/Reports/Detailed/{startDate:yyyy-MM-dd}/{endDate.Value.AddDays(1):yyyy-MM-dd}");
     }
 
     // Method to format total time in a human-readable format
