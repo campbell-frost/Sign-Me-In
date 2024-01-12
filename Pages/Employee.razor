@@ -90,12 +90,14 @@
     {
         navigationManager.NavigateTo("/Employee/DeleteEmployee");
     }
+    private void goBack(){
+
+    }
 }
 
 
 <div class="container-lg d-flex justify-content-center">
     <div class="col-md-7 card shadow-lg mb-4">
-
         <form @onsubmit="Search">
             <div class="py-4">
                 <div class="form-group">
@@ -111,7 +113,7 @@
                 </div>
             </div>
         </form>
-
+        
         @if (!searchPerformed)
         {
             <div class="row">
@@ -158,7 +160,7 @@
             }
 
 
-            else if (foundEmployees?.Count == 1 || foundEmployee != null)
+            else if ((foundEmployees?.Count == 1 || foundEmployee != null) )
             {
                 <div class="row ">
                     <div class="col-md-6 mx-auto">
@@ -210,12 +212,14 @@
                 </div>
 
                 <div class="row py-4">
-                    <div class="col-md-12 mx-auto text-center">
-                        <button class="btn btn-primary btn-block w-100"
-                            @onclick="() => HandleUpdate(foundEmployee)">Update</button>
+                    <div class="col-md-6 mx-auto">
+                        <button class="btn btn-primary btn-block w-50 mb-3" @onclick="goBack">Go Back</button>
                     </div>
-
+                    <div class="col-md-6 mx-auto text-end">
+                        <button class="btn btn-primary btn-block w-50 mb-3" @onclick="() => HandleUpdate(foundEmployee)">Update</button>
+                    </div>
                 </div>
+
             }
             else if (searchPerformed == true && !string.IsNullOrWhiteSpace(searchTerm) || searchTerm == null)
             {
