@@ -61,7 +61,7 @@
             firstNameError = "First Name is required.";
             isValid = false;
         }
-        else if (!Regex.IsMatch(firstName, "^[A-Za-z]+$"))
+        else if (!Regex.IsMatch(firstName, "^[A-Za-z']+$"))
         {
             firstNameError = "First Name should contain only letters.";
             isValid = false;
@@ -72,7 +72,7 @@
             lastNameError = "Last Name is required.";
             isValid = false;
         }
-        else if (!Regex.IsMatch(lastName, "^[A-Za-z]+$"))
+        else if (!Regex.IsMatch(lastName, "^[A-Za-z']+$"))
         {
             lastNameError = "Last Name should contain only letters.";
             isValid = false;
@@ -90,7 +90,7 @@
             employeeInitialsError = "Employee Initials is required.";
             isValid = false;
         }
-        else if (!Regex.IsMatch(employeeInitials, "^[A-Za-z]+$"))
+        else if (!Regex.IsMatch(employeeInitials, "^[A-Za-z']+$"))
         {
             employeeInitialsError = "Employee Initials should contain only letters.";
             isValid = false;
