@@ -15,6 +15,8 @@
     private String employeeInitials;
     private String hubRole;
     private int accountID;
+    private bool showDuplicateEmployeeIDAlert = false;
+
 
     // Flag to track if the employee has been successfully inserted
     private bool inserted = false;
@@ -112,6 +114,15 @@
     {
         if (ValidateForm())
         {
+            // Check if an employee with the same Employee ID already exists
+            bool isDuplicateEmployeeID = dbContext.HubEmployees.Any(e => e.EmployeeID == (employeeID ?? 0));
+
+            if (isDuplicateEmployeeID)
+            {
+                // Set the property to show the duplicate employee ID alert
+                showDuplicateEmployeeIDAlert = true;
+                return;
+            }
 
             // Set accountID based on hubRole
             if (hubRole == "Testing Assistant" || hubRole == "Tutor" || hubRole == "Both")
@@ -127,6 +138,8 @@
             dbContext.Database.OpenConnection();
             dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HubEmployees ON");
 
+
+        
             // Create a new employee object
             var newEmployee = new HubEmployee
                 {
@@ -212,10 +225,17 @@
                 </div>
             </div>
         </div>
+        @if (showDuplicateEmployeeIDAlert)
+        {
+            <div class="alert alert-danger mt-3" role="alert">
+                <label>An employee with the same Employee ID already exists. Please choose a different Employee ID.</label>
+            </div>
+        }
+
         @if (isFormIncomplete)
         {
             <div class="alert alert-warning text-center">
-                <h5>Please fill out all of the forms</h5>
+                <h5>Please fill out all of the fields</h5>
                 <ul>
                     @if (!string.IsNullOrEmpty(firstNameError))
                     {
