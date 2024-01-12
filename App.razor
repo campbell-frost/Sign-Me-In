@@ -34,6 +34,20 @@
             document.body.removeChild(link);
         };
 
+        window.showAlert = function (message) {
+            alert(message);
+        };
+
+        function validateDateFormat(inputId, errorMessage) {
+            var input = document.getElementById(inputId);
+
+            if (input && !input.checkValidity()) {
+                window.showAlert(errorMessage);
+                return false;
+            }
+
+            return true;
+        }
     </script>
 </body>
 

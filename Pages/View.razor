@@ -80,7 +80,7 @@
             totalViewAllPages = (int)Math.Ceiling((double)totalItems / pageSize);
             totalPages = totalViewAllPages;
         }
-        
+
         // Calculate which items to display on the current page
         hubSessions = query
         .Skip((currentPage - 1) * pageSize)
@@ -119,19 +119,24 @@
     }
 
     // Save the edited hub session back to the database
-    void SaveHubSession(HubSession hubSession)
+      async Task SaveHubSession(HubSession hubSession)
     {
-        var sessionToUpdate = dbContext.HubSessions.FirstOrDefault(s => s.SessionID == hubSession.SessionID);
-        if (sessionToUpdate != null)
+        if (await JSRuntime.InvokeAsync<bool>("validateDateFormat", "timeInInput", "Invalid date format. Please enter the date in the correct format for Time In.")
+            && await JSRuntime.InvokeAsync<bool>("validateDateFormat", "timeOutInput", "Invalid date format. Please enter the date in the correct format for Time Out."))
         {
-            sessionToUpdate.TimeIn = hubSession.TimeIn;
-            sessionToUpdate.TimeOut = hubSession.TimeOut;
-            sessionToUpdate.EmployeeID = hubSession.EmployeeID;
-            sessionToUpdate.SessionType = hubSession.SessionType;
-            dbContext.SaveChanges();
+            var sessionToUpdate = dbContext.HubSessions.FirstOrDefault(s => s.SessionID == hubSession.SessionID);
+          
+            if (sessionToUpdate != null)
+            {
+                sessionToUpdate.TimeIn = hubSession.TimeIn;
+                sessionToUpdate.TimeOut = hubSession.TimeOut;
+                sessionToUpdate.EmployeeID = hubSession.EmployeeID;
+                sessionToUpdate.SessionType = hubSession.SessionType;
+                dbContext.SaveChanges();
+            }
+            isEditing = false; // Exit editing mode
+            LoadHubSessions(); // Refresh the sessions
         }
-        isEditing = false; // Exit editing mode
-        LoadHubSessions(); // Refresh the sessions
     }
 
     // Handle the action of signing out a student
@@ -281,7 +286,8 @@
                                         }
                                         else
                                         {
-                                            <input type="text" class="form-control" @bind="hubSession.TimeOut" />
+                                            <input type="text" class="form-control" pattern="(?:[01]\d|2[0-3]):(?:[0-5]\d)"
+                                                title="Enter a valid time (HH:mm)" @bind="hubSession.TimeOut" />
                                         }
                                     }
                                     else if (!hubSession.TimeOut.HasValue)
@@ -354,7 +360,7 @@
                                 @if (isEditing)
                                 {
                                     <td>
-                                        <button class="btn btn-sm btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>
+                                        <button class="btn btn-sm btn-primary" @onclick="() => SaveHubSession(hubSession)">Save</button>                                    
                                     </td>
                                 }
                             </tr>
