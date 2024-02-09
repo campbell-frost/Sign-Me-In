@@ -11,7 +11,7 @@
     // Properties to store employee details
     private String firstName;
     private String lastName;
-    private int ? employeeID;
+    private int? employeeID;
     private String employeeInitials;
     private String hubRole;
     private int accountID;
@@ -85,7 +85,7 @@
             employeeIDError = "Employee ID is required.";
             isValid = false;
         }
-        
+
         // Validation for Last Name
         if (string.IsNullOrEmpty(employeeInitials))
         {
@@ -139,7 +139,7 @@
             dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT HubEmployees ON");
 
 
-        
+
             // Create a new employee object
             var newEmployee = new HubEmployee
                 {
@@ -249,7 +249,7 @@
                     {
                         <li>@employeeIDError</li>
                     }
-                     @if (!string.IsNullOrEmpty(employeeInitialsError))
+                    @if (!string.IsNullOrEmpty(employeeInitialsError))
                     {
                         <li>@employeeInitialsError</li>
                     }
@@ -274,12 +274,17 @@
 
 @if (inserted)
 {
-    <div class="alert alert-success mt-3" role="alert">
-        <label>@firstName @lastName inserted successfully.</label>
-    </div>
-    <div class="row my-3 justify-content-center">
-        <div class="col-md-12 d-flex justify-content-center">
-            <button class="btn btn-primary" @onclick="goBackToEmployee">Done</button>
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-lg">
+
+            <div class="alert alert-success mt-3 text-center" role="alert">
+                <label>@firstName @lastName inserted successfully.</label>
+            </div>
+            <div class="row my-3 justify-content-center">
+                <div class="col-md-12 d-flex justify-content-center">
+                    <button class="btn btn-primary" @onclick="goBackToEmployee">Done</button>
+                </div>
+            </div>
         </div>
     </div>
 }
