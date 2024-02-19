@@ -38,7 +38,7 @@
         {
             // Query the database to retrieve hub session data for the selected date range
             hubSessions = dbContext.HubSessions
-                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate && !session.TimeOut.Equals(null))
                 .ToList();
                 
             hubSessions.Reverse();
@@ -103,7 +103,7 @@
         if (DateTime.TryParse(startDate, out DateTime parsedStartDate) && DateTime.TryParse(endDate, out DateTime parsedEndDate))
         {
             hubSessions = dbContext.HubSessions
-                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
+                .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate && !session.TimeOut.Equals(null))
                 .ToList();
 
             // Filter hubSessions to include only sessions where the student's name matches the search term
