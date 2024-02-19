@@ -40,6 +40,8 @@
             hubSessions = dbContext.HubSessions
                 .Where(session => session.Date >= parsedStartDate && session.Date <= parsedEndDate)
                 .ToList();
+                
+            hubSessions.Reverse();
 
             // Calculate the total number of items and pages
             totalItems = hubSessions.Count;
