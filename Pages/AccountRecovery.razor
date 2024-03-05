@@ -160,13 +160,6 @@
             Console.WriteLine($"Error during navigation: {ex.Message}");
         }
     }
-
-    // Method for developer bypass to skip security questions
-    private void DeveloperBypassSecurityQuestions()
-    {
-        navigationManager.NavigateTo($"/Account/Recovery/{AccountID}/ResetPassword");
-    }
-
     // Method to get the username for the account
     private string GetAccountUsername()
     {
@@ -237,12 +230,6 @@
             </div>
             <div class="col-md-6 mt-4">
                 <button class="btn btn-primary btn-block" @onclick="GoToChangePassword">Reset Password</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 mb-3">
-                <button class="btn btn-primary btn-block" @onclick="DeveloperBypassSecurityQuestions">Developer
-                    Bypass</button>
             </div>
         </div>
     </div>
